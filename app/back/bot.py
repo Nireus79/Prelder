@@ -211,9 +211,9 @@ def Prelderbot(mode, crypto_currency, fiat_currency):
         candle_time = low_frame_indicated.iloc[-1]['time']
         event = low_frame_indicated.iloc[-1]['event']
         bb_cross = low_frame_indicated.iloc[-1]['bb_cross']
-        condition = get_condition(crypto_currency, fiat_currency, closing_price)
         mav = low_frame_indicated.iloc[-1]['MAV']
         roc30 = low_frame_indicated.iloc[-1]['roc30']
+        condition = get_condition(crypto_currency, fiat_currency, closing_price)
         if mode == 'simulator':
             condition = 'Buy'
         log = 'event is: {}. BB crossing is: {}'.format(event, bb_cross)
@@ -332,6 +332,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency):
                             .format(time_stamp(), closing_price, limit, stop)
                         logging.info(log)
                         logs.append(log + '<br>')
+                        condition = 'Sell'
                     elif mode == 'consulting':
                         log = '{} Consulting Buy at {}. Limit set to {}. Stop set to {}.' \
                             .format(time_stamp(), closing_price, limit, stop)
@@ -364,10 +365,9 @@ def Prelderbot(mode, crypto_currency, fiat_currency):
             bb_cross = low_frame_indicated.iloc[-1]['bb_cross']
             mav = low_frame_indicated.iloc[-1]['MAV']
             roc30 = low_frame_indicated.iloc[-1]['roc30']
-            condition = get_condition(crypto_currency, fiat_currency, closing_price)
             logs.append(log + '<br>')
-            if mode == 'simulator':
-                condition = 'Buy'
+            if mode != 'simulator':
+                condition = get_condition(crypto_currency, fiat_currency, closing_price)
             log = 'Event is: {}. BB crossing is: {}'.format(event, bb_cross)
             logging.info(log)
             log = 'Condition is: {}'.format(condition)
@@ -386,6 +386,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency):
                                     .format(time_stamp(), prime_predictionS, meta_predictionS)
                                 logging.info(log)
                                 logs.append(log + '<br>')
+                                condition = 'Buy'
                             elif mode == 'consulting':
                                 log = '{} Prime Prediction {} Meta Prediction {}.' \
                                     .format(time_stamp(), prime_predictionS, meta_predictionS)
@@ -413,6 +414,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency):
                                     .format(time_stamp(), prime_predictionB, meta_predictionB)
                                 logging.info(log)
                                 logs.append(log + '<br>')
+                                condition = 'Sell'
                             elif mode == 'consulting':
                                 log = '{} Prime Prediction {} Meta Prediction {}.' \
                                     .format(time_stamp(), prime_predictionB, meta_predictionB)
@@ -439,116 +441,6 @@ def Prelderbot(mode, crypto_currency, fiat_currency):
         logging.info(log)
         logs.append(log + '<br>')
         exit()
-
-
-# def initialize_models():
-#     pmb = joblib.load('PrimeModelBuy.pkl')
-#     mmb = joblib.load('MetaModelBuy.pkl')
-#     pms = joblib.load('PrimeModelSell.pkl')
-#     mms = joblib.load('MetaModelSell.pkl')
-#     mr = joblib.load('ModelRisk.pkl')
-#     return pmb, mmb, pms, mms, mr
-#
-# def log_info(log):
-#     logging.info(log)
-#     logs.append(log + '<br>')
-#
-# def handle_sell_condition(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mode):
-#     prime_predictionS, meta_predictionS = sell_evaluation(high_frame_indicated, mid_frame_indicated,
-#                                                           low_frame_indicated, pms, mms)
-#     if prime_predictionS != meta_predictionS:
-#         log_info('{} Prime Prediction: {} Meta Prediction {}. Simulating Sale at {}.'
-#                  .format(time_stamp(), prime_predictionS, meta_predictionS, closing_price))
-#         if mode == 'simulator':
-#             condition = 'Buy'
-#     else:
-#         ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
-#         if ret > 0 and roc30 > 0:
-#             limit = closing_price * (1 + (ret + (roc30 / 100)))
-#             stop = closing_price * (1 - (ret + (roc30 / 100)))
-#             log_info('{} Limit reset to {}. Stop reset to {}.'
-#                      .format(time_stamp(), limit, stop))
-#
-# def handle_buy_condition(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mode):
-#     prime_predictionB, meta_predictionB = buy_evaluation(high_frame_indicated, mid_frame_indicated,
-#                                                          low_frame_indicated, pmb, mmb)
-#     ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
-#     if prime_predictionB == meta_predictionB and ret > minRet and roc30 > 0:
-#         limit = closing_price * (1 + (ret + (roc30 / 100)))
-#         stop = closing_price * (1 - (ret + (roc30 / 100)))
-#         log_info('{} Simulating Buy at {}. Limit set to {}. Stop set to {}.'
-#                  .format(time_stamp(), closing_price, limit, stop))
-#         if mode == 'simulator':
-#             condition = 'Buy'
-#
-# def Prelderbot(mode, crypto_currency, fiat_currency):
-#     global condition, limit, stop, ret, log, trend_24h, trend_4h, buy_flag_4h, buy_flag_1h, sell_flag_4h, sell_flag_1h, \
-#         crypto_balance, fiat_balance, closing_price, runningHighFrame, runningMidFrame, runningLowFrame
-#     licence = True  # check()['license_active'] # TODO activate licence check
-#     if licence:
-#         log_info('Your product licence is active. Thank you for using Hermes.')
-#         log_info('{} Operation start. Mode is {}.'.format(time_stamp(), mode))
-#         pmb, mmb, pms, mms, mr = initialize_models()
-#         i30m = Api(crypto_currency, fiat_currency, 30, 700)
-#         i4H = Api(crypto_currency, fiat_currency, 240, 100)
-#         i24H = Api(crypto_currency, fiat_currency, 1440, 100)
-#         low_frame = i30m.get_frame()
-#         mid_frame = i4H.get_frame()
-#         high_frame = i24H.get_frame()
-#         low_frame_indicated, mid_frame_indicated, high_frame_indicated = indicators(low_frame, mid_frame, high_frame)
-#         closing_price = low_frame_indicated.iloc[-1]['close']
-#         candle_time = low_frame_indicated.iloc[-1]['time']
-#         event = low_frame_indicated.iloc[-1]['event']
-#         bb_cross = low_frame_indicated.iloc[-1]['bb_cross']
-#         mav = low_frame_indicated.iloc[-1]['MAV']
-#         roc30 = low_frame_indicated.iloc[-1]['roc30']
-#         condition = get_condition(crypto_currency, fiat_currency, closing_price)
-#         log_info('event is: {}. BB crossing is: {}'.format(event, bb_cross))
-#         if mode == 'simulator':
-#             condition = 'Buy'
-#         log_info('Condition is: {}'.format(condition))
-#         if condition == 'Sell':
-#             if limit == stop == 0:
-#                 log_info('{} Limit and stop loss parameters are not set.'
-#                          ' This may be result of program restart.'
-#                          ' Parameters will be set at first co event.'
-#                          .format(time_stamp()))
-#                 if event != 0 and bb_cross != 0:
-#                     handle_sell_condition(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mode)
-#             else:
-#                 if closing_price < stop:
-#                     log_info('{} Closing price < stop.  Simulating Sale at {}.'.format(time_stamp(), closing_price))
-#                     if mode == 'simulator':
-#                         condition = 'Buy'
-#                 elif closing_price > limit:
-#                     if event == bb_cross == 1:
-#                         handle_sell_condition(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mode)
-#         elif condition == 'Buy':
-#             if event != 0 and bb_cross != 0 and mav > minRet:
-#                 handle_buy_condition(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mode)
-#         while True:
-#             if break_event.is_set():
-#                 cancel_order()
-#                 log_info('{} Breaking operation.'.format(time_stamp()))
-#                 break
-#             low_frame = i30m.get_frame()
-#             mid_frame = i4H.get_frame()
-#             high_frame = i24H.get_frame()
-#             low_frame_indicated, mid_frame_indicated, high_frame_indicated = \
-#                 indicators(low_frame, mid_frame, high_frame)
-#             new_candle_time = low_frame_indicated.iloc[-1]['time']
-#             closing_price = low_frame_indicated.iloc[-1]['close']
-#             event = low_frame_indicated.iloc[-1]['event']
-#             bb_cross = low_frame_indicated.iloc[-1]['bb_cross']
-#             mav = low_frame_indicated.iloc[-1]['MAV']
-#             roc30 = low_frame_indicated.iloc[-1]['roc30']
-#             condition = get_condition(crypto_currency, fiat_currency, closing_price)
-#             if new_candle_time > candle_time:
-#                 if condition == 'Sell':
-#                     if bb_cross != 0 and event != 0:
-#                         handle_sell_condition(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mode)
-#                 elif condition == 'Buy':
-#
 
 
 def data_feed():
