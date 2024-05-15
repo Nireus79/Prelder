@@ -248,10 +248,10 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                 .format(time_stamp(), prime_predictionS, meta_predictionS)
                             logging.info(log)
                             logs.append(log + '<br>')
-                            # asset_vol = (fiat_balance - fiat_balance * 0.0026) / closing_price
-                            # tx = add_order('market', condition, asset_vol, closing_price, crypto_currency, fiat_currency)
-                            # log = tx
-                            # logging.info(log)
+                            asset_vol = (fiat_balance - fiat_balance * 0.026) / closing_price
+                            tx = add_order('market', condition, asset_vol, closing_price, crypto_currency, fiat_currency)
+                            log = tx
+                            logging.info(log)
                     else:
                         ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
                         limit = closing_price * (1 + (ret + (roc30 / 100)))
@@ -274,10 +274,10 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                         log = '{} Closing price < stop. Sale at {}.'.format(time_stamp(), closing_price)
                         logging.info(log)
                         logs.append(log + '<br>')
-                        # asset_vol = (fiat_balance - fiat_balance * 0.0026) / closing_price
-                        # tx = add_order('market', condition, asset_vol, closing_price, crypto_currency, fiat_currency)
-                        # log = tx
-                        # logging.info(log)
+                        asset_vol = (fiat_balance - fiat_balance * 0.026) / closing_price
+                        tx = add_order('market', condition, asset_vol, closing_price, crypto_currency, fiat_currency)
+                        log = tx
+                        logging.info(log)
                 elif closing_price > limit:
                     if event != 0 and bb_cross != 0:
                         prime_predictionS, meta_predictionS = sell_evaluation(high_frame_indicated,
@@ -300,10 +300,10 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                     .format(time_stamp(), prime_predictionS, meta_predictionS)
                                 logging.info(log)
                                 logs.append(log + '<br>')
-                                # asset_vol = (fiat_balance - fiat_balance * 0.0026) / closing_price
-                                # tx = add_order('market', condition, asset_vol, closing_price, crypto_currency, fiat_currency)
-                                # log = tx
-                                # logging.info(log)
+                                asset_vol = (fiat_balance - fiat_balance * 0.026) / closing_price
+                                tx = add_order('market', condition, asset_vol, closing_price, crypto_currency, fiat_currency)
+                                log = tx
+                                logging.info(log)
                         else:
                             ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
                             if ret > 0 and roc30 > 0:
@@ -339,10 +339,10 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                             .format(time_stamp(), closing_price, limit, stop)
                         logging.info(log)
                         logs.append(log + '<br>')
-                        # asset_vol = (fiat_balance - fiat_balance * 0.0026) / closing_price
-                        # tx = add_order('market', condition, asset_vol, closing_price, crypto_currency, fiat_currency)
-                        # log = tx
-                        # logging.info(log)
+                        asset_vol = (fiat_balance - fiat_balance * 0.026) / closing_price
+                        tx = add_order('market', condition, asset_vol, closing_price, crypto_currency, fiat_currency)
+                        log = tx
+                        logging.info(log)
         while True:
             if break_event.is_set():  # thread "kill" by user
                 cancel_order()
@@ -394,10 +394,10 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                     .format(time_stamp(), prime_predictionS, meta_predictionS)
                                 logging.info(log)
                                 logs.append(log + '<br>')
-                                # asset_vol = (fiat_balance - fiat_balance * 0.0026) / closing_price
-                                # tx = add_order('market', condition, asset_vol, closing_price, crypto_currency, fiat_currency)
-                                # log = tx
-                                # logging.info(log)
+                                asset_vol = (fiat_balance - fiat_balance * 0.026) / closing_price
+                                tx = add_order('market', condition, asset_vol, closing_price, crypto_currency, fiat_currency)
+                                log = tx
+                                logging.info(log)
                 elif condition == 'Buy':
                     if bb_cross != 0 and event != 0 and mav > minRet:
                         prime_predictionB, meta_predictionB = buy_evaluation(high_frame_indicated,
