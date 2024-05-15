@@ -273,7 +273,7 @@ def indicators(ldf, mdf, hdf):
     t = getTEvents(ldf['close'], ldf['Volatility'])
     ldf['event'] = ldf['Volatility'].loc[t]
     ldf['event'] = ldf['Volatility'][ldf['Volatility'] > 0.026]
-    ldf['tEvent'] = ldf.apply(lambda x: True if x.datetime in t else False, axis=1)
+    # ldf['tEvent'] = ldf.apply(lambda x: True if x.datetime in t else False, axis=1)
     ldf.fillna(0, inplace=True)
     return ldf, mdf, hdf
 

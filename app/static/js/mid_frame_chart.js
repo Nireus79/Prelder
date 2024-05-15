@@ -58,14 +58,14 @@ function update_values() {
     $.getJSON($SCRIPT_ROOT + '/update',
         function(data_update) {
             mid_frame_chart.updateSeries([{
-              name: 'Middle frame: ' + data_update.runningMidFrame,
+              name: 'Middle frame: 4 hours',
               data: data_update.mid_chart_data
+              },{
+              name: 'Stochastic %K: ' + data_update.mid_k
               },{
               name: 'Stochastic %D: ' + data_update.mid_d
               },{
-              name: 'Stochastic %DS: ' + data_update.mid_ds
-              },{
-              name: 'RSI: ' + data_update.mid_rs
+              name: 'MACD: ' + data_update.mid_macd
               }
             ])
         }

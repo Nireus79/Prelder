@@ -4,7 +4,6 @@ function update_values() {
         function(data) {
                 $('#current_time').text('Current time: '+data.current_time);
                 $('#mode').text('Mode: '+data.mode);
-                $('#rsi').text('Max RSI: '+data.rsi);
                 $('#condition').text('Evaluating to '+data.condition+':');
                 $('#crypto_currency').text(data.crypto_currency);
                 $('#fiat_currency').text('for  '+data.fiat_currency);

@@ -9,11 +9,11 @@ var options = {
           type: 'line',
           data: []
         },{
-          name: 'EMA13: ',
+          name: 'EMA20: ',
           type: 'line',
           data: []
         },{
-          name: 'MACD: ',
+          name: 'EMA3: ',
           type: 'line',
           data: []
         }
@@ -59,15 +59,25 @@ function update_values() {
     $.getJSON($SCRIPT_ROOT + '/update',
         function(data_update) {
             high_frame_chart.updateSeries([{
-              name: 'High frame: ' + data_update.runningHighFrame,
+              name: 'High frame: 1 Day',
               data: data_update.high_chart_data
-            },{
+            },
+            {
               name: 'Closing price: ' + data_update.price
-            },{
-              name: 'EMA13: ' + data_update.high_ema13[data_update.high_ema13.length - 1]['y'],
-              data: data_update.high_ema13
-            },{
-              name: 'MACD: ' + data_update.high_macd
+            },
+            {
+              name: 'EMA20: ' + data_update.high_ema20[data_update.high_ema20.length - 1]['y'],
+              data: data_update.high_ema20
+            },
+            {
+              name: 'EMA3: ' + data_update.high_ema3[data_update.high_ema3.length - 1]['y'],
+              data: data_update.high_ema3
+            },
+            {
+              name: 'TrD20: ' + data_update.high_TrD20
+              },
+            {
+              name: 'TrD3: ' + data_update.high_TrD3
               }
             ]);
         }
