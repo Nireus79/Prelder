@@ -347,8 +347,6 @@ def low_data(frame):
     ave = []
     upper = []
     lower = []
-    event = data_list[-1][23]
-    bb = data_list[-1][16]
     Tr6 = round(data_list[-1][15], 4)
     for i in data_list:
         candle_data.append({
@@ -373,7 +371,7 @@ def low_data(frame):
                 'x': i[0],
                 'y': round(i[12], 4)
             })
-    return candle_data, ave, upper, lower, event, bb, Tr6
+    return candle_data, ave, upper, lower, Tr6
 
 
 class Api:

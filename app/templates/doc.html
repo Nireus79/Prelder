@@ -6,8 +6,9 @@
 
 {% block body %}
 <h2>Hermes</h2>
-<p>Real time, multiple time frame, consulting-trading bot application, </p>
-<p>interpretation of Alexander Elder's "triple screen" forex market trading strategy.</p>
+<p>Real time, multiple time frame, simulating-consulting-trading bot application. </p>
+<p>Based on Marco's Lopez de Prado method.</p>
+<p>Interpretation of Alexander Elder's "triple screen" forex market trading strategy.</p>
 <h5>The strategy.</h5>
 <p>
     The strategy is using data from three time frames, calculating indicators on first two and acts on the third.
@@ -19,53 +20,25 @@
     <br>
     Third frame is used for timing entries using short-term breakouts in the direction of your trading bias.
 </p>
-<p>Program starts with higher degree time frame and subsequently downgrades time frames lower progressively.
-<p>Frames combinations:
-    <br>Combination 1: High 24hours - mid 4 hours - low 1 hour.
-    <br>Combination 2: High 4 hours - mid 1 hour - low 15 min.
+<p>Frames combination:
+    <br>Combination 1: High 24hours - mid 4 hours - low 30 minutes.
 </p>
-<h5>Evaluation phases</h5>
+<h5>Evaluation.</h5>
 <p>
-    1) Trend. The long-term trend is evaluated.
-    – Alex Elder calls this as being the tide, and it's evaluation gives the general trend direction.
+    1) Real time analysis on 30 minute ohlc (candlestick bars). Detected cusum filter and bollinger bands crossing co events.
 <br>
-    2) Correction. The medium-term trend is evaluated.
-    – This trend is also known as the wave, gives the trend momentum strength and position.
+    2) Use of two serial classificator models to predict price movement. First model predicts price movement and second
+    predicts false or true prediction of first model using meta labels.
 <br>
-    3) Specification.
-    - The short-term trend – It is also referred to as the ripple used to set limits of buy and stop loss.
-    Exact entry point is corrected by closely monitoring price movement.
+    3) Regression model used for risk and profit - stop loss levels set.
+<br>
+    4) Movement and risk re-evaluation, after every following co event.
+<br>
+    Models are using features from all three time frames to evaluate causation between conditions and result
+    according to Trend, momentum, volatility and other characteristics of price behaviour.
 </p>
 <p>
-<h5>High frame.</h5>
-<p>
-    General trend can be detected with the use of 200 periods EMA, combination of 9, 20, 50 periods EMA, macd, etc.
-    According to Elder the highly profitable spectrum of a positive trend is when price overcomes a pullback,
-    entering the bullish zone.<br>
-    In our case a preset combination of 13p EMA and macd indicators (Closing > EMA13 and macd > 0)
-    is used to determine the high frame trend.
-</p>
-<h5>Mid frame.</h5>
-<p>
-    Trend momentum and position is detected with the use of stochastic slow indicator.
-    Stochastic fast can be used for quicker response but in this case more force signals are generated.
-    Stochastic slow is used as it is a 'smothered' version of stoch fast. (d > ds > 20 buy Flag / d < ds < 80 sell Flag)
-    An additional indicator of strength is added (RSI) as choice for safety reasons,
-    as when current price strength is above 70,
-    price is actually 'overbought' and probability of descent is high.
-    Additionally, if trend frame period momentum is negative the program will not buy.
-    Same rule will not apply in reverse when selling an asset.
-</p>
-<h5>Low frame.</h5>
-<p>
-    When conditions are aligned in the higher frames action limits are set,
-    according to the last low frame closed candle range.
-    Next candle price gives action flag or sets new limits.
-    Low frame current candle ATR is added to the limit and subtracted to stop-loss, so current volatility
-    of the price is taken into consideration to avoid false levels.
-    Reevaluation of limits can be taken after a full candle period.
-    Momentum is checked every minute and in case of reversal code exits low frame evaluation and reevaluates momentum every five minutes.
-</p>
+
 <a href="https://en.wikipedia.org/wiki/Alexander_Elder">Wiki/Elder</a>,
 
 <a href="https://www.elder.com/">elder.com</a>,

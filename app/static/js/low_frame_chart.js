@@ -55,7 +55,7 @@ function update_values() {
     $.getJSON($SCRIPT_ROOT + '/update',
         function(data_update) {
             low_frame_chart.updateSeries([{
-              name: 'Low frame: 30 minutes',
+              name: '30 minutes',
               data: data_update.low_chart_data
             },{
               name: 'Buy limit: ' + data_update.low_limit[data_update.low_limit.length - 1]['y'],

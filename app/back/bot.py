@@ -28,9 +28,6 @@ ret = 0
 minRet = 0.026
 closing_price = None
 
-runningHighFrame = '1 Day'
-runningMidFrame = '4 hours'
-runningLowFrame = '30 minutes'
 high_chart_data = None
 mid_chart_data = None
 low_chart_data = None
@@ -44,8 +41,8 @@ mid_macd = None
 low_ave = None
 low_upper = None
 low_lower = None
-low_event = None
-low_bb = None
+event = None
+bb_cross = None
 low_Tr6 = None
 low_limit = None
 low_stop = None
@@ -66,8 +63,6 @@ def normalizer(data):
     scaler = Normalizer().fit(data)
     normalized = pd.DataFrame(scaler.fit_transform(data), index=data.index)
     normalized.columns = data.columns
-    # print('normalizedX -----')
-    # print(normalized.head())
     return normalized
 
 
@@ -100,12 +95,12 @@ def beeper(cond):
 
 def chart_data(high_frame, mid_frame, low_frame):
     global high_chart_data, high_ema20, high_ema3, high_TrD20, high_TrD3, mid_chart_data, mid_k, mid_d, mid_macd, \
-        low_chart_data, low_ave, low_upper, low_lower, low_event, low_bb, low_Tr6, low_limit, low_stop
+        low_chart_data, low_ave, low_upper, low_lower, low_Tr6, low_limit, low_stop
     limit_data = []
     stop_data = []
     high_candles, ema20, ema3, TrD20, TrD3 = high_data(high_frame)
     mid_candles, k, d, mac4 = mid_data(mid_frame)
-    low_candles, ave, upper, lower, event, bb, Tr6 = low_data(low_frame)
+    low_candles, ave, upper, lower, Tr6 = low_data(low_frame)
     for i in low_candles:
         limit_data.append({
             'x': i['x'],
@@ -129,8 +124,6 @@ def chart_data(high_frame, mid_frame, low_frame):
     low_lower = lower[-21:]
     low_upper = upper[-21:]
     low_Tr6 = Tr6
-    low_event = event
-    low_bb = bb
     low_limit = limit_data[-21:]
     low_stop = stop_data[-21:]
 
@@ -193,8 +186,7 @@ def ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicate
 
 
 def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
-    global condition, limit, stop, ret, log, trend_24h, trend_4h, buy_flag_4h, buy_flag_1h, sell_flag_4h, sell_flag_1h, \
-        crypto_balance, fiat_balance, closing_price, runningHighFrame, runningMidFrame, runningLowFrame
+    global condition, limit, stop, ret, log, crypto_balance, fiat_balance, closing_price, event, bb_cross
     licence = True  # check()['license_active'] # TODO activate licence check
     if licence:
         log = 'Your product licence is active. Thank you for using Hermes.'
@@ -458,15 +450,6 @@ def data_feed():
         'condition': condition,
         'crypto_balance': float(crypto_balance),
         'fiat_balance': float(fiat_balance),
-        'runningHighFrame': runningHighFrame,
-        'runningMidFrame': runningMidFrame,
-        'runningLowFrame': runningLowFrame,
-        'trend_24h': str(trend_24h),
-        'trend_4h': str(trend_4h),
-        'buy_flag_4h': str(buy_flag_4h),
-        'sell_flag_4h': str(sell_flag_4h),
-        'buy_flag_1h': str(buy_flag_1h),
-        'sell_flag_1h': str(sell_flag_1h),
         'high_chart_data': high_chart_data,
         'mid_chart_data': mid_chart_data,
         'high_ema20': high_ema20,
@@ -482,5 +465,7 @@ def data_feed():
         'low_stop': low_stop,
         'low_ave': low_ave,
         'low_upper': low_upper,
-        'low_lower': low_lower
+        'low_lower': low_lower,
+        'event': event,
+        'bb_cross': bb_cross
     }

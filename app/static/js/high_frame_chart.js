@@ -59,7 +59,7 @@ function update_values() {
     $.getJSON($SCRIPT_ROOT + '/update',
         function(data_update) {
             high_frame_chart.updateSeries([{
-              name: 'High frame: 1 Day',
+              name: '1 Day',
               data: data_update.high_chart_data
             },
             {
