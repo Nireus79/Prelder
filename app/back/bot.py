@@ -20,28 +20,33 @@ buy_flag_4h = False
 buy_flag_1h = False
 sell_flag_4h = None
 sell_flag_1h = None
-crypto_balance = None
+crypto_balance = 0
 fiat_balance = 0
-limit = 0
-stop = 0
+limit = None
+stop = None
 ret = 0
 minRet = 0.026
 closing_price = None
 
-runningHighFrame = None
-runningMidFrame = None
-runningLowFrame = None
+runningHighFrame = '1 Day'
+runningMidFrame = '4 hours'
+runningLowFrame = '30 minutes'
 high_chart_data = None
 mid_chart_data = None
 low_chart_data = None
-high_ema13 = None
-high_macd = None
-high_d = None
-high_ds = None
+high_ema20 = None
+high_ema3 = None
+high_TrD20 = None
+high_TrD3 = None
+mid_k = None
 mid_d = None
-mid_ds = None
-mid_rs = None
-l_atr = None
+mid_macd = None
+low_ave = None
+low_upper = None
+low_lower = None
+low_event = None
+low_bb = None
+low_Tr6 = None
 low_limit = None
 low_stop = None
 log = 'Please set control parameters to start.'
@@ -94,13 +99,13 @@ def beeper(cond):
 
 
 def chart_data(high_frame, mid_frame, low_frame):
-    global high_chart_data, high_ema13, high_macd, high_d, high_ds, mid_chart_data, mid_d, mid_ds, mid_rs, \
-        low_chart_data, low_limit, low_stop, l_atr
+    global high_chart_data, high_ema20, high_ema3, high_TrD20, high_TrD3, mid_chart_data, mid_k, mid_d, mid_macd, \
+        low_chart_data, low_ave, low_upper, low_lower, low_event, low_bb, low_Tr6, low_limit, low_stop, l_atr
     limit_data = []
     stop_data = []
-    high_candles, e13, mac = high_data(high_frame)
-    mid_candles, d, ds, rs = mid_data(mid_frame)
-    low_candles = low_data(low_frame)
+    high_candles, ema20, ema3, TrD20, TrD3 = high_data(high_frame)
+    mid_candles, k, d, mac4 = mid_data(mid_frame)
+    low_candles, ave, upper, lower, event, bb, Tr6 = low_data(low_frame)
     for i in low_candles:
         limit_data.append({
             'x': i['x'],
@@ -111,13 +116,21 @@ def chart_data(high_frame, mid_frame, low_frame):
             'y': stop
         })
     high_chart_data = high_candles[-20:]
-    high_ema13 = e13[-20:]
-    high_macd = mac
+    high_ema20 = ema20[-20:]
+    high_ema3 = ema3[-20:]
+    high_TrD20 = TrD20
+    high_TrD3 = TrD3
     mid_chart_data = mid_candles[-20:]
+    mid_k = k
     mid_d = d
-    mid_ds = ds
-    mid_rs = rs
+    mid_macd = mac4
     low_chart_data = low_candles[-10:]
+    low_ave = ave[-10:]
+    low_lower = lower[-10:]
+    low_upper = upper[-10:]
+    low_Tr6 = Tr6
+    low_event = event
+    low_bb = bb
     low_limit = limit_data[-10:]
     low_stop = stop_data[-10:]
 
@@ -179,20 +192,10 @@ def ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicate
     return ret_prediction
 
 
-def initialize_models():
-    pmb = joblib.load('PrimeModelBuy.pkl')
-    mmb = joblib.load('MetaModelBuy.pkl')
-    pms = joblib.load('PrimeModelSell.pkl')
-    mms = joblib.load('MetaModelSell.pkl')
-    mr = joblib.load('ModelRisk.pkl')
-    return pmb, mmb, pms, mms, mr
-
-
-def Prelderbot(mode, crypto_currency, fiat_currency):
+def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
     global condition, limit, stop, ret, log, trend_24h, trend_4h, buy_flag_4h, buy_flag_1h, sell_flag_4h, sell_flag_1h, \
         crypto_balance, fiat_balance, closing_price, runningHighFrame, runningMidFrame, runningLowFrame
     licence = True  # check()['license_active'] # TODO activate licence check
-    pmb, mmb, pms, mms, mr = initialize_models()
     if licence:
         log = 'Your product licence is active. Thank you for using Hermes.'
         logging.info(log)
@@ -207,23 +210,24 @@ def Prelderbot(mode, crypto_currency, fiat_currency):
         mid_frame = i4H.get_frame()
         high_frame = i24H.get_frame()
         low_frame_indicated, mid_frame_indicated, high_frame_indicated = indicators(low_frame, mid_frame, high_frame)
+        chart_data(high_frame_indicated, mid_frame_indicated, low_frame_indicated)
         closing_price = low_frame_indicated.iloc[-1]['close']
         candle_time = low_frame_indicated.iloc[-1]['time']
         event = low_frame_indicated.iloc[-1]['event']
         bb_cross = low_frame_indicated.iloc[-1]['bb_cross']
         mav = low_frame_indicated.iloc[-1]['MAV']
         roc30 = low_frame_indicated.iloc[-1]['roc30']
-        condition = get_condition(crypto_currency, fiat_currency, closing_price)
+        condition, crypto_balance, fiat_balance = get_condition(crypto_currency, fiat_currency, closing_price)
         if mode == 'simulator':
             condition = 'Buy'
-        log = 'event is: {}. BB crossing is: {}'.format(event, bb_cross)
+        log = 'Event is: {}. BB crossing is: {}'.format(event, bb_cross)
         logging.info(log)
         logs.append(log + '<br>')
         log = 'Condition is: {}'.format(condition)
         logging.info(log)
         logs.append(log + '<br>')
         if condition == 'Sell':
-            if limit == stop == 0:
+            if limit is None and stop is None:
                 log = '{} Limit and stop loss parameters are not set.' \
                       ' This may be result of program restart.' \
                       ' Parameters will be set at first co event.' \
@@ -359,6 +363,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency):
             high_frame = i24H.get_frame()
             low_frame_indicated, mid_frame_indicated, high_frame_indicated = \
                 indicators(low_frame, mid_frame, high_frame)
+            chart_data(high_frame_indicated, mid_frame_indicated, low_frame_indicated)
             new_candle_time = low_frame_indicated.iloc[-1]['time']
             closing_price = low_frame_indicated.iloc[-1]['close']
             event = low_frame_indicated.iloc[-1]['event']
@@ -367,7 +372,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency):
             roc30 = low_frame_indicated.iloc[-1]['roc30']
             logs.append(log + '<br>')
             if mode != 'simulator':
-                condition = get_condition(crypto_currency, fiat_currency, closing_price)
+                condition, crypto_balance, fiat_balance = get_condition(crypto_currency, fiat_currency, closing_price)
             log = 'Event is: {}. BB crossing is: {}'.format(event, bb_cross)
             logging.info(log)
             log = 'Condition is: {}'.format(condition)
@@ -451,8 +456,8 @@ def data_feed():
         'logs': logs,
         'trades': trades,
         'condition': condition,
-        'crypto_balance': crypto_balance,
-        'fiat_balance': fiat_balance,
+        'crypto_balance': float(crypto_balance),
+        'fiat_balance': float(fiat_balance),
         'runningHighFrame': runningHighFrame,
         'runningMidFrame': runningMidFrame,
         'runningLowFrame': runningLowFrame,
@@ -464,17 +469,13 @@ def data_feed():
         'sell_flag_1h': str(sell_flag_1h),
         'high_chart_data': high_chart_data,
         'mid_chart_data': mid_chart_data,
-        'high_ema13': high_ema13,
-        'high_macd': high_macd,
+        'high_ema13': high_ema20,
+        'high_macd': high_ema3,
+        'mid_k': mid_k,
         'mid_d': mid_d,
-        'mid_ds': mid_ds,
-        'mid_rs': mid_rs,
+        'mid_macd': mid_macd,
         'low_chart_data': low_chart_data,
         'price': closing_price,
-        'l_atr': l_atr,
         'low_limit': low_limit,
         'low_stop': low_stop
     }
-
-
-Prelderbot('simulator', 'ETH', 'EUR')

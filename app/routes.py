@@ -4,16 +4,28 @@ from app.back.kraken import cancel_order, time_stamp
 from app import app
 from flask import render_template, request, jsonify
 import logging
+import joblib
 
 # Default values given as preset
 asset_a = None
 asset_b = None
 mode = None
-rsi = 70
 
 # Flask logs
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
+
+
+def initialize_models():
+    init_pmb = joblib.load('PrimeModelBuy.pkl')
+    init_mmb = joblib.load('MetaModelBuy.pkl')
+    init_pms = joblib.load('PrimeModelSell.pkl')
+    init_mms = joblib.load('MetaModelSell.pkl')
+    init_mr = joblib.load('ModelRisk.pkl')
+    return init_pmb, init_mmb, init_pms, init_mms, init_mr
+
+
+pmb, mmb, pms, mms, mr = initialize_models()
 
 
 @app.route('/')
@@ -24,13 +36,12 @@ def main():
 
 @app.route('/control', methods=['POST', 'GET'])
 def control():
-    global asset_a, asset_b, mode, rsi
+    global asset_a, asset_b, mode
     if request.method == 'POST':
         try:
             asset_a = request.form['assetA']
             asset_b = request.form['assetB']
             mode = request.form['mode']
-            rsi = float(request.form['rsi'])
         except Exception as e:
             logging.info(e)
     else:
@@ -55,7 +66,6 @@ def update():
     dt['crypto_currency'] = asset_a
     dt['fiat_currency'] = asset_b
     dt['mode'] = mode
-    dt['rsi'] = rsi
     return jsonify(dt)
 
 
@@ -67,11 +77,8 @@ def starter():
     elif asset_a is None or asset_b is None:
         logging.info('Set assets.')
         return render_template('control.html')
-    elif rsi is None:
-        logging.info('Set rsi.')
-        return render_template('control.html')
     else:
-        trading = threading.Thread(target=Prelderbot, args=(mode, asset_a, asset_b))
+        trading = threading.Thread(target=Prelderbot, args=(mode, asset_a, asset_b, pmb, mmb, pms, mms, mr))
         trading.daemon = True
         trading.start()
         return render_template('overview.html')

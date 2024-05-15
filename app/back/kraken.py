@@ -179,9 +179,9 @@ def get_condition(crypto_currency, fiat_currency, closing_price):
     crypto_value = crypto_balance * closing_price
     fiat_balance = float(balance['result'][fiat_currency])
     if crypto_value < fiat_balance:
-        return 'buy', crypto_balance, fiat_balance
+        return 'Buy', crypto_balance, fiat_balance
     elif crypto_value >= fiat_balance:
-        return 'sell', crypto_balance, fiat_balance
+        return 'Sell', crypto_balance, fiat_balance
     else:
         log = 'No balance found. Please select existing assets in your account.'
         print(log)
@@ -293,8 +293,10 @@ def high_data(frame):
     front_df['time'] = front_df['time'].apply(lambda x: (x * 1000) + 10800000)  # *1000 javascript time + 3hours
     data_list = front_df.values.tolist()
     candle_data = []
-    ema13_data = []
-    macd_data = round(data_list[-1][9], 4)
+    ema20_data = []
+    ema3_data = []
+    TrD20 = round(data_list[-1][10], 4)
+    TrD3 = round(data_list[-1][11], 4)
     for i in data_list:
         candle_data.append({
             'x': i[0],
@@ -302,11 +304,17 @@ def high_data(frame):
         })
     for i in data_list:
         if i[8] != 0:
-            ema13_data.append({
+            ema20_data.append({
                 'x': i[0],
                 'y': round(i[8], 4)
             })
-    return candle_data, ema13_data, macd_data
+    for i in data_list:
+        if i[9] != 0:
+            ema3_data.append({
+                'x': i[0],
+                'y': round(i[9], 4)
+            })
+    return candle_data, ema20_data, ema3_data, TrD20, TrD3
 
 
 def mid_data(frame):
@@ -317,15 +325,15 @@ def mid_data(frame):
     front_df['time'] = front_df['time'].apply(lambda x: (x * 1000) + 10800000)
     data_list = front_df.values.tolist()
     candle_data = []
+    stoch_k_data = round(data_list[-1][8], 4)
     stoch_d_data = round(data_list[-1][9], 4)
-    stoch_ds_data = round(data_list[-1][10], 4)
-    rsi_data = round(data_list[-1][11], 4)
+    macd = round(data_list[-1][10], 4)
     for i in data_list:
         candle_data.append({
             'x': i[0],
             'y': [i[1], i[2], i[3], i[4]]
         })
-    return candle_data, stoch_d_data, stoch_ds_data, rsi_data
+    return candle_data, stoch_k_data, stoch_d_data, macd
 
 
 def low_data(frame):
@@ -336,12 +344,36 @@ def low_data(frame):
     front_df['time'] = front_df['time'].apply(lambda x: (x * 1000) + 10800000)
     data_list = front_df.values.tolist()
     candle_data = []
+    ave = []
+    upper = []
+    lower = []
+    event = data_list[-1][23]
+    bb = data_list[-1][16]
+    Tr6 = round(data_list[-1][15], 4)
     for i in data_list:
         candle_data.append({
             'x': i[0],
             'y': [i[1], i[2], i[3], i[4]]
         })
-    return candle_data
+    for i in data_list:
+        if i[10] != 0:
+            ave.append({
+                'x': i[0],
+                'y': round(i[10], 4)
+            })
+    for i in data_list:
+        if i[11] != 0:
+            upper.append({
+                'x': i[0],
+                'y': round(i[11], 4)
+            })
+    for i in data_list:
+        if i[12] != 0:
+            lower.append({
+                'x': i[0],
+                'y': round(i[12], 4)
+            })
+    return candle_data, ave, upper, lower, event, bb, Tr6
 
 
 class Api:

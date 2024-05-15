@@ -6,16 +6,6 @@
 
 {% block body %}
     <form action="#" method="post">
-        <select name="rsi" class="form-select" aria-label="Default select example">
-          <option selected>Max RSI</option>
-          <option value='70'>Default 70</option>
-          <option value='75'>75</option>
-          <option value='80'>80</option>
-          <option value='85'>85</option>
-          <option value='90'>90</option>
-          <option value='100'>Ignore</option>
-        </select>
-        <br>
         <select name="mode" class="form-select" aria-label="Default select example">
           <option selected>Select mode</option>
           <option value="simulator">Simulator</option>
@@ -25,6 +15,7 @@
         <br>
         <select name="assetA" class="form-select" aria-label="Default select example">
           <option selected>Select asset A</option>
+          <option value="ETH">Ethereum (Default)</option>
           <option value="ZRX">Ox</option>
           <option value="1INCH">1inch</option>
           <option value="AAVE">Aave</option>
@@ -94,7 +85,6 @@
           <option value="ENJ">Enjin</option>
           <option value="MLN">Enzyme finance</option>
           <option value="EOS">EOS</option>
-          <option value="ETH">Ethereum</option>
           <option value="ETC">Ethereum classic</option>
           <option value="ENS">Ethereum Naming service</option>
           <option value="FTM">Fantom</option>
@@ -238,6 +228,7 @@
         <br>
         <select name="assetB" class="form-select" aria-label="Default select example">
           <option selected>Select asset B</option>
+          <option value="EUR">Euro (Default)</option>
           <option value="ZRX">Ox</option>
           <option value="1INCH">1inch</option>
           <option value="AAVE">Aave</option>
@@ -440,7 +431,6 @@
           <option value="YGG">Yield Guild Games</option>
           <option value="ZEC">Zcash</option>
           <option value="USD">US Dollar</option>
-          <option value="EUR">Euro</option>
           <option value="GBP">Pound Sterling</option>
           <option value="AUD">Australian Dollar</option>
           <option value="CAD">Canadian Dollar</option>
