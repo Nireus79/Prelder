@@ -236,6 +236,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                 .format(time_stamp(), prime_predictionS, meta_predictionS, closing_price)
                             logging.info(log)
                             logs.append(log + '<br>')
+                            trades.append(log)
                             condition = 'Buy'
                         elif mode == 'consulting':
                             log = '{} Prime Prediction: {} Meta Prediction {}. Consulting Sale at {}.' \
@@ -265,10 +266,12 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                         log = '{} Closing price < stop.  Simulating Sale at {}.'.format(time_stamp(), closing_price)
                         logging.info(log)
                         logs.append(log + '<br>')
+                        trades.append(log)
                         condition = 'Buy'
                     elif mode == 'consulting':
                         log = '{} Closing price < stop. Consulting Sale at {}.'.format(time_stamp(), closing_price)
                         logs.append(log + '<br>')
+                        trades.append(log)
                     elif mode == 'trading':
                         log = '{} Closing price < stop. Sale at {}.'.format(time_stamp(), closing_price)
                         logging.info(log)
@@ -277,6 +280,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                         tx = add_order('market', condition, asset_vol, closing_price, crypto_currency, fiat_currency)
                         log = tx
                         logging.info(log)
+                        trades.append(log)
                 elif closing_price > limit:
                     if event != 0 and bb_cross != 0:
                         prime_predictionS, meta_predictionS = sell_evaluation(high_frame_indicated,
@@ -285,15 +289,18 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                                                               pms, mms)
                         if prime_predictionS != meta_predictionS:
                             if mode == 'simulator':
-                                log = '{} Prime Prediction: {} Meta Prediction {}.' \
-                                    .format(time_stamp(), prime_predictionS, meta_predictionS)
+                                log = '{} Closing price > limit. Prime Prediction: {} Meta Prediction {}. Simulating ' \
+                                      'Sale at {}' \
+                                    .format(time_stamp(), prime_predictionS, meta_predictionS, closing_price)
                                 logging.info(log)
                                 logs.append(log + '<br>')
+                                trades.append(log)
                             elif mode == 'consulting':
-                                log = '{} Prime Prediction {} Meta Prediction {}.' \
-                                    .format(time_stamp(), prime_predictionS, meta_predictionS)
+                                log = '{} Prime Prediction {} Meta Prediction {}. Consulting Sale at {}.' \
+                                    .format(time_stamp(), prime_predictionS, meta_predictionS, closing_price)
                                 logging.info(log)
                                 logs.append(log + '<br>')
+                                trades.append(log)
                             elif mode == 'trading':
                                 log = '{} Prime Prediction {} Meta Prediction {}.' \
                                     .format(time_stamp(), prime_predictionS, meta_predictionS)
@@ -303,6 +310,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                 tx = add_order('market', condition, asset_vol, closing_price, crypto_currency, fiat_currency)
                                 log = tx
                                 logging.info(log)
+                                trades.append(log)
                         else:
                             ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
                             if ret > 0 and roc30 > 0:
@@ -312,6 +320,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                     .format(time_stamp(), limit, stop)
                                 logging.info(log)
                                 logs.append(log + '<br>')
+                                trades.append(log)
         elif condition == 'Buy':
             if event != 0 and bb_cross != 0 and mav > minRet:
                 prime_predictionB, meta_predictionB = buy_evaluation(high_frame_indicated,
@@ -327,12 +336,14 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                             .format(time_stamp(), closing_price, limit, stop)
                         logging.info(log)
                         logs.append(log + '<br>')
+                        trades.append(log)
                         condition = 'Sell'
                     elif mode == 'consulting':
                         log = '{} Consulting Buy at {}. Limit set to {}. Stop set to {}.' \
                             .format(time_stamp(), closing_price, limit, stop)
                         logging.info(log)
                         logs.append(log + '<br>')
+                        trades.append(log)
                     elif mode == 'trading':
                         log = '{} Buy at {}. Limit set to {}. Stop set to {}' \
                             .format(time_stamp(), closing_price, limit, stop)
@@ -342,6 +353,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                         tx = add_order('market', condition, asset_vol, closing_price, crypto_currency, fiat_currency)
                         log = tx
                         logging.info(log)
+                        trades.append(log)
         while True:
             if break_event.is_set():  # thread "kill" by user
                 cancel_order()
@@ -382,12 +394,14 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                     .format(time_stamp(), prime_predictionS, meta_predictionS)
                                 logging.info(log)
                                 logs.append(log + '<br>')
+                                trades.append(log)
                                 condition = 'Buy'
                             elif mode == 'consulting':
                                 log = '{} Prime Prediction {} Meta Prediction {}.' \
                                     .format(time_stamp(), prime_predictionS, meta_predictionS)
                                 logging.info(log)
                                 logs.append(log + '<br>')
+                                trades.append(log)
                             elif mode == 'trading':
                                 log = '{} Prime Prediction {} Meta Prediction {}.' \
                                     .format(time_stamp(), prime_predictionS, meta_predictionS)
@@ -397,6 +411,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                 tx = add_order('market', condition, asset_vol, closing_price, crypto_currency, fiat_currency)
                                 log = tx
                                 logging.info(log)
+                                trades.append(log)
                 elif condition == 'Buy':
                     if bb_cross != 0 and event != 0 and mav > minRet:
                         prime_predictionB, meta_predictionB = buy_evaluation(high_frame_indicated,
@@ -410,17 +425,25 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                     .format(time_stamp(), prime_predictionB, meta_predictionB)
                                 logging.info(log)
                                 logs.append(log + '<br>')
+                                trades.append(log)
                                 condition = 'Sell'
                             elif mode == 'consulting':
                                 log = '{} Prime Prediction {} Meta Prediction {}.' \
                                     .format(time_stamp(), prime_predictionB, meta_predictionB)
                                 logging.info(log)
                                 logs.append(log + '<br>')
+                                trades.append(log)
                             elif mode == 'trading':
                                 log = '{} Prime Prediction {} Meta Prediction {}.' \
                                     .format(time_stamp(), prime_predictionB, meta_predictionB)
                                 logging.info(log)
                                 logs.append(log + '<br>')
+                                asset_vol = (fiat_balance - fiat_balance * 0.026) / closing_price
+                                tx = add_order('market', condition, asset_vol, closing_price, crypto_currency,
+                                               fiat_currency)
+                                log = tx
+                                logging.info(log)
+                                trades.append(log)
                 log = '{} Waiting 30 min candle close.'.format(time_stamp())
                 logging.info(log)
                 logs.append(log + '<br>')
