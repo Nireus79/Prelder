@@ -7,11 +7,11 @@
 {% block body %}
 <h2>Hermes</h2>
 <p>Real time, multiple time frame, simulating-consulting-trading bot application. </p>
-<p>Based on Marco's Lopez de Prado method.</p>
+<p>Strategy based on Marcos Lopez de Prado method.</p>
 <p>Interpretation of Alexander Elder's "triple screen" forex market trading strategy.</p>
 <h5>The strategy.</h5>
 <p>
-    The strategy is using data from three time frames, calculating indicators on first two and acts on the third.
+    The strategy is using data from three time frames, generating indicators and acts on the third.
 </p>
 <p>
     First frame used for establishing a trading bias.
@@ -25,7 +25,7 @@
 </p>
 <h5>Evaluation.</h5>
 <p>
-    1) Real time analysis on 30 minute ohlc (candlestick bars). Detected cusum filter and bollinger bands crossing co events.
+    1) Real time analysis on 30 minute ohlc (candlestick bars). Detecting cusum filter and bollinger bands crossing co events.
 <br>
     2) Use of two serial classificator models to predict price movement. First model predicts price movement and second
     predicts false or true prediction of first model using meta labels.
