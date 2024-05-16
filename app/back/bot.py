@@ -110,22 +110,22 @@ def chart_data(high_frame, mid_frame, low_frame):
             'x': i['x'],
             'y': stop
         })
-    high_chart_data = high_candles[-21:]
-    high_ema20 = ema20[-21:]
-    high_ema3 = ema3[-21:]
+    high_chart_data = high_candles[-20:]
+    high_ema20 = ema20[-20:]
+    high_ema3 = ema3[-20:]
     high_TrD20 = TrD20
     high_TrD3 = TrD3
-    mid_chart_data = mid_candles[-21:]
+    mid_chart_data = mid_candles[-20:]
     mid_k = k
     mid_d = d
     mid_macd = mac4
-    low_chart_data = low_candles[-21:]
-    low_ave = ave[-21:]
-    low_lower = lower[-21:]
-    low_upper = upper[-21:]
+    low_chart_data = low_candles[-20:]
+    low_ave = ave[-20:]
+    low_lower = lower[-20:]
+    low_upper = upper[-20:]
     low_Tr6 = Tr6
-    low_limit = limit_data[-21:]
-    low_stop = stop_data[-21:]
+    low_limit = limit_data[-20:]
+    low_stop = stop_data[-20:]
 
 
 def sell_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, pms, mms):
