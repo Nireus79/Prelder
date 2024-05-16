@@ -17,8 +17,8 @@
     <span>Balance:</span>
     <span id="crypto_balance"></span>
     <span id="fiat_balance"></span>
-    <span id="event"></span>
-    <span id="bb_cross"></span>
+    <span id="event" style="color:red"></span>
+    <span id="bb_cross" style="color:red"></span>
 
     <div id="high_frame_chart"></div>
     <script type="text/javascript" src="{{url_for('static', filename='js/high_frame_chart.js')}}"></script>
@@ -81,5 +81,5 @@
     </div>
     <a href='/stop'><input type='button' value='Stop bot'></a>
     <a href='/cancel'><input type='button' value='Cancel active order'></a>
-    <span id="log"></span>
+    <span id="log" style="color:red"></span>
 {% endblock %}
