@@ -236,6 +236,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                             trades.append(log)
                         elif mode == 'trading':
                             log = log_action('Sale at {}.'.format(closing_price))
+                            trades.append(log)
                             asset_vol = (fiat_balance - fiat_balance * fee) / closing_price
                             tx = add_order(order_type, condition, asset_vol, closing_price, crypto_currency,
                                            fiat_currency)
@@ -259,6 +260,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                         trades.append(log)
                     elif mode == 'trading':
                         log = log_action('Sale at {}.'.format(time_stamp(), closing_price))
+                        trades.append(log)
                         asset_vol = (fiat_balance - fiat_balance * fee) / closing_price
                         tx = add_order(order_type, condition, asset_vol, closing_price, crypto_currency, fiat_currency)
                         log = log_action(tx)
@@ -281,6 +283,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                 trades.append(log)
                             elif mode == 'trading':
                                 log = log_action('Sale at {}.'.format(closing_price))
+                                trades.append(log)
                                 asset_vol = (fiat_balance - fiat_balance * fee) / closing_price
                                 tx = add_order(order_type, condition, asset_vol, closing_price, crypto_currency,
                                                fiat_currency)
@@ -318,6 +321,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                     elif mode == 'trading':
                         log = log_action('{} Buy at {}. Limit set to {}. Stop set to {}'
                                          .format(time_stamp(), closing_price, limit, stop))
+                        trades.append(log)
                         asset_vol = (fiat_balance - fiat_balance * fee) / closing_price
                         tx = add_order(order_type, condition, asset_vol, closing_price, crypto_currency, fiat_currency)
                         log = log_action(tx)
@@ -365,6 +369,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                     trades.append(log)
                                 elif mode == 'trading':
                                     log = log_action('Sale at {}.'.format(closing_price))
+                                    trades.append(log)
                                     asset_vol = (fiat_balance - fiat_balance * fee) / closing_price
                                     tx = add_order(order_type, condition, asset_vol, closing_price, crypto_currency,
                                                    fiat_currency)
@@ -388,6 +393,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                 trades.append(log)
                             elif mode == 'trading':
                                 log = log_action('Sale at {}.'.format(time_stamp(), closing_price))
+                                trades.append(log)
                                 asset_vol = (fiat_balance - fiat_balance * fee) / closing_price
                                 tx = add_order(order_type, condition, asset_vol, closing_price, crypto_currency,
                                                fiat_currency)
@@ -411,6 +417,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                         trades.append(log)
                                     elif mode == 'trading':
                                         log = log_action('Sale at {}.'.format(closing_price))
+                                        trades.append(log)
                                         asset_vol = (fiat_balance - fiat_balance * fee) / closing_price
                                         tx = add_order(order_type, condition, asset_vol, closing_price, crypto_currency,
                                                        fiat_currency)
@@ -449,6 +456,8 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                             elif mode == 'trading':
                                 log = log_action('{} Buy at {}. Limit set to {}. Stop set to {}'
                                                  .format(time_stamp(), closing_price, limit, stop))
+                                trades.append(log)
+                                trades.append(log)
                                 asset_vol = (fiat_balance - fiat_balance * fee) / closing_price
                                 tx = add_order(order_type, condition, asset_vol, closing_price, crypto_currency,
                                                fiat_currency)
