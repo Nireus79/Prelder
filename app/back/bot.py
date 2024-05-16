@@ -6,7 +6,6 @@ from app.back.kraken import Api, time_stamp, \
     add_order, cancel_order, get_condition, high_data, mid_data, low_data, indicators
 from app.back.spring import check, activation
 from sklearn.preprocessing import Normalizer, normalize
-import joblib
 import pandas as pd
 import numpy as np
 
