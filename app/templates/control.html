@@ -5,6 +5,9 @@
 {% endblock %}
 
 {% block body %}
+    <h2 style="color:red" >WARNING</h2>
+    <h5 style="color:red" >Machine learning models used by the app are trained on marked as default assets.</h5>
+    <h5 style="color:red" >Use of different assets may reduce predicting performance of the models.</h5>
     <form action="#" method="post">
         <select name="mode" class="form-select" aria-label="Default select example">
           <option selected>Select mode</option>
@@ -441,7 +444,7 @@
         </select>
     </form>
     <a href="https://support.kraken.com/hc/en-us/articles/201893658-Currency-pairs-available-for-trading-on-Kraken">
-      Please be sure your trading asset pair of choice is supported by kraken.</a>
+      Please be sure your trading asset pair of choice is supported by kraken. Click for link.</a>
     <br>
     <a href='/start'><input type='button' value='Start'></a>
     <a href='/stop'><input type='button' value='Stop'></a>
