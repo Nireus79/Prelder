@@ -217,16 +217,14 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
         log = log_action('Event is: {}. BB crossing is: {}. Condition is: {}'.format(event, bb_cross, condition))
         if condition == 'Sell':
             if limit is None and stop is None:
-                log = log_action('{} Limit and stop loss parameters are not set.' \
-                                 ' This may be result of program restart.' \
-                                 ' Parameters will be set at first co event.' \
-                                 .format(time_stamp()))
+                log = log_action('{} Limit and stop loss parameters are not set. This may be result of program restart.'
+                                 ' Parameters will be set at first co event.'.format(time_stamp()))
                 if event != 0 and bb_cross != 0:
                     prime_predictionS, meta_predictionS = sell_evaluation(high_frame_indicated,
                                                                           mid_frame_indicated,
                                                                           low_frame_indicated,
                                                                           pms, mms)
-                    log = log_action('{} Prime Prediction: {} Meta Prediction {}.' \
+                    log = log_action('{} Prime Prediction: {} Meta Prediction {}.'
                                      .format(time_stamp(), prime_predictionS, meta_predictionS))
                     if prime_predictionS != meta_predictionS:
                         if mode == 'simulator':
