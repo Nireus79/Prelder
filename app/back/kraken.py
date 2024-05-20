@@ -34,6 +34,20 @@ def bbands(price, window=None, width=None, numsd=None):
         return price, np.round(ave, 3), np.round(upband, 3), np.round(dnband, 3)
 
 
+def simple_crossing(df, col1, col2, col3):
+    # crit1 = df[col1].shift(1) < df[col2].shift(1)
+    crit2 = df[col1] > df[col2]
+    up_cross = df[col1][crit2]
+    side_up = pd.Series(1, index=up_cross.index)
+
+    # crit3 = df[col1].shift(1) > df[col3].shift(1)
+    crit4 = df[col1] < df[col3]
+    down_cross = df[col1][crit4]
+    side_down = pd.Series(-1, index=down_cross.index)
+
+    return pd.concat([side_up, side_down]).sort_index()
+
+
 def crossing3(df, col1, col2, col3):
     crit1 = df[col1].shift(1) < df[col2].shift(1)
     crit2 = df[col1] > df[col2]
@@ -263,7 +277,7 @@ def indicators(ldf, mdf, hdf):
     else 0, axis=1)
     ldf['EMA6'] = ldf['close'].rolling(6).mean()
     ldf['Tr6'] = ldf.apply(lambda x: x['close'] - x['EMA6'], axis=1)
-    ldf['bb_cross'] = crossing3(ldf, 'close', 'upper', 'lower')
+    ldf['bb_cross'] = simple_crossing(ldf, 'close', 'upper', 'lower')
     ldf['Volatility'] = getDailyVol(ldf['close'], 100, 24)  # .rolling(20).mean()
     ldf['MAV'] = ldf['Volatility'].rolling(24).mean()
     ldf['Vol_Volatility'] = getDailyVol(ldf['Volatility'], 100, 24)
