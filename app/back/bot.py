@@ -3,7 +3,7 @@ import time
 import threading
 import winsound
 from app.back.kraken import Api, time_stamp, \
-    add_order, cancel_order, get_condition, high_data, mid_data, low_data, indicators
+    add_order, cancel_order, get_condition, high_data, mid_data, low_data, indicators, fee
 from app.back.spring import check, activation
 from sklearn.preprocessing import Normalizer, normalize
 import pandas as pd
@@ -24,7 +24,6 @@ fiat_balance = 0
 limit = None
 stop = None
 ret = 0
-fee = 0.026
 order_type = 'market'
 closing_price = None
 
@@ -209,7 +208,6 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
         candle_time = low_frame_indicated.iloc[-1]['time']
         event = low_frame_indicated.iloc[-1]['event']
         bb_cross = low_frame_indicated.iloc[-1]['bb_cross']
-        # mav = low_frame_indicated.iloc[-1]['MAV']
         roc30 = low_frame_indicated.iloc[-1]['roc30']
         condition, crypto_balance, fiat_balance = get_condition(crypto_currency, fiat_currency, closing_price)
         if mode == 'simulator':
@@ -343,7 +341,6 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
             closing_price = low_frame_indicated.iloc[-1]['close']
             event = low_frame_indicated.iloc[-1]['event']
             bb_cross = low_frame_indicated.iloc[-1]['bb_cross']
-            # mav = low_frame_indicated.iloc[-1]['MAV']
             roc30 = low_frame_indicated.iloc[-1]['roc30']
             if mode != 'simulator':
                 condition, crypto_balance, fiat_balance = get_condition(crypto_currency, fiat_currency, closing_price)
