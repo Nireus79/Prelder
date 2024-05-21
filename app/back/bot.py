@@ -40,11 +40,12 @@ mid_macd = None
 low_ave = None
 low_upper = None
 low_lower = None
-event = None
+event = 0
 bb_cross = None
 low_Tr6 = None
 low_limit = None
 low_stop = None
+volatility = None
 log = 'Please set control parameters to start.'
 logs = []
 trades = []
@@ -94,12 +95,12 @@ def beeper(cond):
 
 def chart_data(high_frame, mid_frame, low_frame):
     global high_chart_data, high_ema20, high_ema3, high_TrD20, high_TrD3, mid_chart_data, mid_k, mid_d, mid_macd, \
-        low_chart_data, low_ave, low_upper, low_lower, low_Tr6, low_limit, low_stop
+        low_chart_data, low_ave, low_upper, low_lower, low_Tr6, low_limit, low_stop, volatility
     limit_data = []
     stop_data = []
     high_candles, ema20, ema3, TrD20, TrD3 = high_data(high_frame)
     mid_candles, k, d, mac4 = mid_data(mid_frame)
-    low_candles, ave, upper, lower, Tr6 = low_data(low_frame)
+    low_candles, ave, upper, lower, Tr6, volatility = low_data(low_frame)
     for i in low_candles:
         limit_data.append({
             'x': i['x'],
@@ -506,6 +507,7 @@ def data_feed():
         'low_ave': low_ave,
         'low_upper': low_upper,
         'low_lower': low_lower,
-        'event': event,
-        'bb_cross': bb_cross
+        'event': True if event != 0 else False,
+        'bb_cross': bb_cross,
+        'volatility': volatility
     }
