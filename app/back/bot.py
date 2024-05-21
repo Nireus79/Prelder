@@ -151,7 +151,7 @@ def sell_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicat
     featuresMS = featuresS
     featuresMS = np.insert(featuresMS, len(featuresS), prime_predictionS)
     meta_predictionS = mms.predict([featuresMS])
-    return prime_predictionS, meta_predictionS
+    return prime_predictionS[0], meta_predictionS[0]
 
 
 def buy_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, pmb, mmb):
@@ -171,7 +171,7 @@ def buy_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicate
     featuresMB = featuresB
     featuresMB = np.insert(featuresMB, len(featuresMB), prime_predictionB)
     meta_predictionB = mmb.predict([featuresMB])
-    return prime_predictionB, meta_predictionB
+    return prime_predictionB[0], meta_predictionB[0]
 
 
 def ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr):
@@ -188,7 +188,7 @@ def ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicate
     featuresB = normalize(featuresB)
     featuresB = np.insert(featuresB, len(featuresB[0]), bbc)
     ret_prediction = mr.predict([featuresB])
-    return ret_prediction
+    return ret_prediction[0]
 
 
 def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
@@ -302,9 +302,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                                                      mid_frame_indicated,
                                                                      low_frame_indicated,
                                                                      pmb, mmb)
-                prime_predictionB, meta_predictionB = prime_predictionB[0], meta_predictionB[0]
                 ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
-                ret = ret[0]
                 log = log_action('{} Prime prediction {}. Meta prediction {}. Ret {}'
                                  .format(time_stamp(), prime_predictionB, meta_predictionB, ret))
                 if prime_predictionB == meta_predictionB and ret > fee and roc30 > 0:
@@ -357,7 +355,6 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                                                                   mid_frame_indicated,
                                                                                   low_frame_indicated,
                                                                                   pms, mms)
-                            prime_predictionS, meta_predictionS = prime_predictionS[0], meta_predictionS[0]
                             log = log_action('{} Prime Prediction: {} Meta Prediction {}.'
                                              .format(time_stamp(), prime_predictionS, meta_predictionS))
                             if prime_predictionS != meta_predictionS:
@@ -378,7 +375,6 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                     trades.append(log)
                             else:
                                 ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
-                                ret= ret[0]
                                 limit = closing_price * (1 + (ret + (roc30 / 100)))
                                 stop = closing_price * (1 - (ret + (roc30 / 100)))
                                 log = log_action('Limit set {}. Stop loss set {}.'.format(limit, stop))
@@ -408,7 +404,6 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                                                                       mid_frame_indicated,
                                                                                       low_frame_indicated,
                                                                                       pms, mms)
-                                prime_predictionS, meta_predictionS = prime_predictionS[0], meta_predictionS[0]
                                 log = log_action('Prime Prediction: {} Meta Prediction {}.'
                                                  .format(prime_predictionS, meta_predictionS))
                                 if prime_predictionS != meta_predictionS:
@@ -429,7 +424,6 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                 else:
                                     ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated,
                                                          mr)
-                                    ret = ret[0]
                                     if ret > 0 and roc30 > 0:
                                         limit = closing_price * (1 + (ret + (roc30 / 100)))
                                         stop = closing_price * (1 - (ret + (roc30 / 100)))
@@ -442,9 +436,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                                                              mid_frame_indicated,
                                                                              low_frame_indicated,
                                                                              pmb, mmb)
-                        prime_predictionB, meta_predictionB = prime_predictionB[0], meta_predictionB[0]
                         ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
-                        ret = ret[0]
                         log = log_action('{} Prime prediction {}. Meta prediction {}. Ret {}'
                                          .format(time_stamp(), prime_predictionB, meta_predictionB, ret))
                         if prime_predictionB == meta_predictionB and ret > fee and roc30 > 0:
@@ -507,7 +499,7 @@ def data_feed():
         'low_ave': low_ave,
         'low_upper': low_upper,
         'low_lower': low_lower,
-        'event': True if event != 0 else False,
+        'event': True if event > fee else False,
         'bb_cross': bb_cross,
         'volatility': volatility
     }
