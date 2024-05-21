@@ -303,7 +303,9 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                                                      mid_frame_indicated,
                                                                      low_frame_indicated,
                                                                      pmb, mmb)
+                prime_predictionB, meta_predictionB = prime_predictionB[0], meta_predictionB[0]
                 ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
+                ret = ret[0]
                 log = log_action('{} Prime prediction {}. Meta prediction {}. Ret {}'
                                  .format(time_stamp(), prime_predictionB, meta_predictionB, ret))
                 if prime_predictionB == meta_predictionB and ret > fee and roc30 > 0:
@@ -357,6 +359,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                                                                   mid_frame_indicated,
                                                                                   low_frame_indicated,
                                                                                   pms, mms)
+                            prime_predictionS, meta_predictionS = prime_predictionS[0], meta_predictionS[0]
                             log = log_action('{} Prime Prediction: {} Meta Prediction {}.'
                                              .format(time_stamp(), prime_predictionS, meta_predictionS))
                             if prime_predictionS != meta_predictionS:
@@ -377,6 +380,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                     trades.append(log)
                             else:
                                 ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
+                                ret= ret[0]
                                 limit = closing_price * (1 + (ret + (roc30 / 100)))
                                 stop = closing_price * (1 - (ret + (roc30 / 100)))
                                 log = log_action('Limit set {}. Stop loss set {}.'.format(limit, stop))
@@ -406,6 +410,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                                                                       mid_frame_indicated,
                                                                                       low_frame_indicated,
                                                                                       pms, mms)
+                                prime_predictionS, meta_predictionS = prime_predictionS[0], meta_predictionS[0]
                                 log = log_action('Prime Prediction: {} Meta Prediction {}.'
                                                  .format(prime_predictionS, meta_predictionS))
                                 if prime_predictionS != meta_predictionS:
@@ -426,6 +431,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                 else:
                                     ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated,
                                                          mr)
+                                    ret = ret[0]
                                     if ret > 0 and roc30 > 0:
                                         limit = closing_price * (1 + (ret + (roc30 / 100)))
                                         stop = closing_price * (1 - (ret + (roc30 / 100)))
@@ -438,7 +444,9 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                                                              mid_frame_indicated,
                                                                              low_frame_indicated,
                                                                              pmb, mmb)
+                        prime_predictionB, meta_predictionB = prime_predictionB[0], meta_predictionB[0]
                         ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
+                        ret = ret[0]
                         log = log_action('{} Prime prediction {}. Meta prediction {}. Ret {}'
                                          .format(time_stamp(), prime_predictionB, meta_predictionB, ret))
                         if prime_predictionB == meta_predictionB and ret > fee and roc30 > 0:
