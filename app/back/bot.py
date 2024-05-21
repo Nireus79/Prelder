@@ -209,7 +209,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
         candle_time = low_frame_indicated.iloc[-1]['time']
         event = low_frame_indicated.iloc[-1]['event']
         bb_cross = low_frame_indicated.iloc[-1]['bb_cross']
-        mav = low_frame_indicated.iloc[-1]['MAV']
+        # mav = low_frame_indicated.iloc[-1]['MAV']
         roc30 = low_frame_indicated.iloc[-1]['roc30']
         condition, crypto_balance, fiat_balance = get_condition(crypto_currency, fiat_currency, closing_price)
         if mode == 'simulator':
@@ -298,7 +298,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                                  .format(time_stamp(), limit, stop))
                                 trades.append(log)
         elif condition == 'Buy':
-            if event != 0 and bb_cross != 0 and mav > fee:
+            if event > fee and bb_cross != 0:
                 prime_predictionB, meta_predictionB = buy_evaluation(high_frame_indicated,
                                                                      mid_frame_indicated,
                                                                      low_frame_indicated,
@@ -341,7 +341,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
             closing_price = low_frame_indicated.iloc[-1]['close']
             event = low_frame_indicated.iloc[-1]['event']
             bb_cross = low_frame_indicated.iloc[-1]['bb_cross']
-            mav = low_frame_indicated.iloc[-1]['MAV']
+            # mav = low_frame_indicated.iloc[-1]['MAV']
             roc30 = low_frame_indicated.iloc[-1]['roc30']
             if mode != 'simulator':
                 condition, crypto_balance, fiat_balance = get_condition(crypto_currency, fiat_currency, closing_price)
@@ -433,7 +433,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                                          .format(time_stamp(), limit, stop))
                                         trades.append(log)
                 elif condition == 'Buy':
-                    if event != 0 and bb_cross != 0 and mav > fee:
+                    if event > fee and bb_cross != 0:
                         prime_predictionB, meta_predictionB = buy_evaluation(high_frame_indicated,
                                                                              mid_frame_indicated,
                                                                              low_frame_indicated,
