@@ -11,9 +11,9 @@ function update_values() {
                 $('#fiat_balance').text('asset B: '+data.fiat_balance);
                 $('#event').text('Cusum event: '+data.event);
                 $('#bb_cross').text('Bollinger crossing: '+data.bb_cross);
-                $('#prime_prediction').text('prime prediction: '+data.prime_prediction);
-                $('#meta_prediction').text('meta prediction: '+data.meta_prediction);
-                $('#ret').text('return prediction: '+data.ret);
+                $('#prime_prediction').text('prime pred: '+data.prime_prediction);
+                $('#meta_prediction').text('meta pred: '+data.meta_prediction);
+                $('#ret').text('return pred: '+data.ret);
                 $('#price').text('Closing price: '+data.price);
                 $('#limit').text('Buy limit: '+data.limit);
                 $('#stop').text('Stop loss: '+data.stop);
