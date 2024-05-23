@@ -331,6 +331,9 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                         tx = add_order(order_type, condition, asset_vol, closing_price, crypto_currency, fiat_currency)
                         log = log_action(tx)
                         trades.append(log)
+            else:
+                prime_prediction = None
+                meta_prediction = None
         while True:
             if break_event.is_set():  # thread "kill" by user
                 cancel_order()
@@ -386,6 +389,9 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                 stop = closing_price * (1 - (ret + (roc30 / 100)))
                                 log = log_action('Limit set {}. Stop loss set {}.'.format(limit, stop))
                                 trades.append(log)
+                        else:
+                            prime_prediction = None
+                            meta_prediction = None
                     else:
                         if closing_price < stop:
                             log = log_action('{} Closing price < stop.'.format(time_stamp()))
@@ -438,6 +444,10 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                         log = log_action('{} Limit reset to {}. Stop reset to {}.'
                                                          .format(time_stamp(), limit, stop))
                                         trades.append(log)
+                            else:
+                                prime_prediction = None
+                                meta_prediction = None
+                                ret = 0
                 elif condition == 'Buy':
                     if event > fee and bb_cross != 0:
                         prime_predictionB, meta_predictionB = buy_evaluation(high_frame_indicated,
@@ -469,6 +479,10 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                                fiat_currency)
                                 log = log_action(tx)
                                 trades.append(log)
+                    else:
+                        prime_prediction = None
+                        meta_prediction = None
+                        ret = 0
                 log = log_action('{} Waiting 30 min candle close.'.format(time_stamp()))
                 time.sleep(1799)  # wait one 30min candle - 1 second
             else:
