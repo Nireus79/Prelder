@@ -508,10 +508,10 @@ def data_feed():
         'low_ave': low_ave,
         'low_upper': low_upper,
         'low_lower': low_lower,
-        'event': True if event > fee else False,
+        'event': 'True' if event > fee else 'False',
         'bb_cross': bb_cross,
         'volatility': volatility,
-        'prime_prediction': True if prime_prediction == 1 else (False if prime_prediction == 0 else None),
-        'meta_prediction': True if meta_prediction == 1 else (False if meta_prediction == 0 else None),
-        'ret': ret if ret != 0 else None
+        'prime_prediction': 'True' if prime_prediction == 1 else ('False' if prime_prediction == 0 else None),
+        'meta_prediction': 'True' if meta_prediction == 1 else ('False' if meta_prediction == 0 else None),
+        'ret': round(ret, 4) if ret != 0 else None
     }
