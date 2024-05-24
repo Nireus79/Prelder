@@ -24,6 +24,7 @@ fiat_balance = 0
 limit = None
 stop = None
 ret = 0
+roc30 = 0
 order_type = 'market'
 closing_price = None
 
@@ -142,11 +143,11 @@ def sell_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicat
     D4 = mid_frame_indicated.iloc[-1]['%D']
     mac4 = mid_frame_indicated.iloc[-1]['mac4']
     Tr6 = low_frame_indicated.iloc[-1]['Tr6']
-    roc30 = low_frame_indicated.iloc[-1]['roc30']
+    roc = low_frame_indicated.iloc[-1]['roc30']
     rsi = low_frame_indicated.iloc[-1]['rsi']
     bb_l = low_frame_indicated.iloc[-1]['bb_l']
     bbc = low_frame_indicated.iloc[-1]['bb_cross']
-    featuresS = [[TrD20, TrD3, D4, mac4, Tr6, roc30, bb_l, rsi]]
+    featuresS = [[TrD20, TrD3, D4, mac4, Tr6, roc, bb_l, rsi]]
     featuresS = normalize(featuresS)
     featuresS = np.insert(featuresS, len(featuresS[0]), bbc)
     prime_predictionS = pms.predict([featuresS])
@@ -162,11 +163,11 @@ def buy_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicate
     mac4 = mid_frame_indicated.iloc[-1]['mac4']
     vol = low_frame_indicated.iloc[-1]['Volatility']
     vv = low_frame_indicated.iloc[-1]['Vol_Volatility']
-    roc30 = low_frame_indicated.iloc[-1]['roc30']
+    roc = low_frame_indicated.iloc[-1]['roc30']
     mom10 = low_frame_indicated.iloc[-1]['mom10']
     rsi = low_frame_indicated.iloc[-1]['rsi']
     bbc = low_frame_indicated.iloc[-1]['bb_cross']
-    featuresB = [[TrD20, TrD3, mac4, vol, vv, roc30, mom10, rsi]]
+    featuresB = [[TrD20, TrD3, mac4, vol, vv, roc, mom10, rsi]]
     featuresB = normalize(featuresB)
     featuresB = np.insert(featuresB, len(featuresB[0]), bbc)
     prime_predictionB = pmb.predict([featuresB])
@@ -182,11 +183,11 @@ def ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicate
     mac4 = mid_frame_indicated.iloc[-1]['mac4']
     vol = low_frame_indicated.iloc[-1]['Volatility']
     vv = low_frame_indicated.iloc[-1]['Vol_Volatility']
-    roc30 = low_frame_indicated.iloc[-1]['roc30']
+    roc = low_frame_indicated.iloc[-1]['roc30']
     mom10 = low_frame_indicated.iloc[-1]['mom10']
     rsi = low_frame_indicated.iloc[-1]['rsi']
     bbc = low_frame_indicated.iloc[-1]['bb_cross']
-    featuresB = [[TrD20, TrD3, mac4, vol, vv, roc30, mom10, rsi]]
+    featuresB = [[TrD20, TrD3, mac4, vol, vv, roc, mom10, rsi]]
     featuresB = normalize(featuresB)
     featuresB = np.insert(featuresB, len(featuresB[0]), bbc)
     ret_prediction = mr.predict([featuresB])
@@ -195,7 +196,7 @@ def ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicate
 
 def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
     global condition, limit, stop, ret, log, crypto_balance, fiat_balance, closing_price, event, bb_cross, \
-        prime_prediction, meta_prediction
+        prime_prediction, meta_prediction, roc30
     licence = True  # check()['license_active']  # TODO activate licence check
     if licence:
         log = log_action('Your product licence is active. Thank you for using Hermes.')
@@ -535,5 +536,6 @@ def data_feed():
         'volatility': volatility,
         'prime_prediction': 'True' if prime_prediction == 1 else ('False' if prime_prediction == 0 else None),
         'meta_prediction': 'True' if meta_prediction == 1 else ('False' if meta_prediction == 0 else None),
-        'ret': round(ret, 4) if ret != 0 else None
+        'ret': round(ret, 4) if ret != 0 else None,
+        'roc30': round(roc30, 4)
     }

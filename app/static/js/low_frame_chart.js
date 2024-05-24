@@ -72,9 +72,10 @@ function update_values() {
             },{
               name: 'lower bb: ' + data_update.low_lower[data_update.low_lower.length - 1]['y'],
               data: data_update.low_lower
-            },
-            {
+            },{
               name: 'Volatility: ' + data_update.volatility
+              },{
+              name: 'ROC30: ' + data_update.roc30
               }
             ]);
         }
