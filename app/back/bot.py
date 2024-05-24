@@ -258,8 +258,12 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
             if limit is None and stop is None:
                 log = log_action('{} Limit and stop loss parameters are not set. This may be result of program restart.'
                                  .format(time_stamp()))
-                limit = closing_price * (1 + (abs(roc30) / 100))
-                stop = closing_price * (1 - (abs(roc30) / 100))
+                if roc30 > 0:
+                    limit = closing_price * (1 + (roc30 / 100))
+                    stop = closing_price * (1 - (roc30 / 100))
+                else:
+                    limit = closing_price * 1.01
+                    stop = closing_price * .99
                 log = log_action('Limit set {}. Stop loss set {}.'.format(limit, stop))
                 trades.append(log)
             else:
