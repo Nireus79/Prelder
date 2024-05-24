@@ -58,7 +58,7 @@ function update_values() {
               name: '30 minutes',
               data: data_update.low_chart_data
             },{
-              name: 'Buy limit: ' + data_update.low_limit[data_update.low_limit.length - 1]['y'],
+              name: 'Profit limit: ' + data_update.low_limit[data_update.low_limit.length - 1]['y'],
               data: data_update.low_limit
             },{
               name: 'Stop loss: ' + data_update.low_stop[data_update.low_stop.length - 1]['y'],
