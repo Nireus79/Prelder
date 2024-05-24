@@ -195,10 +195,14 @@ def ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicate
 
 
 def action(mode, crypto_currency, fiat_currency):
-    global log
+    global log, condition, limit, stop
     if mode == 'simulator':
         log = log_action('Simulating Sale at {}'.format(closing_price))
         trades.append(log)
+        if condition == 'Buy':
+            condition = 'Sell'
+        elif condition == 'Sell':
+            condition = 'Buy'
     elif mode == 'consulting':
         log = log_action('Consulting Sale at {}.'.format(closing_price))
         trades.append(log)
@@ -210,6 +214,9 @@ def action(mode, crypto_currency, fiat_currency):
                        fiat_currency)
         log = log_action(tx)
         trades.append(log)
+    if condition == 'Sell':
+        limit = None
+        stop = None
 
 
 def reset_predictions():
@@ -246,28 +253,11 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
         if condition == 'Sell':
             if limit is None and stop is None:
                 log = log_action('{} Limit and stop loss parameters are not set. This may be result of program restart.'
-                                 ' Parameters will be set at first co event.'.format(time_stamp()))
-                if event != 0 and bb_cross != 0:
-                    prime_predictionS, meta_predictionS = sell_evaluation(high_frame_indicated,
-                                                                          mid_frame_indicated,
-                                                                          low_frame_indicated,
-                                                                          pms, mms)
-                    prime_prediction, meta_prediction = prime_predictionS, meta_predictionS
-                    log = log_action('{} Prime Prediction: {} Meta Prediction {}.'
-                                     .format(time_stamp(), prime_predictionS, meta_predictionS))
-                    if prime_predictionS != meta_predictionS:
-                        action(mode, crypto_currency, fiat_currency)
-                    else:
-                        ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
-                        if roc30 > 0 and ret > fee:
-                            limit = closing_price * (1 + (ret + (roc30 / 100)))
-                            stop = closing_price * (1 - (ret + (roc30 / 100)))
-                            log = log_action('Limit set {}. Stop loss set {}.'.format(limit, stop))
-                            trades.append(log)
-                        else:
-                            action(mode, crypto_currency, fiat_currency)
-                else:
-                    reset_predictions()
+                                 .format(time_stamp()))
+                limit = closing_price * (1 + (abs(roc30) / 100))
+                stop = closing_price * (1 - (abs(roc30) / 100))
+                log = log_action('Limit set {}. Stop loss set {}.'.format(limit, stop))
+                trades.append(log)
             else:
                 if closing_price < stop:
                     log = log_action('{} Closing price < stop.'.format(time_stamp()))
@@ -292,8 +282,6 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                 log = log_action('{} Limit reset to {}. Stop reset to {}.'
                                                  .format(time_stamp(), limit, stop))
                                 trades.append(log)
-                            else:
-                                action(mode, crypto_currency, fiat_currency)
                     else:
                         reset_predictions()
         elif condition == 'Buy':
@@ -335,60 +323,31 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
             log = log_action('Event is: {}. BB crossing is: {}. Condition is: {}'.format(event, bb_cross, condition))
             if new_candle_time > candle_time:  # wait first 30min candle to close
                 if condition == 'Sell':
-                    if limit is None and stop is None:
-                        log = log_action(
-                            '{} Limit and stop loss parameters are not set. This may be result of program restart.'
-                            ' Parameters will be set at first co event.'.format(time_stamp()))
+                    if closing_price < stop:
+                        log = log_action('{} Closing price < stop.'.format(time_stamp()))
+                        action(mode, crypto_currency, fiat_currency)
+                    elif closing_price > limit:
+                        log = log_action('{} Closing price > limit.'.format(time_stamp()))
                         if event != 0 and bb_cross != 0:
                             prime_predictionS, meta_predictionS = sell_evaluation(high_frame_indicated,
                                                                                   mid_frame_indicated,
                                                                                   low_frame_indicated,
                                                                                   pms, mms)
                             prime_prediction, meta_prediction = prime_predictionS, meta_predictionS
-                            log = log_action('{} Prime Prediction: {} Meta Prediction {}.'
-                                             .format(time_stamp(), prime_predictionS, meta_predictionS))
+                            log = log_action('Prime Prediction: {} Meta Prediction {}.'
+                                             .format(prime_predictionS, meta_predictionS))
                             if prime_predictionS != meta_predictionS:
                                 action(mode, crypto_currency, fiat_currency)
                             else:
                                 ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
-                                if ret > fee and roc30 > 0:
+                                if ret > 0 and roc30 > 0:
                                     limit = closing_price * (1 + (ret + (roc30 / 100)))
                                     stop = closing_price * (1 - (ret + (roc30 / 100)))
-                                    log = log_action('Limit set {}. Stop loss set {}.'.format(limit, stop))
+                                    log = log_action('{} Limit reset to {}. Stop reset to {}.'
+                                                     .format(time_stamp(), limit, stop))
                                     trades.append(log)
-                                else:
-                                    action(mode, crypto_currency, fiat_currency)
                         else:
                             reset_predictions()
-                    else:
-                        if closing_price < stop:
-                            log = log_action('{} Closing price < stop.'.format(time_stamp()))
-                            action(mode, crypto_currency, fiat_currency)
-                        elif closing_price > limit:
-                            log = log_action('{} Closing price > limit.'.format(time_stamp()))
-                            if event != 0 and bb_cross != 0:
-                                prime_predictionS, meta_predictionS = sell_evaluation(high_frame_indicated,
-                                                                                      mid_frame_indicated,
-                                                                                      low_frame_indicated,
-                                                                                      pms, mms)
-                                prime_prediction, meta_prediction = prime_predictionS, meta_predictionS
-                                log = log_action('Prime Prediction: {} Meta Prediction {}.'
-                                                 .format(prime_predictionS, meta_predictionS))
-                                if prime_predictionS != meta_predictionS:
-                                    action(mode, crypto_currency, fiat_currency)
-                                else:
-                                    ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated,
-                                                         mr)
-                                    if ret > 0 and roc30 > 0:
-                                        limit = closing_price * (1 + (ret + (roc30 / 100)))
-                                        stop = closing_price * (1 - (ret + (roc30 / 100)))
-                                        log = log_action('{} Limit reset to {}. Stop reset to {}.'
-                                                         .format(time_stamp(), limit, stop))
-                                        trades.append(log)
-                                    else:
-                                        action(mode, crypto_currency, fiat_currency)
-                            else:
-                                reset_predictions()
                 elif condition == 'Buy':
                     if event > fee and bb_cross != 0:
                         prime_predictionB, meta_predictionB = buy_evaluation(high_frame_indicated,
