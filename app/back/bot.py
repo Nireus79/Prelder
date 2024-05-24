@@ -259,7 +259,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                         action(mode, crypto_currency, fiat_currency)
                     else:
                         ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
-                        if roc30 > 0 and ret > 0:
+                        if roc30 > 0 and ret > fee:
                             limit = closing_price * (1 + (ret + (roc30 / 100)))
                             stop = closing_price * (1 - (ret + (roc30 / 100)))
                             log = log_action('Limit set {}. Stop loss set {}.'.format(limit, stop))
@@ -309,6 +309,8 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                 if prime_predictionB == meta_predictionB and ret > fee and roc30 > 0:
                     limit = closing_price * (1 + (ret + (roc30 / 100)))
                     stop = closing_price * (1 - (ret + (roc30 / 100)))
+                    log = log_action('Limit set {}. Stop loss set {}.'.format(limit, stop))
+                    trades.append(log)
                     action(mode, crypto_currency, fiat_currency)
             else:
                 reset_predictions()
@@ -400,6 +402,8 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                         if prime_predictionB == meta_predictionB and ret > fee and roc30 > 0:
                             limit = closing_price * (1 + (ret + (roc30 / 100)))
                             stop = closing_price * (1 - (ret + (roc30 / 100)))
+                            log = log_action('Limit set {}. Stop loss set {}.'.format(limit, stop))
+                            trades.append(log)
                             action(mode, crypto_currency, fiat_currency)
                     else:
                         reset_predictions()
