@@ -4,7 +4,7 @@ import threading
 import winsound
 from app.back.kraken import Api, time_stamp, \
     add_order, cancel_order, get_condition, high_data, mid_data, low_data, indicators, fee
-from app.back.spring import check, activation
+from app.back.spring import activation  # , check TODO activate licence check
 from sklearn.preprocessing import Normalizer, normalize
 import pandas as pd
 import numpy as np
@@ -138,6 +138,7 @@ def log_action(message):
 
 
 def sell_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, pms, mms):
+    global prime_prediction, meta_prediction
     TrD20 = high_frame_indicated.iloc[-1]['TrD20']
     TrD3 = high_frame_indicated.iloc[-1]['TrD3']
     D4 = mid_frame_indicated.iloc[-1]['%D']
@@ -154,10 +155,12 @@ def sell_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicat
     featuresMS = featuresS
     featuresMS = np.insert(featuresMS, len(featuresS), prime_predictionS)
     meta_predictionS = mms.predict([featuresMS])
+    prime_prediction, meta_prediction = prime_predictionS[0], meta_predictionS[0]
     return prime_predictionS[0], meta_predictionS[0]
 
 
 def buy_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, pmb, mmb):
+    global prime_prediction, meta_prediction
     TrD20 = high_frame_indicated.iloc[-1]['TrD20']
     TrD3 = high_frame_indicated.iloc[-1]['TrD3']
     mac4 = mid_frame_indicated.iloc[-1]['mac4']
@@ -174,6 +177,7 @@ def buy_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicate
     featuresMB = featuresB
     featuresMB = np.insert(featuresMB, len(featuresMB), prime_predictionB)
     meta_predictionB = mmb.predict([featuresMB])
+    prime_prediction, meta_prediction = prime_predictionB[0], meta_predictionB[0]
     return prime_predictionB[0], meta_predictionB[0]
 
 
@@ -269,7 +273,6 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                                                               mid_frame_indicated,
                                                                               low_frame_indicated,
                                                                               pms, mms)
-                        prime_prediction, meta_prediction = prime_predictionS, meta_predictionS
                         log = log_action('Prime Prediction: {} Meta Prediction {}.'
                                          .format(prime_predictionS, meta_predictionS))
                         if prime_predictionS != meta_predictionS:
@@ -290,7 +293,6 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                                                      mid_frame_indicated,
                                                                      low_frame_indicated,
                                                                      pmb, mmb)
-                prime_prediction, meta_prediction = prime_predictionB, meta_predictionB
                 ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
                 log = log_action('{} Prime prediction {}. Meta prediction {}. Ret {}. ROC30 {}.'
                                  .format(time_stamp(), prime_predictionB, meta_predictionB, ret, roc30))
@@ -333,7 +335,6 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                                                                   mid_frame_indicated,
                                                                                   low_frame_indicated,
                                                                                   pms, mms)
-                            prime_prediction, meta_prediction = prime_predictionS, meta_predictionS
                             log = log_action('Prime Prediction: {} Meta Prediction {}.'
                                              .format(prime_predictionS, meta_predictionS))
                             if prime_predictionS != meta_predictionS:
@@ -354,7 +355,6 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                                                              mid_frame_indicated,
                                                                              low_frame_indicated,
                                                                              pmb, mmb)
-                        prime_prediction, meta_prediction = prime_predictionB, meta_predictionB
                         ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
                         log = log_action('{} Prime prediction {}. Meta prediction {}. Ret {}. ROC30 {}.'
                                          .format(time_stamp(), prime_predictionB, meta_predictionB, ret, roc30))
