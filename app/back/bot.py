@@ -218,10 +218,7 @@ def action(mode, crypto_currency, fiat_currency):
                        fiat_currency)
         log = log_action(tx)
         trades.append(time_stamp())
-        trades.append(log)
-    if condition == 'Sell':
-        limit = None
-        stop = None
+        trades.append(log + '<br>')
 
 
 def reset_predictions():
@@ -229,6 +226,12 @@ def reset_predictions():
     prime_prediction = None
     meta_prediction = None
     ret = 0
+
+
+def reset_ptsl():
+    global limit, stop
+    limit = None
+    stop = None
 
 
 def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
@@ -271,6 +274,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                 if closing_price < stop:
                     log = log_action('{} Closing price < stop.'.format(time_stamp()))
                     action(mode, crypto_currency, fiat_currency)
+                    reset_ptsl()
                 elif closing_price > limit:
                     log = log_action('{} Closing price > limit.'.format(time_stamp()))
                     if event != 0 and bb_cross != 0:
@@ -282,6 +286,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                          .format(prime_predictionS, meta_predictionS))
                         if prime_predictionS != meta_predictionS:
                             action(mode, crypto_currency, fiat_currency)
+                            reset_ptsl()
                         else:
                             ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
                             if ret > fee and roc30 > 0:
@@ -333,6 +338,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                     if closing_price < stop:
                         log = log_action('{} Closing price < stop.'.format(time_stamp()))
                         action(mode, crypto_currency, fiat_currency)
+                        reset_ptsl()
                     elif closing_price > limit:
                         log = log_action('{} Closing price > limit.'.format(time_stamp()))
                         if event != 0 and bb_cross != 0:
@@ -344,6 +350,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                              .format(prime_predictionS, meta_predictionS))
                             if prime_predictionS != meta_predictionS:
                                 action(mode, crypto_currency, fiat_currency)
+                                reset_ptsl()
                             else:
                                 ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
                                 if ret > 0 and roc30 > 0:
