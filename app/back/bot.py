@@ -61,7 +61,7 @@ def normalizer(data):
     Normalization is a good technique to use when you do not know the distribution of your data or when you know the
     distribution is not Gaussian (a bell curve). Normalization is useful when your data has varying scales and the
     algorithm you are using does not make assumptions about the distribution of your data, such as k-nearest
-    neighbors and artificial neural networks. :param data: :return:
+    neighbors and artificial neural networks. data: :return:
     """
     scaler = Normalizer().fit(data)
     normalized = pd.DataFrame(scaler.fit_transform(data), index=data.index)
