@@ -20,7 +20,7 @@ api_key = os.environ['API_KEY_KRAKEN']
 api_sec = os.environ['API_SEC_KRAKEN']
 minRet = 0.01
 span = 100
-delta = 24  # Hours
+delta = 1  # Days
 
 
 def bbands(price, window=None, width=None, numsd=None):
@@ -88,7 +88,7 @@ def getDailyVol(close, span0, time_delta):
     :param span0:
     :return:
     """
-    df0 = close.index.searchsorted(close.index - pd.Timedelta(hours=time_delta))
+    df0 = close.index.searchsorted(close.index - pd.Timedelta(days=time_delta))
     df0 = df0[df0 > 0]
     df0 = (pd.Series(close.index[df0 - time_delta], index=close.index[close.shape[0] - df0.shape[0]:]))
     try:
@@ -288,7 +288,6 @@ def indicators(ldf, mdf, hdf):
     t = getTEvents(ldf['close'], ldf['Volatility'])
     ldf['event'] = ldf['Volatility'].loc[t]
     ldf['event'] = ldf['Volatility'][ldf['Volatility'] > minRet]
-    # ldf['tEvent'] = ldf.apply(lambda x: True if x.datetime in t else False, axis=1)
     ldf.fillna(0, inplace=True)
     return ldf, mdf, hdf
 
