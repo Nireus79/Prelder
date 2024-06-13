@@ -18,7 +18,7 @@ pd.set_option('display.max_columns', None)
 api_url = "https://api.kraken.com"
 api_key = os.environ['API_KEY_KRAKEN']
 api_sec = os.environ['API_SEC_KRAKEN']
-fee = 0.01
+minRet = 0.01
 
 
 def bbands(price, window=None, width=None, numsd=None):
@@ -286,7 +286,7 @@ def indicators(ldf, mdf, hdf):
     ldf['mom10'] = MOM(ldf['close'], 10)
     t = getTEvents(ldf['close'], ldf['Volatility'])
     ldf['event'] = ldf['Volatility'].loc[t]
-    ldf['event'] = ldf['Volatility'][ldf['Volatility'] > fee]
+    ldf['event'] = ldf['Volatility'][ldf['Volatility'] > minRet]
     # ldf['tEvent'] = ldf.apply(lambda x: True if x.datetime in t else False, axis=1)
     ldf.fillna(0, inplace=True)
     return ldf, mdf, hdf

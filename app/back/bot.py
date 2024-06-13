@@ -3,7 +3,7 @@ import time
 import threading
 import winsound
 from app.back.kraken import Api, time_stamp, \
-    add_order, cancel_order, get_condition, high_data, mid_data, low_data, indicators, fee
+    add_order, cancel_order, get_condition, high_data, mid_data, low_data, indicators, minRet
 from app.back.spring import activation  # , check TODO activate licence check
 from sklearn.preprocessing import Normalizer, normalize
 import pandas as pd
@@ -213,7 +213,7 @@ def action(mode, crypto_currency, fiat_currency):
     elif mode == 'trading':
         log = log_action('{} Sale at {}.'.format(time_stamp(), closing_price))
         trades.append(log)
-        asset_vol = (fiat_balance - fiat_balance * fee) / closing_price
+        asset_vol = (fiat_balance - fiat_balance * minRet) / closing_price
         tx = add_order(order_type, condition, asset_vol, closing_price, crypto_currency,
                        fiat_currency)
         log = log_action(tx)
@@ -289,7 +289,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                             reset_ptsl()
                         else:
                             ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
-                            if ret > fee and roc30 > 0:
+                            if ret > minRet and roc30 > 0:
                                 limit = closing_price * (1 + (ret + (roc30 / 100)))
                                 stop = closing_price * (1 - (ret + (roc30 / 100)))
                                 log = log_action('{} Limit reset to {}. Stop reset to {}.'
@@ -298,7 +298,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                     else:
                         reset_predictions()
         elif condition == 'Buy':
-            if event > fee and bb_cross != 0:
+            if event > minRet and bb_cross != 0:
                 prime_predictionB, meta_predictionB = buy_evaluation(high_frame_indicated,
                                                                      mid_frame_indicated,
                                                                      low_frame_indicated,
@@ -306,7 +306,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                 ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
                 log = log_action('{} Prime prediction {}. Meta prediction {}. Ret {}. ROC30 {}.'
                                  .format(time_stamp(), prime_predictionB, meta_predictionB, ret, roc30))
-                if prime_predictionB == meta_predictionB and ret > fee and roc30 > 0:
+                if prime_predictionB == meta_predictionB and ret > minRet and roc30 > 0:
                     limit = closing_price * (1 + (ret + (roc30 / 100)))
                     stop = closing_price * (1 - (ret + (roc30 / 100)))
                     log = log_action('{} Limit set {}. Stop loss set {}.'.format(time_stamp(), limit, stop))
@@ -362,7 +362,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                         else:
                             reset_predictions()
                 elif condition == 'Buy':
-                    if event > fee and bb_cross != 0:
+                    if event > minRet and bb_cross != 0:
                         prime_predictionB, meta_predictionB = buy_evaluation(high_frame_indicated,
                                                                              mid_frame_indicated,
                                                                              low_frame_indicated,
@@ -370,7 +370,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                         ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
                         log = log_action('{} Prime prediction {}. Meta prediction {}. Ret {}. ROC30 {}.'
                                          .format(time_stamp(), prime_predictionB, meta_predictionB, ret, roc30))
-                        if prime_predictionB == meta_predictionB and ret > fee and roc30 > 0:
+                        if prime_predictionB == meta_predictionB and ret > minRet and roc30 > 0:
                             limit = closing_price * (1 + (ret + (roc30 / 100)))
                             stop = closing_price * (1 - (ret + (roc30 / 100)))
                             log = log_action('{} Limit set {}. Stop loss set {}.'.format(time_stamp(), limit, stop))
@@ -416,7 +416,7 @@ def data_feed():
         'low_ave': low_ave,
         'low_upper': low_upper,
         'low_lower': low_lower,
-        'event': 'True' if event > fee else 'False',
+        'event': 'True' if event > minRet else 'False',
         'bb_cross': bb_cross,
         'volatility': volatility,
         'prime_prediction': 'True' if prime_prediction == 1 else ('False' if prime_prediction == 0 else None),
