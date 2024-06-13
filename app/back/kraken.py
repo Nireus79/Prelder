@@ -19,6 +19,8 @@ api_url = "https://api.kraken.com"
 api_key = os.environ['API_KEY_KRAKEN']
 api_sec = os.environ['API_SEC_KRAKEN']
 minRet = 0.01
+span = 100
+delta = 24  # Hours
 
 
 def bbands(price, window=None, width=None, numsd=None):
@@ -75,22 +77,22 @@ def MOM(df, n):
     return mom
 
 
-def getDailyVol(close, span0, delta):
+def getDailyVol(close, span0, time_delta):
     """
     Daily Volatility Estimator [3.1]
     daily vol re-indexed to close
     Original df0 = df0[df0 > 0] does not include first day indexes
     was changed to df0 = df0[df0 >= 0]
-    :param delta:
+    :param time_delta:
     :param close:
     :param span0:
     :return:
     """
-    df0 = close.index.searchsorted(close.index - pd.Timedelta(hours=delta))
+    df0 = close.index.searchsorted(close.index - pd.Timedelta(hours=time_delta))
     df0 = df0[df0 > 0]
-    df0 = (pd.Series(close.index[df0 - delta], index=close.index[close.shape[0] - df0.shape[0]:]))
+    df0 = (pd.Series(close.index[df0 - time_delta], index=close.index[close.shape[0] - df0.shape[0]:]))
     try:
-        df0 = close.loc[df0.index] / close.loc[df0.values].values - delta  # daily rets
+        df0 = close.loc[df0.index] / close.loc[df0.values].values - time_delta  # daily rets
     except Exception as e:
         print(f'error: {e}\nplease confirm no duplicate indices')
     df0 = df0.ewm(span=span0).std().rename('dailyVol')
@@ -279,11 +281,10 @@ def indicators(ldf, mdf, hdf):
     ldf['EMA6'] = ldf['close'].rolling(6).mean()
     ldf['Tr6'] = ldf.apply(lambda x: x['close'] - x['EMA6'], axis=1)
     ldf['bb_cross'] = simple_crossing(ldf, 'close', 'upper', 'lower')
-    ldf['Volatility'] = getDailyVol(ldf['close'], 100, 24)
-    ldf['Vol_Volatility'] = getDailyVol(ldf['Volatility'], 100, 24)
+    ldf['Volatility'] = getDailyVol(ldf['close'], span, delta)
+    ldf['Vol_Volatility'] = getDailyVol(ldf['Volatility'], span, delta)
     ldf['roc30'] = ROC(ldf['close'], 30)
     ldf['rsi'] = rsi(ldf['close'], window=14, fillna=False)
-    ldf['mom10'] = MOM(ldf['close'], 10)
     t = getTEvents(ldf['close'], ldf['Volatility'])
     ldf['event'] = ldf['Volatility'].loc[t]
     ldf['event'] = ldf['Volatility'][ldf['Volatility'] > minRet]

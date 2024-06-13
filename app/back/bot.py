@@ -13,12 +13,6 @@ pd.set_option('future.no_silent_downcasting', True)
 logging.basicConfig(level=logging.INFO)
 
 condition = None
-# trend_24h = None
-# trend_4h = None
-# buy_flag_4h = False
-# buy_flag_1h = False
-# sell_flag_4h = None
-# sell_flag_1h = None
 crypto_balance = 0
 fiat_balance = 0
 limit = None
@@ -167,10 +161,9 @@ def buy_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicate
     vol = low_frame_indicated.iloc[-1]['Volatility']
     vv = low_frame_indicated.iloc[-1]['Vol_Volatility']
     roc = low_frame_indicated.iloc[-1]['roc30']
-    mom10 = low_frame_indicated.iloc[-1]['mom10']
     rsi = low_frame_indicated.iloc[-1]['rsi']
     bbc = low_frame_indicated.iloc[-1]['bb_cross']
-    featuresB = [[TrD20, TrD3, mac4, vol, vv, roc, mom10, rsi]]
+    featuresB = [[TrD20, TrD3, mac4, vol, vv, roc, rsi]]
     featuresB = normalize(featuresB)
     featuresB = np.insert(featuresB, len(featuresB[0]), bbc)
     prime_predictionB = pmb.predict([featuresB])
@@ -188,10 +181,9 @@ def ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicate
     vol = low_frame_indicated.iloc[-1]['Volatility']
     vv = low_frame_indicated.iloc[-1]['Vol_Volatility']
     roc = low_frame_indicated.iloc[-1]['roc30']
-    mom10 = low_frame_indicated.iloc[-1]['mom10']
     rsi = low_frame_indicated.iloc[-1]['rsi']
     bbc = low_frame_indicated.iloc[-1]['bb_cross']
-    featuresB = [[TrD20, TrD3, mac4, vol, vv, roc, mom10, rsi]]
+    featuresB = [[TrD20, TrD3, mac4, vol, vv, roc, rsi]]
     featuresB = normalize(featuresB)
     featuresB = np.insert(featuresB, len(featuresB[0]), bbc)
     ret_prediction = mr.predict([featuresB])
