@@ -18,7 +18,7 @@ pd.set_option('display.max_columns', None)
 api_url = "https://api.kraken.com"
 api_key = os.environ['API_KEY_KRAKEN']
 api_sec = os.environ['API_SEC_KRAKEN']
-fee = 0.026
+fee = 0.01
 
 
 def bbands(price, window=None, width=None, numsd=None):

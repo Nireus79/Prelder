@@ -13,12 +13,12 @@ pd.set_option('future.no_silent_downcasting', True)
 logging.basicConfig(level=logging.INFO)
 
 condition = None
-trend_24h = None
-trend_4h = None
-buy_flag_4h = False
-buy_flag_1h = False
-sell_flag_4h = None
-sell_flag_1h = None
+# trend_24h = None
+# trend_4h = None
+# buy_flag_4h = False
+# buy_flag_1h = False
+# sell_flag_4h = None
+# sell_flag_1h = None
 crypto_balance = 0
 fiat_balance = 0
 limit = None
