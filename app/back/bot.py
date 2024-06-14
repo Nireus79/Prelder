@@ -195,17 +195,17 @@ def ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicate
 def action(mode, crypto_currency, fiat_currency):
     global log, condition, limit, stop
     if mode == 'simulator':
-        log = log_action('{} Simulating Sale at {}'.format(time_stamp(), closing_price))
+        log = log_action('{} Simulating {} at {}'.format(time_stamp(), condition, closing_price))
         trades.append(log)
         if condition == 'Buy':
             condition = 'Sell'
         elif condition == 'Sell':
             condition = 'Buy'
     elif mode == 'consulting':
-        log = log_action('{} Consulting Sale at {}.'.format(time_stamp(), closing_price))
+        log = log_action('{} Consulting {} at {}.'.format(time_stamp(), condition, closing_price))
         trades.append(log)
     elif mode == 'trading':
-        log = log_action('{} Sale at {}.'.format(time_stamp(), closing_price))
+        log = log_action('{} {} at {}.'.format(time_stamp(),condition, closing_price))
         trades.append(log)
         asset_vol = (fiat_balance - fiat_balance * minRet) / closing_price
         tx = add_order(order_type, condition, asset_vol, closing_price, crypto_currency,
