@@ -197,10 +197,10 @@ def action(mode, crypto_currency, fiat_currency):
     if mode == 'simulator':
         log = log_action('{} Simulating {} at {}'.format(time_stamp(), condition, closing_price))
         trades.append(log)
-        if condition == 'Buy':
-            condition = 'Sell'
-        elif condition == 'Sell':
-            condition = 'Buy'
+        if condition == 'buy':
+            condition = 'sell'
+        elif condition == 'sell':
+            condition = 'buy'
     elif mode == 'consulting':
         log = log_action('{} Consulting {} at {}.'.format(time_stamp(), condition, closing_price))
         trades.append(log)
@@ -250,9 +250,9 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
         roc30 = low_frame_indicated.iloc[-1]['roc30']
         condition, crypto_balance, fiat_balance = get_condition(crypto_currency, fiat_currency, closing_price)
         if mode == 'simulator':
-            condition = 'Buy'
+            condition = 'buy'
         log = log_action('Event is: {}. BB crossing is: {}. Condition is: {}'.format(event, bb_cross, condition))
-        if condition == 'Sell':
+        if condition == 'sell':
             if limit is None and stop is None:
                 log = log_action('{} Limit and stop loss parameters are not set. This may be result of program restart.'
                                  .format(time_stamp()))
@@ -291,7 +291,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                 trades.append(log)
                     else:
                         reset_predictions()
-        elif condition == 'Buy':
+        elif condition == 'buy':
             if event > minRet and bb_cross != 0:
                 prime_predictionB, meta_predictionB = buy_evaluation(high_frame_indicated,
                                                                      mid_frame_indicated,
@@ -328,7 +328,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                 condition, crypto_balance, fiat_balance = get_condition(crypto_currency, fiat_currency, closing_price)
             log = log_action('Event is: {}. BB crossing is: {}. Condition is: {}'.format(event, bb_cross, condition))
             if new_candle_time > candle_time:  # wait first 30min candle to close
-                if condition == 'Sell':
+                if condition == 'sell':
                     if closing_price < stop:
                         log = log_action('{} Closing price < stop.'.format(time_stamp()))
                         action(mode, crypto_currency, fiat_currency)
@@ -355,7 +355,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                     trades.append(log)
                         else:
                             reset_predictions()
-                elif condition == 'Buy':
+                elif condition == 'buy':
                     if event > minRet and bb_cross != 0:
                         prime_predictionB, meta_predictionB = buy_evaluation(high_frame_indicated,
                                                                              mid_frame_indicated,

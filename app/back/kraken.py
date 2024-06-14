@@ -196,9 +196,9 @@ def get_condition(crypto_currency, fiat_currency, closing_price):
     crypto_value = crypto_balance * closing_price
     fiat_balance = float(balance['result'][fiat_currency])
     if crypto_value < fiat_balance:
-        return 'Buy', crypto_balance, fiat_balance
+        return 'buy', crypto_balance, fiat_balance
     elif crypto_value >= fiat_balance:
-        return 'Sell', crypto_balance, fiat_balance
+        return 'sell', crypto_balance, fiat_balance
     else:
         log = 'No balance found. Please select existing assets in your account.'
         print(log)
