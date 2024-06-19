@@ -21,9 +21,8 @@ ret = 0
 roc30 = 0
 order_type = 'market'
 closing_price = 0
-pt = 1
+pt = 2
 sl = 1
-RetMin = 0.03
 market_fee = 0.04
 limit_fee = 0.025
 if order_type == 'market':
@@ -290,9 +289,9 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                             reset_ptsl()
                         else:
                             ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
-                            if ret > RetMin and roc30 > 0:
-                                limit = closing_price * (1 + (ret + (roc30 / 100) * pt))
-                                stop = closing_price * (1 - (ret + (roc30 / 100) * sl))
+                            if ret > fee and roc30 > 0:
+                                limit = closing_price * (1 + (ret * pt))
+                                stop = closing_price * (1 - (ret * sl))
                                 log = log_action('{} Limit reset to {}. Stop reset to {}.'
                                                  .format(time_stamp(), limit, stop))
                                 trades.append(log)
@@ -307,9 +306,9 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                 ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
                 log = log_action('{} Prime prediction {}. Meta prediction {}. Ret {}. ROC30 {}.'
                                  .format(time_stamp(), prime_predictionB, meta_predictionB, ret, roc30))
-                if prime_predictionB == meta_predictionB and ret > RetMin and roc30 > 0:
-                    limit = closing_price * (1 + (ret + (roc30 / 100) * pt))
-                    stop = closing_price * (1 - (ret + (roc30 / 100) * sl))
+                if prime_predictionB == meta_predictionB and ret > fee and roc30 > 0:
+                    limit = closing_price * (1 + (ret * pt))
+                    stop = closing_price * (1 - (ret * sl))
                     log = log_action('{} Limit set {}. Stop loss set {}.'.format(time_stamp(), limit, stop))
                     trades.append(log)
                     action(mode, crypto_currency, fiat_currency)
@@ -354,9 +353,9 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                 reset_ptsl()
                             else:
                                 ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
-                                if ret > RetMin and roc30 > 0:
-                                    limit = closing_price * (1 + (ret + (roc30 / 100) * pt))
-                                    stop = closing_price * (1 - (ret + (roc30 / 100) * sl))
+                                if ret > fee and roc30 > 0:
+                                    limit = closing_price * (1 + (ret * pt))
+                                    stop = closing_price * (1 - (ret * sl))
                                     log = log_action('{} Limit reset to {}. Stop reset to {}.'
                                                      .format(time_stamp(), limit, stop))
                                     trades.append(log)
@@ -371,9 +370,9 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                         ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
                         log = log_action('{} Prime prediction {}. Meta prediction {}. Ret {}. ROC30 {}.'
                                          .format(time_stamp(), prime_predictionB, meta_predictionB, ret, roc30))
-                        if prime_predictionB == meta_predictionB and ret > RetMin and roc30 > 0:
-                            limit = closing_price * (1 + (ret + (roc30 / 100) * pt))
-                            stop = closing_price * (1 - (ret + (roc30 / 100) * sl))
+                        if prime_predictionB == meta_predictionB and ret > fee and roc30 > 0:
+                            limit = closing_price * (1 + (ret * pt))
+                            stop = closing_price * (1 - (ret * sl))
                             log = log_action('{} Limit set {}. Stop loss set {}.'.format(time_stamp(), limit, stop))
                             trades.append(log)
                             action(mode, crypto_currency, fiat_currency)
