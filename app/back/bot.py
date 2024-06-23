@@ -115,22 +115,22 @@ def chart_data(high_frame, mid_frame, low_frame):
             'x': i['x'],
             'y': stop
         })
-    high_chart_data = high_candles[-20:]
-    high_ema20 = ema20[-20:]
-    high_ema3 = ema3[-20:]
+    high_chart_data = high_candles[-50:]
+    high_ema20 = ema20[-50:]
+    high_ema3 = ema3[-50:]
     high_TrD20 = TrD20
     high_TrD3 = TrD3
-    mid_chart_data = mid_candles[-20:]
+    mid_chart_data = mid_candles[-50:]
     mid_k = k
     mid_d = d
     mid_macd = mac4
-    low_chart_data = low_candles[-20:]
-    low_ave = ave[-20:]
-    low_lower = lower[-20:]
-    low_upper = upper[-20:]
+    low_chart_data = low_candles[-50:]
+    low_ave = ave[-50:]
+    low_lower = lower[-50:]
+    low_upper = upper[-50:]
     low_Tr6 = Tr6
-    low_limit = limit_data[-20:]
-    low_stop = stop_data[-20:]
+    low_limit = limit_data[-50:]
+    low_stop = stop_data[-50:]
 
 
 def log_action(message):
