@@ -215,7 +215,7 @@ def add_order(ordertype, cond, vol, price, crypto_currency, fiat_currency):
     :param price: order price
     :return: order response
     """
-    pair = fiat_currency + crypto_currency
+    pair = crypto_currency + fiat_currency
     resp = kraken_request('/0/private/AddOrder', {
         "nonce": str(int(1000 * time.time())),
         "ordertype": ordertype,

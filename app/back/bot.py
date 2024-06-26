@@ -135,7 +135,8 @@ def chart_data(high_frame, mid_frame, low_frame):
 
 def log_action(message):
     logging.info(message)
-    logs.append(message + '<br>')
+    logs.append(message)
+    logs.append('<br>')
     return message
 
 
@@ -218,7 +219,8 @@ def action(mode, crypto_currency, fiat_currency):
                        fiat_currency)
         log = log_action(tx)
         trades.append(time_stamp())
-        trades.append(log + '<br>')
+        trades.append(log)
+        trades.append('<br>')
 
 
 def reset_predictions():
