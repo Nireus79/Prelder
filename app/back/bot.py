@@ -291,7 +291,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                             reset_ptsl()
                         else:
                             ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
-                            if ret > fee and roc30 > 0:
+                            if ret > 0 and roc30 > 0:
                                 limit = closing_price * (1 + (ret * pt))
                                 stop = closing_price * (1 - (ret * sl))
                                 log = log_action('{} Limit reset to {}. Stop reset to {}.'
@@ -355,7 +355,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                 reset_ptsl()
                             else:
                                 ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
-                                if ret > fee and roc30 > 0:
+                                if ret > 0 and roc30 > 0:
                                     limit = closing_price * (1 + (ret * pt))
                                     stop = closing_price * (1 - (ret * sl))
                                     log = log_action('{} Limit reset to {}. Stop reset to {}.'
