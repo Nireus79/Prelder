@@ -258,7 +258,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
         roc30 = low_frame_indicated.iloc[-1]['roc30']
         condition, crypto_balance, fiat_balance = get_condition(crypto_currency, fiat_currency, closing_price)
         if mode == 'simulator':
-            condition = 'buy'
+            condition = 'sell'
         log = log_action('Event is: {}. BB crossing is: {}. Condition is: {}'.format(event, bb_cross, condition))
         if condition == 'sell':
             if limit is None and stop is None:
@@ -291,7 +291,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                             reset_ptsl()
                         else:
                             ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
-                            if ret > 0 and roc30 > 0:
+                            if ret > fee and roc30 > 0:
                                 limit = closing_price * (1 + (ret * pt))
                                 stop = closing_price * (1 - (ret * sl))
                                 log = log_action('{} Limit reset to {}. Stop reset to {}.'
@@ -355,7 +355,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                 reset_ptsl()
                             else:
                                 ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
-                                if ret > 0 and roc30 > 0:
+                                if ret > fee and roc30 > 0:
                                     limit = closing_price * (1 + (ret * pt))
                                     stop = closing_price * (1 - (ret * sl))
                                     log = log_action('{} Limit reset to {}. Stop reset to {}.'
