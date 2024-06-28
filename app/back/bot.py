@@ -258,9 +258,9 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
         roc30 = low_frame_indicated.iloc[-1]['roc30']
         condition, crypto_balance, fiat_balance = get_condition(crypto_currency, fiat_currency, closing_price)
         if mode == 'simulator':
-            condition = 'sell'
+            condition = 'buy'
         log = log_action('Event is: {}. BB crossing is: {}. Condition is: {}'.format(event, bb_cross, condition))
-        if condition == 'buy':
+        if condition == 'sell':
             if limit is None and stop is None:
                 log = log_action('{} Limit and stop loss parameters are not set. This may be result of program restart.'
                                  .format(time_stamp()))
