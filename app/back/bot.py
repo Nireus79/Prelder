@@ -236,8 +236,16 @@ def reset_ptsl():
     global limit, stop
     limit = None
     stop = None
-    # limits = {'limit': None, 'stop': None}
-    # pickle.dump(limits, open('limits.pkl', 'wb'))
+    limits = {'limit': 0, 'stop': 0}
+    pickle.dump(limits, open('limits.pkl', 'wb'))
+
+def set_ptsl():
+    global limit, stop
+    limit = closing_price * (1 + (ret * pt))
+    stop = closing_price * (1 - (ret * sl))
+    limits = {'limit': limit, 'stop': stop}
+    pickle.dump(limits, open('limits.pkl', 'wb'))
+
 
 
 
@@ -300,10 +308,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                         else:
                             ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
                             if ret > fee and roc30 > 0:
-                                limit = closing_price * (1 + (ret * pt))
-                                stop = closing_price * (1 - (ret * sl))
-                                limits = {'limit': limit, 'stop': stop}
-                                pickle.dump(limits, open('limits.pkl', 'wb'))
+                                set_ptsl()
                                 log = log_action('{} Limit reset to {}. Stop reset to {}.'
                                                  .format(time_stamp(), limit, stop))
                                 trades.append(log)
@@ -319,10 +324,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                 log = log_action('{} Prime prediction {}. Meta prediction {}. Ret {}. ROC30 {}.'
                                  .format(time_stamp(), prime_predictionB, meta_predictionB, ret, roc30))
                 if prime_predictionB == meta_predictionB and ret > fee and roc30 > 0:
-                    limit = closing_price * (1 + (ret * pt))
-                    stop = closing_price * (1 - (ret * sl))
-                    limits = {'limit': limit, 'stop': stop}
-                    pickle.dump(limits, open('limits.pkl', 'wb'))
+                    set_ptsl()
                     log = log_action('{} Limit set {}. Stop loss set {}.'.format(time_stamp(), limit, stop))
                     trades.append(log)
                     action(mode, crypto_currency, fiat_currency)
@@ -368,10 +370,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                             else:
                                 ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
                                 if ret > fee and roc30 > 0:
-                                    limit = closing_price * (1 + (ret * pt))
-                                    stop = closing_price * (1 - (ret * sl))
-                                    limits = {'limit': limit, 'stop': stop}
-                                    pickle.dump(limits, open('limits.pkl', 'wb'))
+                                    set_ptsl()
                                     log = log_action('{} Limit reset to {}. Stop reset to {}.'
                                                      .format(time_stamp(), limit, stop))
                                     trades.append(log)
@@ -387,10 +386,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                         log = log_action('{} Prime prediction {}. Meta prediction {}. Ret {}. ROC30 {}.'
                                          .format(time_stamp(), prime_predictionB, meta_predictionB, ret, roc30))
                         if prime_predictionB == meta_predictionB and ret > fee and roc30 > 0:
-                            limit = closing_price * (1 + (ret * pt))
-                            stop = closing_price * (1 - (ret * sl))
-                            limits = {'limit': limit, 'stop': stop}
-                            pickle.dump(limits, open('limits.pkl', 'wb'))
+                            set_ptsl()
                             log = log_action('{} Limit set {}. Stop loss set {}.'.format(time_stamp(), limit, stop))
                             trades.append(log)
                             action(mode, crypto_currency, fiat_currency)
