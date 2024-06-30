@@ -8,6 +8,8 @@ from app.back.spring import activation  # , check TODO activate licence check
 from sklearn.preprocessing import Normalizer, normalize
 import pandas as pd
 import numpy as np
+import pickle
+import joblib
 
 pd.set_option('future.no_silent_downcasting', True)
 logging.basicConfig(level=logging.INFO)
@@ -234,6 +236,9 @@ def reset_ptsl():
     global limit, stop
     limit = None
     stop = None
+    # limits = {'limit': None, 'stop': None}
+    # pickle.dump(limits, open('limits.pkl', 'wb'))
+
 
 
 def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
@@ -264,13 +269,16 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
             if limit is None and stop is None:
                 log = log_action('{} Limit and stop loss parameters are not set. This may be result of program restart.'
                                  .format(time_stamp()))
-                if roc30 > 0:
-                    limit = closing_price
-                    stop = closing_price * (1 - (roc30 / 100) * sl)
-                else:
-                    limit = closing_price
-                    stop = closing_price * .99
-                log = log_action('{} Limit set {}. Stop loss set {}.'.format(time_stamp(), limit, stop))
+                # if roc30 > 0:
+                #     limit = closing_price
+                #     stop = closing_price * (1 - (roc30 / 100) * sl)
+                # else:
+                #     limit = closing_price
+                #     stop = closing_price * .99
+                limits = joblib.load('limits.pkl')
+                limit, stop = limits['limit'], limits['stop']
+                log = log_action('{} Limit recovered {}. Stop loss recovered {}.'
+                                 .format(time_stamp(), limit, stop))
                 trades.append(log)
             else:
                 if closing_price < stop:
@@ -294,6 +302,8 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                             if ret > fee and roc30 > 0:
                                 limit = closing_price * (1 + (ret * pt))
                                 stop = closing_price * (1 - (ret * sl))
+                                limits = {'limit': limit, 'stop': stop}
+                                pickle.dump(limits, open('limits.pkl', 'wb'))
                                 log = log_action('{} Limit reset to {}. Stop reset to {}.'
                                                  .format(time_stamp(), limit, stop))
                                 trades.append(log)
@@ -311,6 +321,8 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                 if prime_predictionB == meta_predictionB and ret > fee and roc30 > 0:
                     limit = closing_price * (1 + (ret * pt))
                     stop = closing_price * (1 - (ret * sl))
+                    limits = {'limit': limit, 'stop': stop}
+                    pickle.dump(limits, open('limits.pkl', 'wb'))
                     log = log_action('{} Limit set {}. Stop loss set {}.'.format(time_stamp(), limit, stop))
                     trades.append(log)
                     action(mode, crypto_currency, fiat_currency)
@@ -358,6 +370,8 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                 if ret > fee and roc30 > 0:
                                     limit = closing_price * (1 + (ret * pt))
                                     stop = closing_price * (1 - (ret * sl))
+                                    limits = {'limit': limit, 'stop': stop}
+                                    pickle.dump(limits, open('limits.pkl', 'wb'))
                                     log = log_action('{} Limit reset to {}. Stop reset to {}.'
                                                      .format(time_stamp(), limit, stop))
                                     trades.append(log)
@@ -375,6 +389,8 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                         if prime_predictionB == meta_predictionB and ret > fee and roc30 > 0:
                             limit = closing_price * (1 + (ret * pt))
                             stop = closing_price * (1 - (ret * sl))
+                            limits = {'limit': limit, 'stop': stop}
+                            pickle.dump(limits, open('limits.pkl', 'wb'))
                             log = log_action('{} Limit set {}. Stop loss set {}.'.format(time_stamp(), limit, stop))
                             trades.append(log)
                             action(mode, crypto_currency, fiat_currency)
