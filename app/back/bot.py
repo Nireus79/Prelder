@@ -280,12 +280,8 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                 limits = joblib.load('limits.pkl')
                 limit, stop = limits['limit'], limits['stop']
                 if limit == stop == 0:  # Case of manual buy
-                    if roc30 > 0:
-                        limit = closing_price
-                        stop = closing_price * (1 - (roc30 / 100) * sl)
-                    else:
-                        limit = closing_price
-                        stop = closing_price * .99
+                    limit = closing_price
+                    stop = closing_price * (1 - (abs(roc30) / 100) * sl)
                     set_ptsl()
                 log = log_action('{} Limit recovered {}. Stop loss recovered {}.'
                                  .format(time_stamp(), limit, stop))
