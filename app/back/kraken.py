@@ -361,7 +361,7 @@ def low_data(frame):
     ave = []
     upper = []
     lower = []
-    Tr6 = round(data_list[-1][15], 4)
+    ema6 = []
     volatility = round(data_list[-1][17], 4)
     for i in data_list:
         candle_data.append({
@@ -386,7 +386,13 @@ def low_data(frame):
                 'x': i[0],
                 'y': round(i[12], 4)
             })
-    return candle_data, ave, upper, lower, Tr6, volatility
+    for i in data_list:
+        if i[10] != 0:
+            ema6.append({
+                'x': i[0],
+                'y': round(i[14], 4)
+            })
+    return candle_data, ave, upper, lower, ema6, volatility
 
 
 class Api:

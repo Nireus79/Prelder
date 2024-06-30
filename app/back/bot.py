@@ -49,10 +49,11 @@ event = 0
 bb_cross = None
 prime_prediction = None
 meta_prediction = None
-low_Tr6 = None
+low_ema6 = None
 low_limit = None
 low_stop = None
 volatility = None
+
 log = 'Please set control parameters to start.'
 logs = []
 trades = []
@@ -107,7 +108,7 @@ def chart_data(high_frame, mid_frame, low_frame):
     stop_data = []
     high_candles, ema20, ema3, TrD20, TrD3 = high_data(high_frame)
     mid_candles, k, d, mac4 = mid_data(mid_frame)
-    low_candles, ave, upper, lower, Tr6, volatility = low_data(low_frame)
+    low_candles, ave, upper, lower, ema6, volatility = low_data(low_frame)
     for i in low_candles:
         limit_data.append({
             'x': i['x'],
@@ -130,7 +131,7 @@ def chart_data(high_frame, mid_frame, low_frame):
     low_ave = ave[-50:]
     low_lower = lower[-50:]
     low_upper = upper[-50:]
-    low_Tr6 = Tr6
+    low_ema6 = ema6[-50:]
     low_limit = limit_data[-50:]
     low_stop = stop_data[-50:]
 
@@ -425,6 +426,7 @@ def data_feed():
         'price': closing_price,
         'low_limit': low_limit,
         'low_stop': low_stop,
+        'low_ema6': low_ema6,
         'low_ave': low_ave,
         'low_upper': low_upper,
         'low_lower': low_lower,
