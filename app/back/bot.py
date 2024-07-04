@@ -103,7 +103,7 @@ def beeper(cond):
 
 def chart_data(high_frame, mid_frame, low_frame):
     global high_chart_data, high_ema20, high_ema3, high_TrD20, high_TrD3, mid_chart_data, mid_k, mid_d, mid_macd, \
-        low_chart_data, low_ave, low_upper, low_lower, low_Tr6, low_limit, low_stop, volatility
+        low_chart_data, low_ave, low_upper, low_lower, low_ema6, low_limit, low_stop, volatility
     limit_data = []
     stop_data = []
     high_candles, ema20, ema3, TrD20, TrD3 = high_data(high_frame)
