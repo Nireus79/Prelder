@@ -283,7 +283,7 @@ def indicators(ldf, mdf, hdf):
     ldf['bb_cross'] = simple_crossing(ldf, 'close', 'upper', 'lower')
     ldf['Volatility'] = getDailyVol(ldf['close'], span, delta)
     ldf['Vol_Volatility'] = getDailyVol(ldf['Volatility'], span, delta)
-    ldf['roc30'] = ROC(ldf['close'], 30)
+    ldf['roc10'] = ROC(ldf['close'], 10)
     ldf['rsi'] = rsi(ldf['close'], window=14, fillna=False)
     t = getTEvents(ldf['close'], ldf['Volatility'])
     ldf['event'] = ldf['Volatility'].loc[t]

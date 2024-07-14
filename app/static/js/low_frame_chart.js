@@ -75,7 +75,7 @@ function update_values() {
             },{
               name: 'Volatility: ' + data_update.volatility
               },{
-              name: 'ROC30: ' + data_update.roc30
+              name: 'ROC10: ' + data_update.roc10
               }
             ]);
         }
