@@ -288,6 +288,7 @@ def indicators(ldf, mdf, hdf):
     t = getTEvents(ldf['close'], ldf['Volatility'])
     ldf['event'] = ldf['Volatility'].loc[t]
     ldf['event'] = ldf['Volatility'][ldf['Volatility'] > minRet]
+    ldf['roc30'] = ROC(ldf['close'], 30)
     ldf.fillna(0, inplace=True)
     return ldf, mdf, hdf
 
