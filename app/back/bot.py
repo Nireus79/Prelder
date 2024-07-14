@@ -148,7 +148,7 @@ def sell_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicat
     D4 = mid_frame_indicated.iloc[-1]['%D']
     mac4 = mid_frame_indicated.iloc[-1]['mac4']
     Tr6 = low_frame_indicated.iloc[-1]['Tr6']
-    roc = low_frame_indicated.iloc[-1]['roc30']
+    roc = low_frame_indicated.iloc[-1]['roc10']
     rsi = low_frame_indicated.iloc[-1]['rsi']
     bb_l = low_frame_indicated.iloc[-1]['bb_l']
     bbc = low_frame_indicated.iloc[-1]['bb_cross']
@@ -170,7 +170,7 @@ def buy_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicate
     mac4 = mid_frame_indicated.iloc[-1]['mac4']
     vol = low_frame_indicated.iloc[-1]['Volatility']
     vv = low_frame_indicated.iloc[-1]['Vol_Volatility']
-    roc = low_frame_indicated.iloc[-1]['roc30']
+    roc = low_frame_indicated.iloc[-1]['roc10']
     rsi = low_frame_indicated.iloc[-1]['rsi']
     bbc = low_frame_indicated.iloc[-1]['bb_cross']
     featuresB = [[TrD20, TrD3, mac4, vol, vv, roc, rsi]]
@@ -190,7 +190,7 @@ def ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicate
     mac4 = mid_frame_indicated.iloc[-1]['mac4']
     vol = low_frame_indicated.iloc[-1]['Volatility']
     vv = low_frame_indicated.iloc[-1]['Vol_Volatility']
-    roc = low_frame_indicated.iloc[-1]['roc30']
+    roc = low_frame_indicated.iloc[-1]['roc10']
     rsi = low_frame_indicated.iloc[-1]['rsi']
     bbc = low_frame_indicated.iloc[-1]['bb_cross']
     featuresB = [[TrD20, TrD3, mac4, vol, vv, roc, rsi]]
@@ -320,7 +320,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                                                      low_frame_indicated,
                                                                      pmb, mmb)
                 ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
-                log = log_action('{} Prime prediction {}. Meta prediction {}. Ret {}. ROC30 {}.'
+                log = log_action('{} Prime prediction {}. Meta prediction {}. Ret {}. ROC10 {}.'
                                  .format(time_stamp(), prime_predictionB, meta_predictionB, ret, roc10))
                 if prime_predictionB == meta_predictionB and ret > market_return and roc10 > 0:
                     set_ptsl('S')
@@ -382,7 +382,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                                                              low_frame_indicated,
                                                                              pmb, mmb)
                         ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
-                        log = log_action('{} Prime prediction {}. Meta prediction {}. Ret {}. ROC30 {}.'
+                        log = log_action('{} Prime prediction {}. Meta prediction {}. Ret {}. ROC10 {}.'
                                          .format(time_stamp(), prime_predictionB, meta_predictionB, ret, roc10))
                         if prime_predictionB == meta_predictionB and ret > market_return and roc10 > 0:
                             set_ptsl('S')
