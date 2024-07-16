@@ -274,7 +274,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
         event = low_frame_indicated.iloc[-1]['event']
         bb_cross = low_frame_indicated.iloc[-1]['bb_cross']
         roc10 = low_frame_indicated.iloc[-1]['roc10']
-        ts = low_frame.iloc[-1]['time']
+        new_timestamp = low_frame.iloc[-1]['time']
         condition, crypto_balance, fiat_balance = get_condition(crypto_currency, fiat_currency, closing_price)
         if mode == 'simulator':
             condition = 'buy'
@@ -286,7 +286,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                 limits = joblib.load('limits.pkl')
                 limit, stop, timestamp = limits['limit'], limits['stop'], limits['timestamp']
                 if limit == stop == 0:  # Case of manual buy
-                    set_ptsl('M', ts)
+                    set_ptsl('M', new_timestamp)
                 log = log_action('{} Limit recovered {}. Stop loss recovered {}.'
                                  .format(time_stamp(), limit, stop))
                 trades.append(log)
@@ -295,7 +295,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                     log = log_action('{} Closing price < stop.'.format(time_stamp()))
                     action(mode, crypto_currency, fiat_currency)
                     reset_ptsl()
-                elif closing_price > limit or ts > timestamp + 86400000: # one day in milliseconds
+                elif closing_price > limit or new_timestamp >= timestamp + 86400000: # one day in milliseconds
                     log = log_action('{} Closing price > limit.'.format(time_stamp()))
                     if event > minRet and bb_cross != 0 and roc10 > 0:
                         prime_predictionS, meta_predictionS = sell_evaluation(high_frame_indicated,
@@ -310,7 +310,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                         else:
                             ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
                             if ret > market_return and roc10 > 0:
-                                set_ptsl('R', ts)
+                                set_ptsl('R', new_timestamp)
                                 log = log_action('{} Limit reset to {}. Stop reset to {}.'
                                                  .format(time_stamp(), limit, stop))
                                 trades.append(log)
@@ -326,7 +326,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                 log = log_action('{} Prime prediction {}. Meta prediction {}. Ret {}. ROC10 {}.'
                                  .format(time_stamp(), prime_predictionB, meta_predictionB, ret, roc10))
                 if prime_predictionB == meta_predictionB and ret > market_return and roc10 > 0:
-                    set_ptsl('S', ts)
+                    set_ptsl('S', new_timestamp)
                     log = log_action('{} Limit set {}. Stop loss set {}.'.format(time_stamp(), limit, stop))
                     trades.append(log)
                     action(mode, crypto_currency, fiat_currency)
@@ -348,7 +348,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
             event = low_frame_indicated.iloc[-1]['event']
             bb_cross = low_frame_indicated.iloc[-1]['bb_cross']
             roc10 = low_frame_indicated.iloc[-1]['roc10']
-            ts = low_frame.iloc[-1]['time']
+            new_timestamp = low_frame.iloc[-1]['time']
             if mode != 'simulator':
                 condition, crypto_balance, fiat_balance = get_condition(crypto_currency, fiat_currency, closing_price)
             log = log_action('Event is: {}. BB crossing is: {}. Condition is: {}'.format(event, bb_cross, condition))
@@ -358,7 +358,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                         log = log_action('{} Closing price < stop.'.format(time_stamp()))
                         action(mode, crypto_currency, fiat_currency)
                         reset_ptsl()
-                    elif closing_price > limit or ts > timestamp + 86400000: # one day in milliseconds
+                    elif closing_price > limit or new_timestamp >= timestamp + 86400000: # one day in milliseconds
                         log = log_action('{} Closing price > limit or prediction outdated.'.format(time_stamp()))
                         if event > minRet and bb_cross != 0 and roc10 > 0:
                             prime_predictionS, meta_predictionS = sell_evaluation(high_frame_indicated,
@@ -373,7 +373,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                             else:
                                 ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
                                 if ret > market_return and roc10 > 0:
-                                    set_ptsl('R', ts)
+                                    set_ptsl('R', new_timestamp)
                                     log = log_action('{} Limit reset to {}. Stop reset to {}.'
                                                      .format(time_stamp(), limit, stop))
                                     trades.append(log)
@@ -389,7 +389,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                         log = log_action('{} Prime prediction {}. Meta prediction {}. Ret {}. ROC10 {}.'
                                          .format(time_stamp(), prime_predictionB, meta_predictionB, ret, roc10))
                         if prime_predictionB == meta_predictionB and ret > market_return and roc10 > 0:
-                            set_ptsl('S', ts)
+                            set_ptsl('S', new_timestamp)
                             log = log_action('{} Limit set {}. Stop loss set {}.'.format(time_stamp(), limit, stop))
                             trades.append(log)
                             action(mode, crypto_currency, fiat_currency)
