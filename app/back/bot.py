@@ -294,7 +294,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                     reset_ptsl()
                 elif closing_price > limit:
                     log = log_action('{} Closing price > limit.'.format(time_stamp()))
-                    if event > minRet and bb_cross != 0 and roc10 > 0:
+                    if event > minRet and bb_cross != 0:
                         prime_predictionS, meta_predictionS = sell_evaluation(high_frame_indicated,
                                                                               mid_frame_indicated,
                                                                               low_frame_indicated,
@@ -306,7 +306,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                             reset_ptsl()
                         else:
                             ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
-                            if ret > market_return:
+                            if ret > market_return and roc10 > 0:
                                 set_ptsl('R')
                                 log = log_action('{} Limit reset to {}. Stop reset to {}.'
                                                  .format(time_stamp(), limit, stop))
@@ -314,7 +314,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                     else:
                         reset_predictions()
         elif condition == 'buy':
-            if event > minRet and bb_cross != 0 and roc10 > 0:
+            if event > minRet and bb_cross != 0:
                 prime_predictionB, meta_predictionB = buy_evaluation(high_frame_indicated,
                                                                      mid_frame_indicated,
                                                                      low_frame_indicated,
@@ -322,7 +322,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                 ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
                 log = log_action('{} Prime prediction {}. Meta prediction {}. Ret {}. ROC10 {}.'
                                  .format(time_stamp(), prime_predictionB, meta_predictionB, ret, roc10))
-                if prime_predictionB == meta_predictionB and ret > market_return:
+                if prime_predictionB == meta_predictionB and ret > market_return and roc10 > 0:
                     set_ptsl('S')
                     log = log_action('{} Limit set {}. Stop loss set {}.'.format(time_stamp(), limit, stop))
                     trades.append(log)
@@ -356,7 +356,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                         reset_ptsl()
                     elif closing_price > limit:
                         log = log_action('{} Closing price > limit.'.format(time_stamp()))
-                        if event > minRet and bb_cross != 0 and roc10 > 0:
+                        if event > minRet and bb_cross != 0:
                             prime_predictionS, meta_predictionS = sell_evaluation(high_frame_indicated,
                                                                                   mid_frame_indicated,
                                                                                   low_frame_indicated,
@@ -368,7 +368,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                 reset_ptsl()
                             else:
                                 ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
-                                if ret > market_return:
+                                if ret > market_return and roc10 > 0:
                                     set_ptsl('R')
                                     log = log_action('{} Limit reset to {}. Stop reset to {}.'
                                                      .format(time_stamp(), limit, stop))
@@ -376,7 +376,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                         else:
                             reset_predictions()
                 elif condition == 'buy':
-                    if event > minRet and bb_cross != 0 and roc10 > 0:
+                    if event > minRet and bb_cross != 0:
                         prime_predictionB, meta_predictionB = buy_evaluation(high_frame_indicated,
                                                                              mid_frame_indicated,
                                                                              low_frame_indicated,
@@ -384,7 +384,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                         ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
                         log = log_action('{} Prime prediction {}. Meta prediction {}. Ret {}. ROC10 {}.'
                                          .format(time_stamp(), prime_predictionB, meta_predictionB, ret, roc10))
-                        if prime_predictionB == meta_predictionB and ret > market_return:
+                        if prime_predictionB == meta_predictionB and ret > market_return and roc10 > 0:
                             set_ptsl('S')
                             log = log_action('{} Limit set {}. Stop loss set {}.'.format(time_stamp(), limit, stop))
                             trades.append(log)
