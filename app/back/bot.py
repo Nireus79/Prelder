@@ -294,7 +294,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                     reset_ptsl()
                 elif closing_price > limit:
                     log = log_action('{} Closing price > limit.'.format(time_stamp()))
-                    if event > minRet and bb_cross != 0:
+                    if event > minRet and bb_cross != 0 and roc10 > 0:
                         prime_predictionS, meta_predictionS = sell_evaluation(high_frame_indicated,
                                                                               mid_frame_indicated,
                                                                               low_frame_indicated,
@@ -314,7 +314,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                     else:
                         reset_predictions()
         elif condition == 'buy':
-            if event > minRet and bb_cross != 0:
+            if event > minRet and bb_cross != 0 and roc10 > 0:
                 prime_predictionB, meta_predictionB = buy_evaluation(high_frame_indicated,
                                                                      mid_frame_indicated,
                                                                      low_frame_indicated,
@@ -356,7 +356,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                         reset_ptsl()
                     elif closing_price > limit:
                         log = log_action('{} Closing price > limit.'.format(time_stamp()))
-                        if event > minRet and bb_cross != 0:
+                        if event > minRet and bb_cross != 0 and roc10 > 0:
                             prime_predictionS, meta_predictionS = sell_evaluation(high_frame_indicated,
                                                                                   mid_frame_indicated,
                                                                                   low_frame_indicated,
@@ -376,7 +376,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                         else:
                             reset_predictions()
                 elif condition == 'buy':
-                    if event > minRet and bb_cross != 0:
+                    if event > minRet and bb_cross != 0 and roc10 > 0:
                         prime_predictionB, meta_predictionB = buy_evaluation(high_frame_indicated,
                                                                              mid_frame_indicated,
                                                                              low_frame_indicated,
