@@ -295,7 +295,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                     log = log_action('{} Closing price < stop.'.format(time_stamp()))
                     action(mode, crypto_currency, fiat_currency)
                     reset_ptsl()
-                elif closing_price > limit:
+                elif closing_price > limit or ts > timestamp + 86400000: # one day in milliseconds
                     log = log_action('{} Closing price > limit.'.format(time_stamp()))
                     if event > minRet and bb_cross != 0 and roc10 > 0:
                         prime_predictionS, meta_predictionS = sell_evaluation(high_frame_indicated,
