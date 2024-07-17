@@ -174,7 +174,8 @@ def buy_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicate
     roc30 = low_frame_indicated.iloc[-1]['roc30']
     rsi = low_frame_indicated.iloc[-1]['rsi']
     bbc = low_frame_indicated.iloc[-1]['bb_cross']
-    featuresB = [[TrD20, TrD3, mac4, vol, vv, roc30, rsi]]
+    Vtr9 = low_frame_indicated.iloc[-1]['Vtr9']
+    featuresB = [[TrD20, TrD3, mac4, vol, vv, Vtr9, roc30, rsi]]
     featuresB = normalize(featuresB)
     featuresB = np.insert(featuresB, len(featuresB[0]), bbc)
     prime_predictionB = pmb.predict([featuresB])
@@ -194,7 +195,8 @@ def ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicate
     roc30 = low_frame_indicated.iloc[-1]['roc30']
     rsi = low_frame_indicated.iloc[-1]['rsi']
     bbc = low_frame_indicated.iloc[-1]['bb_cross']
-    featuresB = [[TrD20, TrD3, mac4, vol, vv, roc30, rsi]]
+    Vtr9 = low_frame_indicated.iloc[-1]['Vtr9']
+    featuresB = [[TrD20, TrD3, mac4, vol, vv, Vtr9, roc30, rsi]]
     featuresB = normalize(featuresB)
     featuresB = np.insert(featuresB, len(featuresB[0]), bbc)
     ret_prediction = mr.predict([featuresB])

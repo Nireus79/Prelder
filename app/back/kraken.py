@@ -289,6 +289,8 @@ def indicators(ldf, mdf, hdf):
     ldf['event'] = ldf['Volatility'].loc[t]
     ldf['event'] = ldf['Volatility'][ldf['Volatility'] > minRet]
     ldf['roc30'] = ROC(ldf['close'], 30)
+    ldf['vema9'] = ldf['volume'].rolling(9).mean()
+    ldf['Vtr9'] = ldf.apply(lambda x: x['volume'] - x['vema9'], axis=1)
     ldf.fillna(0, inplace=True)
     return ldf, mdf, hdf
 
