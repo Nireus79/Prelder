@@ -24,11 +24,12 @@ roc10 = 0
 order_type = 'market'
 closing_price = 0
 pt = 1
-sl = 1
+sl = .8
 # market_fee = 0.04
 # limit_fee = 0.025
 
 market_return = 0.04
+market_reset = 0.03
 kraken_fee = 0.004001
 
 high_chart_data = None
@@ -144,19 +145,17 @@ def log_action(message):
 
 def sell_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, pms, mms):
     global prime_prediction, meta_prediction
-    TrD20 = high_frame_indicated.iloc[-1]['TrD20']
+    TrD9 = high_frame_indicated.iloc[-1]['TrD9']
+    TrD6 = high_frame_indicated.iloc[-1]['TrD6']
     TrD3 = high_frame_indicated.iloc[-1]['TrD3']
-    D4 = mid_frame_indicated.iloc[-1]['%D']
-    mac4 = mid_frame_indicated.iloc[-1]['mac4']
-    Tr6 = low_frame_indicated.iloc[-1]['Tr6']
-    roc30 = low_frame_indicated.iloc[-1]['roc30']
-    rsi = low_frame_indicated.iloc[-1]['rsi']
-    bb_l = low_frame_indicated.iloc[-1]['bb_l']
-    bbc = low_frame_indicated.iloc[-1]['bb_cross']
-    featuresS = [[TrD20, TrD3, D4, mac4, Tr6, roc30, bb_l, rsi]]
+    St4H = mid_frame_indicated.iloc[-1]['St4H']
+    D = low_frame_indicated.iloc[-1]['%D']
+    MAV_signal = low_frame_indicated.iloc[-1]['MAV_signal']
+    atr = low_frame_indicated.iloc[-1]['atr']
+    roc = low_frame_indicated.iloc[-1]['roc10']
+    featuresS = [[TrD9, TrD6, TrD3, St4H, MAV_signal, D, atr, roc]]
     featuresS = normalize(featuresS)
-    featuresS = np.insert(featuresS, len(featuresS[0]), bbc)
-    prime_predictionS = pms.predict([featuresS])
+    prime_predictionS = pms.predict(featuresS)
     featuresMS = featuresS
     featuresMS = np.insert(featuresMS, len(featuresS), prime_predictionS)
     meta_predictionS = mms.predict([featuresMS])
@@ -168,17 +167,15 @@ def buy_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicate
     global prime_prediction, meta_prediction
     TrD20 = high_frame_indicated.iloc[-1]['TrD20']
     TrD3 = high_frame_indicated.iloc[-1]['TrD3']
-    mac4 = mid_frame_indicated.iloc[-1]['mac4']
-    vol = low_frame_indicated.iloc[-1]['Volatility']
-    vv = low_frame_indicated.iloc[-1]['Vol_Volatility']
-    roc30 = low_frame_indicated.iloc[-1]['roc30']
-    rsi = low_frame_indicated.iloc[-1]['rsi']
-    bbc = low_frame_indicated.iloc[-1]['bb_cross']
-    Vtr9 = low_frame_indicated.iloc[-1]['Vtr9']
-    featuresB = [[TrD20, TrD3, mac4, vol, vv, Vtr9, roc30, rsi]]
+    atr4H = mid_frame_indicated.iloc[-1]['atr4H']
+    Vtr13 = low_frame_indicated.iloc[-1]['Vtr13']
+    Vtr6 = low_frame_indicated.iloc[-1]['Vtr6']
+    roc = low_frame_indicated.iloc[-1]['roc10']
+    MAV_signal = low_frame_indicated.iloc[-1]['MAV_signal']
+    vrsi = low_frame_indicated.iloc[-1]['vrsi']
+    featuresB = [[TrD20, TrD3, atr4H, Vtr13, Vtr6, MAV_signal, vrsi, roc]]
     featuresB = normalize(featuresB)
-    featuresB = np.insert(featuresB, len(featuresB[0]), bbc)
-    prime_predictionB = pmb.predict([featuresB])
+    prime_predictionB = pmb.predict(featuresB)
     featuresMB = featuresB
     featuresMB = np.insert(featuresMB, len(featuresMB), prime_predictionB)
     meta_predictionB = mmb.predict([featuresMB])
@@ -189,14 +186,14 @@ def buy_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicate
 def ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr):
     TrD20 = high_frame_indicated.iloc[-1]['TrD20']
     TrD3 = high_frame_indicated.iloc[-1]['TrD3']
-    mac4 = mid_frame_indicated.iloc[-1]['mac4']
-    vol = low_frame_indicated.iloc[-1]['Volatility']
-    vv = low_frame_indicated.iloc[-1]['Vol_Volatility']
-    roc30 = low_frame_indicated.iloc[-1]['roc30']
-    rsi = low_frame_indicated.iloc[-1]['rsi']
+    atr4H = mid_frame_indicated.iloc[-1]['atr4H']
+    Vtr13 = low_frame_indicated.iloc[-1]['Vtr13']
+    Vtr6 = low_frame_indicated.iloc[-1]['Vtr6']
+    MAV_signal = low_frame_indicated.iloc[-1]['MAV_signal']
+    roc = low_frame_indicated.iloc[-1]['roc10']
+    vrsi = low_frame_indicated.iloc[-1]['vrsi']
     bbc = low_frame_indicated.iloc[-1]['bb_cross']
-    Vtr9 = low_frame_indicated.iloc[-1]['Vtr9']
-    featuresB = [[TrD20, TrD3, mac4, vol, vv, Vtr9, roc30, rsi]]
+    featuresB = [[TrD20, TrD3, atr4H, Vtr13, Vtr6, MAV_signal, vrsi, roc]]
     featuresB = normalize(featuresB)
     featuresB = np.insert(featuresB, len(featuresB[0]), bbc)
     ret_prediction = mr.predict([featuresB])
@@ -297,7 +294,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                     log = log_action('{} Closing price < stop.'.format(time_stamp()))
                     action(mode, crypto_currency, fiat_currency)
                     reset_ptsl()
-                elif closing_price > limit or new_timestamp >= timestamp + 86400000: # one day in milliseconds
+                elif closing_price > limit or new_timestamp >= timestamp + 86400000: # 86400000 one day in milliseconds
                     log = log_action('{} Closing price > limit.'.format(time_stamp()))
                     if event > minRet and bb_cross != 0 and roc10 > 0:
                         prime_predictionS, meta_predictionS = sell_evaluation(high_frame_indicated,
@@ -311,7 +308,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                             reset_ptsl()
                         else:
                             ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
-                            if ret > market_return and roc10 > 0:
+                            if ret > market_reset and roc10 > 0:
                                 set_ptsl('R', new_timestamp)
                                 log = log_action('{} Limit reset to {}. Stop reset to {}.'
                                                  .format(time_stamp(), limit, stop))
@@ -374,7 +371,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                 reset_ptsl()
                             else:
                                 ret = ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
-                                if ret > market_return and roc10 > 0:
+                                if ret > market_reset and roc10 > 0:
                                     set_ptsl('R', new_timestamp)
                                     log = log_action('{} Limit reset to {}. Stop reset to {}.'
                                                      .format(time_stamp(), limit, stop))

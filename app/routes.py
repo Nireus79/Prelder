@@ -17,11 +17,11 @@ log.setLevel(logging.ERROR)
 
 
 def initialize_models():
-    init_pmb = joblib.load('PrimeModelBuy1.pkl')
-    init_mmb = joblib.load('MetaModelBuy1.pkl')
-    init_pms = joblib.load('PrimeModelSell0.pkl')
-    init_mms = joblib.load('MetaModelSell0.pkl')
-    init_mr = joblib.load('ModelRisk1.pkl')
+    init_pmb = joblib.load('PrimeModelBuy2.pkl')
+    init_mmb = joblib.load('MetaModelBuy2.pkl')
+    init_pms = joblib.load('PrimeModelSell2.pkl')
+    init_mms = joblib.load('MetaModelSell2.pkl')
+    init_mr = joblib.load('ModelRisk2.pkl')
     return init_pmb, init_mmb, init_pms, init_mms, init_mr
 
 

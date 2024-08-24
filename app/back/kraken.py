@@ -7,6 +7,7 @@ import hmac
 import base64
 from ta.trend import macd_diff
 from ta.momentum import stoch, rsi
+from ta.volatility import average_true_range
 import numpy as np
 import pandas as pd
 import os
@@ -263,34 +264,43 @@ def time_stamp():
     curr_clock = time.strftime("%Y-%m-%d %H:%M:%S", curr_time)
     return curr_clock
 
-
+# S1 = ['TrD9', 'TrD6', 'TrD3', 'St4H', 'MAV_signal', '%D', 'atr', 'roc10']
+# B1 = ['TrD20', 'TrD3', '4H_atr', 'Vtr13', 'Vtr6', 'MAV_signal','vrsi', 'roc10']
+# R1 = ['TrD20', 'TrD3', '4H_atr', 'Vtr13', 'Vtr6', 'MAV_signal','vrsi', 'roc10', 'bb_cross']
 def indicators(ldf, mdf, hdf):
     hdf['EMA20'] = hdf['close'].rolling(20).mean()
+    hdf['EMA9'] = hdf['close'].rolling(9).mean()
+    hdf['EMA6'] = hdf['close'].rolling(6).mean()
     hdf['EMA3'] = hdf['close'].rolling(3).mean()
     hdf['TrD20'] = hdf.apply(lambda x: x['close'] - x['EMA20'], axis=1)
+    hdf['TrD9'] = hdf.apply(lambda x: x['close'] - x['EMA9'], axis=1)
+    hdf['TrD6'] = hdf.apply(lambda x: x['close'] - x['EMA6'], axis=1)
     hdf['TrD3'] = hdf.apply(lambda x: x['close'] - x['EMA3'], axis=1)
     hdf.fillna(0, inplace=True)
-    mdf['%K'] = stoch(mdf['high'], mdf['low'], mdf['close'], window=14, smooth_window=3, fillna=False)
-    mdf['%D'] = mdf['%K'].rolling(3).mean()
-    mdf['mac4'] = macd_diff(mdf['close'], window_slow=26, window_fast=12, window_sign=9, fillna=False)
+    mdf['%K4'] = stoch(mdf['high'], mdf['low'], mdf['close'], window=14, smooth_window=3, fillna=False)
+    mdf['%D4'] = mdf['%K4'].rolling(3).mean()
+    mdf['St4H'] = mdf.apply(lambda x: x['%K4'] - x['%D4'], axis=1)
+    mdf['atr4H'] = average_true_range(mdf['high'], mdf['low'], mdf['close'], window=14, fillna=False)
     mdf.fillna(0, inplace=True)
     ldf['datetime'] = pd.to_datetime(ldf['time'], unit='s')
     ldf['price'], ldf['ave'], ldf['upper'], ldf['lower'] = bbands(ldf['close'], window=20, numsd=2)
-    ldf['bb_l'] = ldf.apply(lambda x: (x['upper'] - x['close']) / (x['close'] - x['lower']) if x['close'] != x['lower']
-    else 0, axis=1)
-    ldf['EMA6'] = ldf['close'].rolling(6).mean()
-    ldf['Tr6'] = ldf.apply(lambda x: x['close'] - x['EMA6'], axis=1)
     ldf['bb_cross'] = simple_crossing(ldf, 'close', 'upper', 'lower')
     ldf['Volatility'] = getDailyVol(ldf['close'], span, delta)
-    ldf['Vol_Volatility'] = getDailyVol(ldf['Volatility'], span, delta)
     ldf['roc10'] = ROC(ldf['close'], 10)
-    ldf['rsi'] = rsi(ldf['close'], window=14, fillna=False)
     t = getTEvents(ldf['close'], ldf['Volatility'])
     ldf['event'] = ldf['Volatility'].loc[t]
     ldf['event'] = ldf['Volatility'][ldf['Volatility'] > minRet]
-    ldf['roc30'] = ROC(ldf['close'], 30)
-    ldf['vema9'] = ldf['volume'].rolling(9).mean()
-    ldf['Vtr9'] = ldf.apply(lambda x: x['volume'] - x['vema9'], axis=1)
+    ldf['MAV'] = ldf['Volatility'].rolling(20).mean()
+    ldf['MAV_signal'] = ldf.apply(lambda x: x.MAV - x.Volatility, axis=1)
+    ldf['%K'] = stoch(ldf['high'], ldf['low'], ldf['close'], window=14, smooth_window=3, fillna=False)
+    ldf['%D'] = ldf['%K'].rolling(3).mean()
+    ldf['roc10'] = ROC(ldf['close'], 10)
+    ldf['atr'] = average_true_range(ldf['high'], ldf['low'], ldf['close'], window=14, fillna=False)
+    ldf['vrsi'] = rsi(ldf['volume'], window=14, fillna=False)
+    ldf['vema13'] = ldf['volume'].rolling(13).mean()
+    ldf['vema6'] = ldf['volume'].rolling(6).mean()
+    ldf['Vtr13'] = ldf.apply(lambda x: x['volume'] - x['vema13'], axis=1)
+    ldf['Vtr6'] = ldf.apply(lambda x: x['volume'] - x['vema6'], axis=1)
     ldf.fillna(0, inplace=True)
     return ldf, mdf, hdf
 
