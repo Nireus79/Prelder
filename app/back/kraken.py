@@ -322,8 +322,10 @@ def high_data(frame):
     candle_data = []
     ema20_data = []
     ema3_data = []
-    TrD20 = round(data_list[-1][10], 4)
-    TrD3 = round(data_list[-1][11], 4)
+    TrD20 = round(data_list[-1][12], 4)
+    TrD9 = round(data_list[-1][13], 4)
+    TrD6 = round(data_list[-1][14], 4)
+    TrD3 = round(data_list[-1][15], 4)
     for i in data_list:
         candle_data.append({
             'x': i[0],
@@ -336,12 +338,12 @@ def high_data(frame):
                 'y': round(i[8], 4)
             })
     for i in data_list:
-        if i[9] != 0:
+        if i[11] != 0:
             ema3_data.append({
                 'x': i[0],
                 'y': round(i[9], 4)
             })
-    return candle_data, ema20_data, ema3_data, TrD20, TrD3
+    return candle_data, ema20_data, ema3_data, TrD20, TrD9, TrD6, TrD3
 
 
 def mid_data(frame):
@@ -352,15 +354,14 @@ def mid_data(frame):
     front_df['time'] = front_df['time'].apply(lambda x: (x * 1000) + 10800000)
     data_list = front_df.values.tolist()
     candle_data = []
-    stoch_k_data = round(data_list[-1][8], 4)
-    stoch_d_data = round(data_list[-1][9], 4)
-    macd = round(data_list[-1][10], 4)
+    St4 = round(data_list[-1][10], 4)
+    atr4 = round(data_list[-1][11], 4)
     for i in data_list:
         candle_data.append({
             'x': i[0],
             'y': [i[1], i[2], i[3], i[4]]
         })
-    return candle_data, stoch_k_data, stoch_d_data, macd
+    return candle_data, St4, atr4
 
 
 def low_data(frame):
@@ -374,8 +375,9 @@ def low_data(frame):
     ave = []
     upper = []
     lower = []
-    ema6 = []
-    volatility = round(data_list[-1][17], 4)
+    roc = round(data_list[-1][15], 4)
+    MAV_signal = round(data_list[-1][18], 4)
+    D = round(data_list[-1][20], 4)
     for i in data_list:
         candle_data.append({
             'x': i[0],
@@ -399,13 +401,7 @@ def low_data(frame):
                 'x': i[0],
                 'y': round(i[12], 4)
             })
-    for i in data_list:
-        if i[10] != 0:
-            ema6.append({
-                'x': i[0],
-                'y': round(i[14], 4)
-            })
-    return candle_data, ave, upper, lower, ema6, volatility
+    return candle_data, ave, upper, lower, roc, MAV_signal, D
 
 
 class Api:

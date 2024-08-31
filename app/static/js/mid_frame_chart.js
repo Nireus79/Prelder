@@ -61,11 +61,9 @@ function update_values() {
               name: '4 hours',
               data: data_update.mid_chart_data
               },{
-              name: 'Stochastic %K: ' + data_update.mid_k
+              name: 'St4H: ' + data_update.mid_St
               },{
-              name: 'Stochastic %D: ' + data_update.mid_d
-              },{
-              name: 'MACD: ' + data_update.mid_macd
+              name: 'ATR 4H: ' + data_update.mid_atr
               }
             ])
         }

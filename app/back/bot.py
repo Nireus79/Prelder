@@ -38,18 +38,21 @@ low_chart_data = None
 high_ema20 = None
 high_ema3 = None
 high_TrD20 = None
+high_TrD9 = None
+high_TrD6 = None
 high_TrD3 = None
-mid_k = None
-mid_d = None
-mid_macd = None
+mid_St = None
+mid_atr = None
 low_ave = None
 low_upper = None
 low_lower = None
+low_roc = None
+low_MAV = None
+low_D = None
 event = 0
 bb_cross = None
 prime_prediction = None
 meta_prediction = None
-low_ema6 = None
 low_limit = None
 low_stop = None
 volatility = None
@@ -102,13 +105,13 @@ def beeper(cond):
 
 
 def chart_data(high_frame, mid_frame, low_frame):
-    global high_chart_data, high_ema20, high_ema3, high_TrD20, high_TrD3, mid_chart_data, mid_k, mid_d, mid_macd, \
-        low_chart_data, low_ave, low_upper, low_lower, low_ema6, low_limit, low_stop, volatility
+    global high_chart_data, high_ema20, high_ema3, high_TrD20, high_TrD9, high_TrD6, high_TrD3, mid_chart_data, mid_St, mid_atr, \
+        low_chart_data, low_ave, low_upper, low_lower, low_limit, low_stop, low_roc, low_MAV, low_D
     limit_data = []
     stop_data = []
-    high_candles, ema20, ema3, TrD20, TrD3 = high_data(high_frame)
-    mid_candles, k, d, mac4 = mid_data(mid_frame)
-    low_candles, ave, upper, lower, ema6, volatility = low_data(low_frame)
+    high_candles, ema20, ema3, TrD20, TrD9, TrD6, TrD3 = high_data(high_frame)
+    mid_candles, St4, atr4 = mid_data(mid_frame)
+    low_candles, ave, upper, lower, roc, MAV_signal, D = low_data(low_frame)
     for i in low_candles:
         limit_data.append({
             'x': i['x'],
@@ -122,18 +125,21 @@ def chart_data(high_frame, mid_frame, low_frame):
     high_ema20 = ema20[-50:]
     high_ema3 = ema3[-50:]
     high_TrD20 = TrD20
+    high_TrD9 = TrD9
+    high_TrD6 = TrD6
     high_TrD3 = TrD3
     mid_chart_data = mid_candles[-50:]
-    mid_k = k
-    mid_d = d
-    mid_macd = mac4
+    mid_St = St4
+    mid_atr = atr4
     low_chart_data = low_candles[-50:]
     low_ave = ave[-50:]
     low_lower = lower[-50:]
     low_upper = upper[-50:]
-    low_ema6 = ema6[-50:]
     low_limit = limit_data[-50:]
     low_stop = stop_data[-50:]
+    low_roc = roc
+    low_MAV = MAV_signal
+    low_D = D
 
 
 def log_action(message):
@@ -421,18 +427,21 @@ def data_feed():
         'high_ema20': high_ema20,
         'high_ema3': high_ema3,
         'high_TrD20': high_TrD20,
+        'high_TrD9': high_TrD9,
+        'high_TrD6': high_TrD6,
         'high_TrD3': high_TrD3,
-        'mid_k': mid_k,
-        'mid_d': mid_d,
-        'mid_macd': mid_macd,
+        'mid_St': mid_St,
+        'mid_atr': mid_atr,
         'low_chart_data': low_chart_data,
         'price': closing_price,
         'low_limit': low_limit,
         'low_stop': low_stop,
-        'low_ema6': low_ema6,
         'low_ave': low_ave,
         'low_upper': low_upper,
         'low_lower': low_lower,
+        'low_roc': low_roc,
+        'low_MAV': low_MAV,
+        'low_D': low_D,
         'event': 'True' if event > minRet else 'False',
         'bb_cross': bb_cross,
         'volatility': volatility,

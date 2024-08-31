@@ -64,18 +64,17 @@ function update_values() {
               name: 'Stop loss: ' + data_update.low_stop[data_update.low_stop.length - 1]['y'],
               data: data_update.low_stop
               },{
-              name: 'ema 20: ' + data_update.low_ave[data_update.low_ave.length - 1]['y'],
-              data: data_update.low_ave
-            },{
               name: 'upper bb: ' + data_update.low_upper[data_update.low_upper.length - 1]['y'],
               data: data_update.low_upper
             },{
               name: 'lower bb: ' + data_update.low_lower[data_update.low_lower.length - 1]['y'],
               data: data_update.low_lower
             },{
-              name: 'Volatility: ' + data_update.volatility
+              name: 'MAV Signal: ' + data_update.low_MAV
               },{
-              name: 'ROC10: ' + data_update.roc10
+              name: 'ROC10: ' + data_update.low_roc
+              },{
+              name: '% D: ' + data_update.low_D
               }
             ]);
         }
