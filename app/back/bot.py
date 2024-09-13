@@ -121,22 +121,22 @@ def chart_data(high_frame, mid_frame, low_frame):
             'x': i['x'],
             'y': stop
         })
-    high_chart_data = high_candles[-50:]
-    high_ema20 = ema20[-50:]
-    high_ema3 = ema3[-50:]
+    high_chart_data = high_candles[-20:]
+    high_ema20 = ema20[-20:]
+    high_ema3 = ema3[-20:]
     high_TrD20 = TrD20
     high_TrD9 = TrD9
     high_TrD6 = TrD6
     high_TrD3 = TrD3
-    mid_chart_data = mid_candles[-50:]
+    mid_chart_data = mid_candles[-20:]
     mid_St = St4
     mid_atr = atr4
-    low_chart_data = low_candles[-50:]
-    low_ave = ave[-50:]
-    low_lower = lower[-50:]
-    low_upper = upper[-50:]
-    low_limit = limit_data[-50:]
-    low_stop = stop_data[-50:]
+    low_chart_data = low_candles[-20:]
+    low_ave = ave[-20:]
+    low_lower = lower[-20:]
+    low_upper = upper[-20:]
+    low_limit = limit_data[-20:]
+    low_stop = stop_data[-20:]
     low_roc = roc
     low_MAV = MAV_signal
     low_D = D
@@ -166,7 +166,7 @@ def sell_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicat
     featuresMS = np.insert(featuresMS, len(featuresS), prime_predictionS)
     meta_predictionS = mms.predict([featuresMS])
     prime_prediction, meta_prediction = prime_predictionS[0], meta_predictionS[0]
-    return prime_predictionS[0], meta_predictionS[0]
+    return int(prime_predictionS[0]), int(meta_predictionS[0])
 
 
 def buy_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, pmb, mmb):
@@ -186,7 +186,7 @@ def buy_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicate
     featuresMB = np.insert(featuresMB, len(featuresMB), prime_predictionB)
     meta_predictionB = mmb.predict([featuresMB])
     prime_prediction, meta_prediction = prime_predictionB[0], meta_predictionB[0]
-    return prime_predictionB[0], meta_predictionB[0]
+    return int(prime_predictionB[0]), int(meta_predictionB[0])
 
 
 def ret_evaluation(high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr):
