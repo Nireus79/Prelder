@@ -5,7 +5,6 @@ import urllib.parse
 import hashlib
 import hmac
 import base64
-from ta.trend import macd_diff
 from ta.momentum import stoch, rsi
 from ta.volatility import average_true_range
 import numpy as np
@@ -42,12 +41,12 @@ def simple_crossing(df, col1, col2, col3):
     # crit1 = df[col1].shift(1) < df[col2].shift(1)
     crit2 = df[col1] > df[col2]
     up_cross = df[col1][crit2]
-    side_up = pd.Series(1, index=up_cross.index)
+    side_up = pd.Series(1, index=up_cross.index, dtype=int)  # Ensure integer dtype
 
     # crit3 = df[col1].shift(1) > df[col3].shift(1)
     crit4 = df[col1] < df[col3]
     down_cross = df[col1][crit4]
-    side_down = pd.Series(-1, index=down_cross.index)
+    side_down = pd.Series(-1, index=down_cross.index, dtype=int)  # Ensure integer dtype
 
     return pd.concat([side_up, side_down]).sort_index()
 
@@ -285,6 +284,7 @@ def indicators(ldf, mdf, hdf):
     ldf['datetime'] = pd.to_datetime(ldf['time'], unit='s')
     ldf['price'], ldf['ave'], ldf['upper'], ldf['lower'] = bbands(ldf['close'], window=20, numsd=2)
     ldf['bb_cross'] = simple_crossing(ldf, 'close', 'upper', 'lower')
+    # ldf['bb_cross'] = ldf['bb_cross'].fillna(0).astype(int)
     ldf['Volatility'] = getDailyVol(ldf['close'], span, delta)
     ldf['roc10'] = ROC(ldf['close'], 10)
     t = getTEvents(ldf['close'], ldf['Volatility'])
