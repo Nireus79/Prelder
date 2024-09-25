@@ -22,24 +22,20 @@ def initialize_models():
     init_pms_eth = joblib.load('PrimeModelSellETHEUR0.pkl')
     init_mms_eth = joblib.load('MetaModelSellETHEUR0.pkl')
     init_mr_eth = joblib.load('ModelRiskETHEUR0.pkl')
-    init_pmb_btc = joblib.load('PrimeModelBuyBTCEUR0.pkl')
-    init_mmb_btc = joblib.load('MetaModelBuyBTCEUR0.pkl')
-    init_pms_btc = joblib.load('PrimeModelSellBTCEUR0.pkl')
-    init_mms_btc = joblib.load('MetaModelSellBTCEUR0.pkl')
-    init_mr_btc = joblib.load('ModelRiskBTCEUR0.pkl')
-    init_pmb_dot = joblib.load('PrimeModelBuyDOTEUR0.pkl')
-    init_mmb_dot = joblib.load('MetaModelBuyDOTEUR0.pkl')
-    init_pms_dot = joblib.load('PrimeModelSellDOTEUR0.pkl')
-    init_mms_dot = joblib.load('MetaModelSellDOTEUR0.pkl')
-    init_mr_dot = joblib.load('ModelRiskDOTEUR0.pkl')
-    return (init_pmb_eth, init_mmb_eth, init_pms_eth, init_mms_eth, init_mr_eth,
-            init_pmb_btc, init_mmb_btc, init_pms_btc, init_mms_btc, init_mr_btc,
-            init_pmb_dot, init_mmb_dot, init_pms_dot, init_mms_dot, init_mr_dot)
+    # init_pmb_btc = joblib.load('PrimeModelBuyBTCEUR0.pkl')
+    # init_mmb_btc = joblib.load('MetaModelBuyBTCEUR0.pkl')
+    # init_pms_btc = joblib.load('PrimeModelSellBTCEUR0.pkl')
+    # init_mms_btc = joblib.load('MetaModelSellBTCEUR0.pkl')
+    # init_mr_btc = joblib.load('ModelRiskBTCEUR0.pkl')
+    # init_pmb_dot = joblib.load('PrimeModelBuyDOTEUR0.pkl')
+    # init_mmb_dot = joblib.load('MetaModelBuyDOTEUR0.pkl')
+    # init_pms_dot = joblib.load('PrimeModelSellDOTEUR0.pkl')
+    # init_mms_dot = joblib.load('MetaModelSellDOTEUR0.pkl')
+    # init_mr_dot = joblib.load('ModelRiskDOTEUR0.pkl')
+    return init_pmb_eth, init_mmb_eth, init_pms_eth, init_mms_eth, init_mr_eth
 
 
-(pmb_eth, mmb_eth, pms_eth, mms_eth, mr_eth,
- pmb_btc, mmb_btc, pms_btc, mms_btc, mr_btc,
- pmb_dot, mmb_dot, pms_dot, mms_dot, mr_dot) = initialize_models()
+pmb_eth, mmb_eth, pms_eth, mms_eth, mr_eth = initialize_models()
 
 
 @app.route('/')
@@ -92,9 +88,7 @@ def starter():
         logging.info('Set assets.')
         return render_template('control.html')
     else:
-        trading = threading.Thread(target=Prelderbot, args=(mode, pmb_eth, mmb_eth, pms_eth, mms_eth, mr_eth,
- pmb_btc, mmb_btc, pms_btc, mms_btc, mr_btc,
- pmb_dot, mmb_dot, pms_dot, mms_dot, mr_dot))
+        trading = threading.Thread(target=Prelderbot, args=(mode, asset_a, asset_b, pmb_eth, mmb_eth, pms_eth, mms_eth, mr_eth))
         trading.daemon = True
         trading.start()
         return render_template('overview.html')
