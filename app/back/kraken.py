@@ -6,6 +6,7 @@ import hashlib
 import hmac
 import base64
 from ta.momentum import stoch, rsi
+from ta.trend import macd_diff
 from ta.volatility import average_true_range
 import numpy as np
 import pandas as pd
@@ -263,15 +264,15 @@ def time_stamp():
     curr_clock = time.strftime("%Y-%m-%d %H:%M:%S", curr_time)
     return curr_clock
 
-# S1 = ['TrD9', 'TrD6', 'TrD3', 'St4H', 'MAV_signal', '%D', 'atr', 'roc10']
-# B1 = ['TrD20', 'TrD3', '4H_atr', 'Vtr13', 'Vtr6', 'MAV_signal','vrsi', 'roc10']
-# R1 = ['TrD20', 'TrD3', '4H_atr', 'Vtr13', 'Vtr6', 'MAV_signal','vrsi', 'roc10', 'bb_cross']
+
 def indicators(ldf, mdf, hdf):
     hdf['EMA20'] = hdf['close'].rolling(20).mean()
+    hdf['EMA13'] = hdf['close'].rolling(13).mean()
     hdf['EMA9'] = hdf['close'].rolling(9).mean()
     hdf['EMA6'] = hdf['close'].rolling(6).mean()
     hdf['EMA3'] = hdf['close'].rolling(3).mean()
     hdf['TrD20'] = hdf.apply(lambda x: x['close'] - x['EMA20'], axis=1)
+    hdf['TrD13'] = hdf.apply(lambda x: x['close'] - x['EMA13'], axis=1)
     hdf['TrD9'] = hdf.apply(lambda x: x['close'] - x['EMA9'], axis=1)
     hdf['TrD6'] = hdf.apply(lambda x: x['close'] - x['EMA6'], axis=1)
     hdf['TrD3'] = hdf.apply(lambda x: x['close'] - x['EMA3'], axis=1)
@@ -280,13 +281,14 @@ def indicators(ldf, mdf, hdf):
     mdf['%D4'] = mdf['%K4'].rolling(3).mean()
     mdf['St4H'] = mdf.apply(lambda x: x['%K4'] - x['%D4'], axis=1)
     mdf['atr4H'] = average_true_range(mdf['high'], mdf['low'], mdf['close'], window=14, fillna=False)
+    mdf['4H_rsi'] = rsi(mdf['close'], window=14, fillna=False)
+    mdf['4H_atr'] = average_true_range(mdf['high'], mdf['low'], mdf['close'], window=14, fillna=False)
+    mdf['4Hmacd'] = macd_diff(mdf['close'], window_slow=26, window_fast=12, window_sign=9, fillna=False)
     mdf.fillna(0, inplace=True)
     ldf['datetime'] = pd.to_datetime(ldf['time'], unit='s')
     ldf['price'], ldf['ave'], ldf['upper'], ldf['lower'] = bbands(ldf['close'], window=20, numsd=2)
     ldf['bb_cross'] = simple_crossing(ldf, 'close', 'upper', 'lower')
-    # ldf['bb_cross'] = ldf['bb_cross'].fillna(0).astype(int)
     ldf['Volatility'] = getDailyVol(ldf['close'], span, delta)
-    ldf['roc10'] = ROC(ldf['close'], 10)
     t = getTEvents(ldf['close'], ldf['Volatility'])
     ldf['event'] = ldf['Volatility'].loc[t]
     ldf['event'] = ldf['Volatility'][ldf['Volatility'] > minRet]
@@ -295,12 +297,28 @@ def indicators(ldf, mdf, hdf):
     ldf['%K'] = stoch(ldf['high'], ldf['low'], ldf['close'], window=14, smooth_window=3, fillna=False)
     ldf['%D'] = ldf['%K'].rolling(3).mean()
     ldf['roc10'] = ROC(ldf['close'], 10)
+    ldf['roc20'] = ROC(ldf['close'], 20)
+    ldf['mom10'] = MOM(ldf['close'], 10)
+    ldf['mom20'] = MOM(ldf['close'], 20)
+    ldf['mom30'] = MOM(ldf['close'], 30)
+    ldf['momi'] = ldf.apply(lambda x: x.mom30 - x.mom10, axis=1)
     ldf['atr'] = average_true_range(ldf['high'], ldf['low'], ldf['close'], window=14, fillna=False)
     ldf['vrsi'] = rsi(ldf['volume'], window=14, fillna=False)
     ldf['vema13'] = ldf['volume'].rolling(13).mean()
     ldf['vema6'] = ldf['volume'].rolling(6).mean()
     ldf['Vtr13'] = ldf.apply(lambda x: x['volume'] - x['vema13'], axis=1)
     ldf['Vtr6'] = ldf.apply(lambda x: x['volume'] - x['vema6'], axis=1)
+    ldf['EMA6'] = ldf['close'].rolling(6).mean()
+    ldf['Tr6'] = ldf.apply(lambda x: x['close'] - x['EMA6'], axis=1)
+    ldf['EMA13'] = ldf['close'].rolling(13).mean()
+    ldf['Tr13'] = ldf.apply(lambda x: x['close'] - x['EMA13'], axis=1)
+    ldf['StD'] = ldf.apply(lambda x: x['%K'] - x['%D'], axis=1)
+    ldf['vema3'] = ldf['volume'].rolling(3).mean()
+    ldf['Vtr3'] = ldf.apply(lambda x: x['volume'] - x['vema3'], axis=1)
+    ldf['vmacd'] = macd_diff(ldf['volume'], window_slow=26, window_fast=12, window_sign=9, fillna=False)
+    ldf['rsi'] = rsi(ldf['close'], window=14, fillna=False)
+    ldf['macd'] = macd_diff(ldf['close'], window_slow=26, window_fast=12, window_sign=9, fillna=False)
+    ldf['atr'] = average_true_range(ldf['high'], ldf['low'], ldf['close'], window=14, fillna=False)
     ldf.fillna(0, inplace=True)
     return ldf, mdf, hdf
 
@@ -429,22 +447,3 @@ class Api:
         k = KrakenAPI(api)
         ohlc, last = k.get_ohlc_data(self.pair, interval=self.interval, since=self.frame)
         return ohlc.iloc[::-1]  # reverse rows
-
-# i24h = Api('DOT', 'EUR', 1440, 3)
-# i4h = Api('DOT', 'EUR', 240, 16)
-# i30m = Api('DOT', 'EUR', 30, 700)
-#
-#
-# i24h_frame = i24h.get_frame()
-# i4h_frame = i4h.get_frame()
-# i30m_frame = i30m.get_frame()
-#
-# hf = high_frame_indicators(i24h_frame)
-# mf = mid_frame_indicators(i4h_frame)
-# lf = low_frame_indicators(i30m_frame)
-# print('hf---------------------------')
-# print(hf)
-# print('mf---------------------------')
-# print(mf)
-# print('lf---------------------------')
-# print(lf)

@@ -1,5 +1,5 @@
 import threading
-from app.back.bot import Prelderbot, data_feed, signal_handler
+from app.back.bot import Prelderbot, data_feed, signal_handler, multiPrelderbot
 from app.back.kraken import cancel_order, time_stamp
 from app import app
 from flask import render_template, request, jsonify
@@ -22,21 +22,28 @@ def initialize_models():
     init_pms_eth = joblib.load('PrimeModelSellETHEUR0.pkl')
     init_mms_eth = joblib.load('MetaModelSellETHEUR0.pkl')
     init_mr_eth = joblib.load('ModelRiskETHEUR0.pkl')
-    # init_pmb_btc = joblib.load('PrimeModelBuyBTCEUR0.pkl')
-    # init_mmb_btc = joblib.load('MetaModelBuyBTCEUR0.pkl')
-    # init_pms_btc = joblib.load('PrimeModelSellBTCEUR0.pkl')
-    # init_mms_btc = joblib.load('MetaModelSellBTCEUR0.pkl')
-    # init_mr_btc = joblib.load('ModelRiskBTCEUR0.pkl')
-    # init_pmb_dot = joblib.load('PrimeModelBuyDOTEUR0.pkl')
-    # init_mmb_dot = joblib.load('MetaModelBuyDOTEUR0.pkl')
-    # init_pms_dot = joblib.load('PrimeModelSellDOTEUR0.pkl')
-    # init_mms_dot = joblib.load('MetaModelSellDOTEUR0.pkl')
-    # init_mr_dot = joblib.load('ModelRiskDOTEUR0.pkl')
-    return init_pmb_eth, init_mmb_eth, init_pms_eth, init_mms_eth, init_mr_eth
+    init_pmb_btc = joblib.load('PrimeModelBuyBTCEUR0.pkl')
+    init_mmb_btc = joblib.load('MetaModelBuyBTCEUR0.pkl')
+    init_pms_btc = joblib.load('PrimeModelSellBTCEUR0.pkl')
+    init_mms_btc = joblib.load('MetaModelSellBTCEUR0.pkl')
+    init_mr_btc = joblib.load('ModelRiskBTCEUR0.pkl')
+    init_pmb_dot = joblib.load('PrimeModelBuyDOTEUR0.pkl')
+    init_mmb_dot = joblib.load('MetaModelBuyDOTEUR0.pkl')
+    init_pms_dot = joblib.load('PrimeModelSellDOTEUR0.pkl')
+    init_mms_dot = joblib.load('MetaModelSellDOTEUR0.pkl')
+    init_mr_dot = joblib.load('ModelRiskDOTEUR0.pkl')
+    return (init_pmb_eth, init_mmb_eth, init_pms_eth, init_mms_eth, init_mr_eth,
+            init_pmb_btc, init_mmb_btc, init_pms_btc, init_mms_btc, init_mr_btc,
+            init_pmb_dot, init_mmb_dot, init_pms_dot, init_mms_dot, init_mr_dot)
 
 
-pmb_eth, mmb_eth, pms_eth, mms_eth, mr_eth = initialize_models()
+(pmb_eth, mmb_eth, pms_eth, mms_eth, mr_eth,
+ pmb_btc, mmb_btc, pms_btc, mms_btc, mr_btc,
+ pmb_dot, mmb_dot, pms_dot, mms_dot, mr_dot) = initialize_models()
 
+asset_pairs = [('BTC', 'EUR', pmb_eth, mmb_eth, pms_eth, mms_eth, mr_eth),
+               ('ETH', 'EUR', pmb_btc, mmb_btc, pms_btc, mms_btc, mr_btc),
+               ('DOT', 'EUR', pmb_dot, mmb_dot, pms_dot, mms_dot, mr_dot)]
 
 @app.route('/')
 @app.route('/home')
