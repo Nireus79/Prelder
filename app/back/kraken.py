@@ -190,8 +190,11 @@ def get_condition(crypto_currency, fiat_currency, closing_price):
     for the bot to look for good crypto sell conditions.
     :return: Conditions to buy/sell crypto.
     """
+    if crypto_currency == 'ETH':
+        crypto_currency = 'X' + crypto_currency
+    elif crypto_currency == 'BTC':
+        crypto_currency = 'T' + crypto_currency
     fiat_currency = 'Z' + fiat_currency
-    crypto_currency = 'X' + crypto_currency
     balance = get_private_balance()
     crypto_balance = float(balance['result'][crypto_currency])
     crypto_value = crypto_balance * closing_price

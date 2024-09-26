@@ -41,10 +41,10 @@ def initialize_models():
  pmb_btc, mmb_btc, pms_btc, mms_btc, mr_btc,
  pmb_dot, mmb_dot, pms_dot, mms_dot, mr_dot) = initialize_models()
 
-asset_pairs = [('BTC', 'EUR', pmb_eth, mmb_eth, pms_eth, mms_eth, mr_eth),
+asset_pairs = [
                ('ETH', 'EUR', pmb_btc, mmb_btc, pms_btc, mms_btc, mr_btc),
                ('DOT', 'EUR', pmb_dot, mmb_dot, pms_dot, mms_dot, mr_dot)]
-
+# ('BTC', 'EUR', pmb_eth, mmb_eth, pms_eth, mms_eth, mr_eth),
 @app.route('/')
 @app.route('/home')
 def main():
@@ -95,7 +95,8 @@ def starter():
         logging.info('Set assets.')
         return render_template('control.html')
     else:
-        trading = threading.Thread(target=Prelderbot, args=(mode, asset_a, asset_b, pmb_eth, mmb_eth, pms_eth, mms_eth, mr_eth))
+        # trading = threading.Thread(target=Prelderbot, args=(mode, asset_a, asset_b, pmb_eth, mmb_eth, pms_eth, mms_eth, mr_eth))
+        trading = threading.Thread(target=multiPrelderbot, args=(mode, asset_pairs))
         trading.daemon = True
         trading.start()
         return render_template('overview.html')
