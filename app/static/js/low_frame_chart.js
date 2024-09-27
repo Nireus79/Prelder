@@ -69,13 +69,7 @@ function update_values() {
             },{
               name: 'lower bb: ' + data_update.low_lower[data_update.low_lower.length - 1]['y'],
               data: data_update.low_lower
-            },{
-              name: 'MAV Signal: ' + data_update.low_MAV
-              },{
-              name: 'ROC10: ' + data_update.low_roc
-              },{
-              name: '% D: ' + data_update.low_D
-              }
+            }
             ]);
         }
     );

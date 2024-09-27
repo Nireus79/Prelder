@@ -193,7 +193,7 @@ def get_condition(crypto_currency, fiat_currency, closing_price):
     if crypto_currency == 'ETH':
         crypto_currency = 'X' + crypto_currency
     elif crypto_currency == 'BTC':
-        crypto_currency = 'T' + crypto_currency
+        crypto_currency = 'XXBT'
     fiat_currency = 'Z' + fiat_currency
     balance = get_private_balance()
     crypto_balance = float(balance['result'][crypto_currency])
@@ -343,10 +343,6 @@ def high_data(frame):
     candle_data = []
     ema20_data = []
     ema3_data = []
-    TrD20 = round(data_list[-1][12], 4)
-    TrD9 = round(data_list[-1][13], 4)
-    TrD6 = round(data_list[-1][14], 4)
-    TrD3 = round(data_list[-1][15], 4)
     for i in data_list:
         candle_data.append({
             'x': i[0],
@@ -364,7 +360,7 @@ def high_data(frame):
                 'x': i[0],
                 'y': round(i[9], 4)
             })
-    return candle_data, ema20_data, ema3_data, TrD20, TrD9, TrD6, TrD3
+    return candle_data, ema20_data, ema3_data
 
 
 def mid_data(frame):
@@ -375,14 +371,12 @@ def mid_data(frame):
     front_df['time'] = front_df['time'].apply(lambda x: (x * 1000) + 10800000)
     data_list = front_df.values.tolist()
     candle_data = []
-    St4 = round(data_list[-1][10], 4)
-    atr4 = round(data_list[-1][11], 4)
     for i in data_list:
         candle_data.append({
             'x': i[0],
             'y': [i[1], i[2], i[3], i[4]]
         })
-    return candle_data, St4, atr4
+    return candle_data
 
 
 def low_data(frame):
@@ -396,9 +390,6 @@ def low_data(frame):
     ave = []
     upper = []
     lower = []
-    roc = round(data_list[-1][15], 4)
-    MAV_signal = round(data_list[-1][18], 4)
-    D = round(data_list[-1][20], 4)
     for i in data_list:
         candle_data.append({
             'x': i[0],
@@ -422,7 +413,7 @@ def low_data(frame):
                 'x': i[0],
                 'y': round(i[12], 4)
             })
-    return candle_data, ave, upper, lower, roc, MAV_signal, D
+    return candle_data, ave, upper, lower
 
 
 class Api:

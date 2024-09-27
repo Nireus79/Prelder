@@ -72,19 +72,7 @@ function update_values() {
             {
               name: 'EMA3: ' + data_update.high_ema3[data_update.high_ema3.length - 1]['y'],
               data: data_update.high_ema3
-            },
-            {
-              name: 'TrD20: ' + data_update.high_TrD20
-              },
-            {
-              name: 'TrD9: ' + data_update.high_TrD9
-              },
-            {
-              name: 'TrD6: ' + data_update.high_TrD6
-              },
-            {
-              name: 'TrD3: ' + data_update.high_TrD3
-              }
+            }
             ]);
         }
     );

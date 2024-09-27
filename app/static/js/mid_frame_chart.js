@@ -4,18 +4,6 @@ var options = {
           name: 'Momentum frame: ',
           type: 'candlestick',
           data: []
-          },{
-          name: 'Stochastic %D: ',
-          type: 'line',
-          data: []
-          },{
-          name: 'Stochastic %DS: ',
-          type: 'line',
-          data: []
-          },{
-          name: 'RSI: ',
-          type: 'line',
-          data: []
           }
           ],
           chart: {
@@ -60,10 +48,6 @@ function update_values() {
             mid_frame_chart.updateSeries([{
               name: '4 hours',
               data: data_update.mid_chart_data
-              },{
-              name: 'St4H: ' + data_update.mid_St
-              },{
-              name: 'ATR 4H: ' + data_update.mid_atr
               }
             ])
         }

@@ -42,8 +42,9 @@ def initialize_models():
  pmb_dot, mmb_dot, pms_dot, mms_dot, mr_dot) = initialize_models()
 
 asset_pairs = [('DOT', 'EUR', pmb_dot, mmb_dot, pms_dot, mms_dot, mr_dot),
-               ('ETH', 'EUR', pmb_btc, mmb_btc, pms_btc, mms_btc, mr_btc)]
-# ('BTC', 'EUR', pmb_eth, mmb_eth, pms_eth, mms_eth, mr_eth),
+               ('ETH', 'EUR', pmb_eth, mmb_eth, pms_eth, mms_eth, mr_eth),
+               ('BTC', 'EUR', pmb_btc, mmb_btc, pms_btc, mms_btc, mr_btc)]
+
 @app.route('/')
 @app.route('/home')
 def main():
