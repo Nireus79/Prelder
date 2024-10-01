@@ -174,8 +174,32 @@ def kraken_request(uri_path, data, key, sec):
     return req
 
 
+def kraken_request_t(uri_path, data, key, sec, max_retries=5, backoff_factor=60):
+    headers = {'API-Key': key, 'API-Sign': get_kraken_signature(uri_path, data, sec)}
+    retries = 0
+
+    while retries < max_retries:
+        try:
+            req = requests.post((api_url + uri_path), headers=headers, data=data)
+            req.raise_for_status()  # Raise an exception for 4XX/5XX status codes)
+            return req
+
+        except (requests.ConnectionError, requests.Timeout) as e:
+            print(f"Connection error: {e}, retrying... ({retries + 1}/{max_retries})")
+            retries += 1
+            time.sleep(backoff_factor * retries)  # Exponential backoff
+
+        except requests.RequestException as e:
+            print(f"An error occurred: {e}")
+            break
+
+    # If max retries are exceeded, return None or raise an error
+    print("Max retries exceeded. Could not complete request.")
+    return None
+
+
 def get_private_balance():
-    resp = kraken_request('/0/private/Balance', {
+    resp = kraken_request_t('/0/private/Balance', {
         "nonce": str(int(1000 * time.time()))
     }, api_key, api_sec)
     return resp.json()
@@ -220,7 +244,7 @@ def add_order(ordertype, cond, vol, price, crypto_currency, fiat_currency):
     :return: order response
     """
     pair = crypto_currency + fiat_currency
-    resp = kraken_request('/0/private/AddOrder', {
+    resp = kraken_request_t('/0/private/AddOrder', {
         "nonce": str(int(1000 * time.time())),
         "ordertype": ordertype,
         "type": cond,
@@ -236,7 +260,7 @@ def cancel_order():
     Cancel all orders
     :return:
     """
-    resp = kraken_request('/0/private/CancelAll', {
+    resp = kraken_request_t('/0/private/CancelAll', {
         "nonce": str(int(1000 * time.time()))
     }, api_key, api_sec)
     """
@@ -250,7 +274,7 @@ def cancel_order():
 
 
 def get_order_info(txid):
-    resp = kraken_request('/0/private/QueryOrders', {
+    resp = kraken_request_t('/0/private/QueryOrders', {
         "nonce": str(int(1000 * time.time())),
         "txid": txid,
         "trades": True
