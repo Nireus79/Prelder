@@ -257,17 +257,17 @@ def ret_evaluation(asset, high_frame_indicated, mid_frame_indicated, low_frame_i
         features = [[TrD20, TrD3, atr4, Vtr13, Vtr6, MAV_signal,vrsi, roc]]
         features = normalize(features)
         ret_prediction = mr.predict(features)
-        return ret_prediction[0], 1.5, 1.1
+        return ret_prediction[0], 1, 1
     elif asset == 'BTC':
         features = [[TrD9, TrD3, macd4, rsi4, K4, Tr6, D, Vtr3, vmacd, roc, vrsi]]
         features = normalize(features)
         ret_prediction = mr.predict(features)
-        return ret_prediction[0], 1.4, 1.5
+        return ret_prediction[0], 1, 1
     elif asset == 'DOT':
         features = [[TrD20, TrD13, TrD9, TrD6, TrD3, macd4, macd, MAV, mom20, atr]]
         features = normalize(features)
         ret_prediction = mr.predict(features)
-        return ret_prediction[0], 1.1, 1
+        return ret_prediction[0], 1, 1
 
 def action(mode, crypto_currency, fiat_currency):
     global log, condition, limit, stop
@@ -338,11 +338,10 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
         low_frame_indicated, mid_frame_indicated, high_frame_indicated = indicators(low_frame, mid_frame, high_frame)
         chart_data(high_frame_indicated, mid_frame_indicated, low_frame_indicated)
         closing_price = low_frame_indicated.iloc[-1]['close']
-        candle_time = low_frame_indicated.iloc[-1]['time']
         event = low_frame_indicated.iloc[-1]['event']
         bb_cross = low_frame_indicated.iloc[-1]['bb_cross']
         roc10 = low_frame_indicated.iloc[-1]['roc10']
-        new_timestamp = low_frame.iloc[-1]['time']
+        new_timestamp = candle_time = low_frame_indicated.iloc[-1]['time']
         condition, crypto_balance, fiat_balance = get_condition(crypto_currency, fiat_currency, closing_price)
         if mode == 'simulator':
             condition = 'buy'
@@ -463,7 +462,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                 log = log_action('{} Waiting next candle close.'.format(time_stamp()))
                 time.sleep(1799)  # wait one 30min candle - 1 second
             else:
-                log = log_action('{} Waiting 30 min candle close.'.format(time_stamp()))
+                log = log_action('{} Waiting candle close.'.format(time_stamp()))
                 time.sleep(59)  # wait one 1min - 1 second for first candle to close
     else:
         activation()
@@ -486,7 +485,7 @@ def multiPrelderbot(mode, assets):
             event = low_frame_indicated.iloc[-1]['event']
             bb_cross = low_frame_indicated.iloc[-1]['bb_cross']
             roc10 = low_frame_indicated.iloc[-1]['roc10']
-            new_timestamp = low_frame.iloc[-1]['time']
+            new_timestamp = candle_time = low_frame.iloc[-1]['time']
             condition, crypto_balance, fiat_balance = get_condition(crypto_currency, fiat_currency, closing_price)
             if mode == 'simulator':
                 condition = 'buy'
@@ -544,7 +543,7 @@ def multiPrelderbot(mode, assets):
                         action(mode, crypto_currency, fiat_currency)
                 else:
                     reset_predictions()
-        time.sleep(10)
+            time.sleep(10)
         while True:
             if break_event.is_set():  # thread "kill" by user
                 cancel_order()
@@ -612,10 +611,9 @@ def multiPrelderbot(mode, assets):
                             reset_predictions()
                     time.sleep(10)
                 log = log_action('{} Waiting next candle close.'.format(time_stamp()))
-                time.sleep(1767)  # wait one 30min candle - 33 second
-
+                time.sleep(1757)  # wait one 30min candle - 43 second
             else:
-                log = log_action('{} Waiting 30 min candle close.'.format(time_stamp()))
+                log = log_action('{} Waiting candle close.'.format(time_stamp()))
                 time.sleep(59)  # wait one 1min - 1 second for first candle to close
     else:
         activation()

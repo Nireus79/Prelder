@@ -118,7 +118,7 @@ def starter():
         trading.start()
         return render_template('overview.html')
     else:
-        trading = threading.Thread(target=multiPrelderbot,
+        trading = threading.Thread(target=Prelderbot,
                                    args=(mode, asset_a, asset_b, pmb_eth, mmb_eth, pms_eth, mms_eth, mr_eth))
         trading.daemon = True
         trading.start()
