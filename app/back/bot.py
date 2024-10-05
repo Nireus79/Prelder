@@ -329,7 +329,6 @@ def raw_data(crypto, fiat):
     return i30m.get_frame(), i4H.get_frame(), i24H.get_frame()
 
 
-
 def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
     global condition, limit, stop, ret, log, crypto_balance, fiat_balance, closing_price, event, bb_cross, \
         prime_prediction, meta_prediction, roc10, timestamp, first_candle_time
@@ -364,7 +363,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                 log = log_action('{} Closing price < stop.'.format(time_stamp()))
                 action(mode, crypto_currency, fiat_currency)
                 reset_ptsl()
-            if closing_price > limit or new_timestamp >= timestamp + 86400: # 86400 one day inseconds
+            if closing_price > limit or new_timestamp >= timestamp + 86400: # 86400 one day in seconds
                 log = log_action('{} Closing price > limit or prediction outdated.'.format(time_stamp()))
                 if event > minRet and bb_cross != 0 and roc10 > 0:
                     prime_predictionS, meta_predictionS = sell_evaluation(crypto_currency, high_frame_indicated,
@@ -424,7 +423,7 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                         log = log_action('{} Closing price < stop.'.format(time_stamp()))
                         action(mode, crypto_currency, fiat_currency)
                         reset_ptsl()
-                    elif closing_price > limit or new_timestamp >= timestamp + 86400: # one day in milliseconds
+                    elif closing_price > limit or new_timestamp >= timestamp + 86400: # one day in seconds
                         log = log_action('{} Closing price > limit or prediction outdated.'.format(time_stamp()))
                         if event > minRet and bb_cross != 0 and roc10 > 0:
                             prime_predictionS, meta_predictionS = sell_evaluation(crypto_currency, high_frame_indicated,
