@@ -95,20 +95,20 @@ def starter():
         logging.info('Set assets.')
         return render_template('control.html')
     elif asset_a == 'ETH' and asset_b == 'EUR':
-        trading = threading.Thread(target=multiPrelderbot,
-                                   args=(mode, asset_pairs[1]))
+        trading = threading.Thread(target=Prelderbot,
+                                   args=(mode, asset_a, asset_b, pmb_eth, mmb_eth, pms_eth, mms_eth, mr_eth))
         trading.daemon = True
         trading.start()
         return render_template('overview.html')
     elif asset_a == 'DOT' and asset_b == 'EUR':
-        trading = threading.Thread(target=multiPrelderbot,
-                                   args=(mode, asset_pairs[0]))
+        trading = threading.Thread(target=Prelderbot,
+                                   args=(mode, asset_a, asset_b, pmb_dot, mmb_dot, pms_dot, mms_dot, mr_dot))
         trading.daemon = True
         trading.start()
         return render_template('overview.html')
     elif asset_a == 'BTC' and asset_b == 'EUR':
-        trading = threading.Thread(target=multiPrelderbot,
-                                   args=(mode, asset_pairs[2]))
+        trading = threading.Thread(target=Prelderbot,
+                                   args=(mode, asset_a, asset_b, pmb_btc, mmb_btc, pms_btc, mms_btc, mr_btc))
         trading.daemon = True
         trading.start()
         return render_template('overview.html')
