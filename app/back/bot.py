@@ -332,11 +332,12 @@ def set_ptslDict(pair, s, t, pt, sl):
     pickle.dump(limits_dict, open('limits_dictionary.pkl', 'wb'))
 
 def reset_ptslDict(pair):
-    global limit, stop
+    global limit, stop, timestamp
     limit = None
     stop = None
+    timestamp = 0
     limits_dict = joblib.load('limits_dictionary.pkl')
-    limits_dict.update({pair: {'limit': None, 'stop': None}})
+    limits_dict.update({pair: {'limit': None, 'stop': None, 'timestamp': 0}})
     pickle.dump(limits_dict, open('limits_dictionary.pkl', 'wb'))
 
 
