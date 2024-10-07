@@ -308,7 +308,7 @@ def set_ptsl(pair, s, t, pt, sl):
     global limits, timestamp
     if s == 'M':
         limits[pair]['limit'] = closing_price
-        limits[pair]['stop'] = closing_price * (1 - (abs(roc10) / 100) * sl)
+        limits[pair]['stop'] = closing_price * 0.99
     else:
         limits[pair]['limit'] = closing_price * (1 + (ret * pt))
         limits[pair]['stop'] = closing_price * (1 - (ret * sl))
@@ -630,7 +630,6 @@ def multiPrelderbot(mode, assets):
         log = log_action('Your product licence is not active. Please restart, activate or contact technical support. '
                          'Hermes_algotrading@proton.me')
         exit()
-
 
 
 def data_feed():
