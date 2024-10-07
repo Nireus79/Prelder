@@ -308,7 +308,7 @@ def set_ptsl(pair, s, t, pt, sl):
     global limits, timestamp
     if s == 'M':
         limits[pair]['limit'] = closing_price
-        limits[pair]['stop'] = closing_price * 0.99
+        limits[pair]['stop'] = closing_price * (1 - (abs(roc10) / 100) * sl)
     else:
         limits[pair]['limit'] = closing_price * (1 + (ret * pt))
         limits[pair]['stop'] = closing_price * (1 - (ret * sl))
