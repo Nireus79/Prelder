@@ -275,35 +275,6 @@ def ret_evaluation(asset, high_frame_indicated, mid_frame_indicated, low_frame_i
         ret_prediction = mr.predict(features)
         return ret_prediction[0], 1, 1
 
-def action(mode, crypto_currency, fiat_currency, price):
-    global log, condition
-    if mode == 'simulator':
-        log = log_action('{} Simulating {} at {}'.format(time_stamp(), condition, price))
-        trades.append(log)
-        if condition == 'buy':
-            condition = 'sell'
-        elif condition == 'sell':
-            condition = 'buy'
-    elif mode == 'consulting':
-        log = log_action('{} Consulting {} at {}.'.format(time_stamp(), condition, price))
-        trades.append(log)
-    elif mode == 'trading':
-        log = log_action('{} {} at {}.'.format(time_stamp(),condition, price))
-        trades.append(log)
-        asset_vol = (fiat_balance - fiat_balance * kraken_fee) / price
-        tx = add_order(order_type, condition, asset_vol, price, crypto_currency, fiat_currency)
-        log = log_action(tx)
-        trades.append(time_stamp())
-        trades.append(log)
-        trades.append('<br>')
-
-
-def reset_predictions():
-    global prime_prediction, meta_prediction, ret
-    prime_prediction = None
-    meta_prediction = None
-    ret = 0
-
 def set_ptsl(pair, s, t, pt, sl):
     global limits, timestamp
     if s == 'M':
@@ -325,6 +296,33 @@ def reset_ptsl(pair):
     limits[pair]['timestamp'] = timestamp = 0
     pickle.dump(limits, open('limits.pkl', 'wb'))
 
+def action(mode, crypto_currency, fiat_currency, price):
+    global log, condition
+    if mode == 'simulator':
+        log = log_action('{} Simulating {} at {}'.format(time_stamp(), condition, price))
+        trades.append(log)
+        if condition == 'buy':
+            condition = 'sell'
+        elif condition == 'sell':
+            condition = 'buy'
+    elif mode == 'consulting':
+        log = log_action('{} Consulting {} at {}.'.format(time_stamp(), condition, price))
+        trades.append(log)
+    elif mode == 'trading':
+        log = log_action('{} {} at {}.'.format(time_stamp(),condition, price))
+        trades.append(log)
+        asset_vol = (fiat_balance - fiat_balance * kraken_fee) / price
+        tx = add_order(order_type, condition, asset_vol, price, crypto_currency, fiat_currency)
+        log = log_action(tx)
+        if not tx['error'] and condition == 'sell':
+            reset_ptsl(crypto_currency+fiat_currency)
+
+
+def reset_predictions():
+    global prime_prediction, meta_prediction, ret
+    prime_prediction = None
+    meta_prediction = None
+    ret = 0
 
 def raw_data(crypto, fiat):
     i30m = Api(crypto, fiat, 30, 700)
@@ -369,7 +367,6 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
             if closing_price < stop:
                 log = log_action('{} Closing price < stop.'.format(time_stamp()))
                 action(mode, crypto_currency, fiat_currency, closing_price)
-                reset_ptsl(pair)
             if closing_price > limit or new_timestamp >= timestamp + 86400: # 86400 one day in seconds
                 log = log_action('{} Closing price > limit or prediction outdated.'.format(time_stamp()))
                 if event > minRet and bb_cross != 0 and roc10 > 0:
@@ -381,7 +378,6 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                          .format(prime_predictionS, meta_predictionS))
                     if prime_predictionS != meta_predictionS:
                         action(mode, crypto_currency, fiat_currency, closing_price)
-                        reset_ptsl(pair)
                     else:
                         ret, pt, sl = ret_evaluation(crypto_currency, high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
                         if ret > market_reset and roc10 > 0:
@@ -429,7 +425,6 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                     if closing_price < stop:
                         log = log_action('{} Closing price < stop.'.format(time_stamp()))
                         action(mode, crypto_currency, fiat_currency, closing_price)
-                        reset_ptsl(pair)
                     elif closing_price > limit or new_timestamp >= timestamp + 86400: # one day in seconds
                         log = log_action('{} Closing price > limit or prediction outdated.'.format(time_stamp()))
                         if event > minRet and bb_cross != 0 and roc10 > 0:
@@ -441,7 +436,6 @@ def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
                                              .format(prime_predictionS, meta_predictionS))
                             if prime_predictionS != meta_predictionS:
                                 action(mode, crypto_currency, fiat_currency, closing_price)
-                                reset_ptsl(pair)
                             else:
                                 ret, pt, sl = ret_evaluation(crypto_currency, high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
                                 if ret > market_reset and roc10 > 0:
@@ -514,7 +508,6 @@ def multiPrelderbot(mode, assets):
                 if closing_price < stop:
                     log = log_action('{} Closing price < stop.'.format(time_stamp()))
                     action(mode, crypto_currency, fiat_currency, closing_price)
-                    reset_ptsl(pair)
                 if closing_price > limit or new_timestamp >= timestamp + 86400: # 86400 one day in seconds
                     log = log_action('{} Closing price > limit or prediction outdated.'.format(time_stamp()))
                     if event > minRet and bb_cross != 0 and roc10 > 0:
@@ -526,7 +519,6 @@ def multiPrelderbot(mode, assets):
                                              .format(prime_predictionS, meta_predictionS))
                         if prime_predictionS != meta_predictionS:
                             action(mode, crypto_currency, fiat_currency, closing_price)
-                            reset_ptsl(pair)
                         else:
                             ret, pt, sl = ret_evaluation(crypto_currency, high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
                             if ret > market_reset and roc10 > 0:
@@ -580,7 +572,6 @@ def multiPrelderbot(mode, assets):
                         if closing_price < stop:
                             log = log_action('{} Closing price < stop.'.format(time_stamp()))
                             action(mode, crypto_currency, fiat_currency, closing_price)
-                            reset_ptsl(pair)
                         elif closing_price > limit or new_timestamp >= timestamp + 86400: # one day in seconds
                             log = log_action('{} Closing price > limit or prediction outdated.'.format(time_stamp()))
                             if event > minRet and bb_cross != 0 and roc10 > 0:
@@ -592,7 +583,6 @@ def multiPrelderbot(mode, assets):
                                                      .format(prime_predictionS, meta_predictionS))
                                 if prime_predictionS != meta_predictionS:
                                     action(mode, crypto_currency, fiat_currency, closing_price)
-                                    reset_ptsl(pair)
                                 else:
                                     ret, pt, sl = ret_evaluation(crypto_currency, high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
                                     if ret > market_reset and roc10 > 0:
