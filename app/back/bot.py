@@ -309,22 +309,21 @@ def set_ptsl(pair, s, t, pt, sl):
     if s == 'M':
         limits[pair]['limit'] = closing_price
         limits[pair]['stop'] = closing_price * (1 - (abs(roc10) / 100) * sl)
+        limits[pair]['timestamp'] = t
+        pickle.dump(limits, open('limits.pkl', 'wb'))
     else:
         limits[pair]['limit'] = closing_price * (1 + (ret * pt))
         limits[pair]['stop'] = closing_price * (1 - (ret * sl))
-    timestamp = t
-    limits_dict = joblib.load('limits.pkl')
-    limits_dict.update({pair:{'limit': limits[pair]['limit'], 'stop': limits[pair]['stop'], 'timestamp': t}})
-    pickle.dump(limits_dict, open('limits.pkl', 'wb'))
+        limits[pair]['timestamp'] = t
+        pickle.dump(limits, open('limits.pkl', 'wb'))
+
 
 def reset_ptsl(pair):
     global limits, timestamp
     limits[pair]['limit'] = None
     limits[pair]['stop'] = None
     limits[pair]['timestamp'] = timestamp = 0
-    limits_dict = joblib.load('limits.pkl')
-    limits_dict.update({pair: {'limit': None, 'stop': None, 'timestamp': 0}})
-    pickle.dump(limits_dict, open('limits.pkl', 'wb'))
+    pickle.dump(limits, open('limits.pkl', 'wb'))
 
 
 def raw_data(crypto, fiat):
