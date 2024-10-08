@@ -321,7 +321,7 @@ def action(mode, crypto_currency, fiat_currency, price):
             tx = add_order(order_type, condition, asset_vol, price, crypto_currency, fiat_currency)
             trades.append(tx)
             log = log_action(tx)
-            if not tx['error'] and condition == 'sell':
+            if not tx['error']:
                 reset_ptsl(crypto_currency + fiat_currency)
 
 
