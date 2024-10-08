@@ -1,5 +1,5 @@
 import threading
-from app.back.bot import Prelderbot, data_feed, signal_handler, multiPrelderbot
+from app.back.bot import data_feed, signal_handler, multiPrelderbot
 from app.back.kraken import cancel_order, time_stamp
 from app import app
 from flask import render_template, request, jsonify
@@ -95,20 +95,20 @@ def starter():
         logging.info('Set assets.')
         return render_template('control.html')
     elif asset_a == 'ETH' and asset_b == 'EUR':
-        trading = threading.Thread(target=Prelderbot,
-                                   args=(mode, asset_a, asset_b, pmb_eth, mmb_eth, pms_eth, mms_eth, mr_eth))
+        trading = threading.Thread(target=multiPrelderbot,
+                                   args=(mode, [(asset_a, asset_b, pmb_eth, mmb_eth, pms_eth, mms_eth, mr_eth)]))
         trading.daemon = True
         trading.start()
         return render_template('overview.html')
     elif asset_a == 'DOT' and asset_b == 'EUR':
-        trading = threading.Thread(target=Prelderbot,
-                                   args=(mode, asset_a, asset_b, pmb_dot, mmb_dot, pms_dot, mms_dot, mr_dot))
+        trading = threading.Thread(target=multiPrelderbot,
+                                   args=(mode, [(asset_a, asset_b, pmb_dot, mmb_dot, pms_dot, mms_dot, mr_dot)]))
         trading.daemon = True
         trading.start()
         return render_template('overview.html')
     elif asset_a == 'BTC' and asset_b == 'EUR':
-        trading = threading.Thread(target=Prelderbot,
-                                   args=(mode, asset_a, asset_b, pmb_btc, mmb_btc, pms_btc, mms_btc, mr_btc))
+        trading = threading.Thread(target=multiPrelderbot,
+                                   args=(mode, [(asset_a, asset_b, pmb_btc, mmb_btc, pms_btc, mms_btc, mr_btc)]))
         trading.daemon = True
         trading.start()
         return render_template('overview.html')
@@ -118,8 +118,8 @@ def starter():
         trading.start()
         return render_template('overview.html')
     else:
-        trading = threading.Thread(target=Prelderbot,
-                                   args=(mode, asset_a, asset_b, pmb_eth, mmb_eth, pms_eth, mms_eth, mr_eth))
+        trading = threading.Thread(target=multiPrelderbot,
+                                   args=(mode, [(asset_a, asset_b, pmb_eth, mmb_eth, pms_eth, mms_eth, mr_eth)]))
         trading.daemon = True
         trading.start()
 
