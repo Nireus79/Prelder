@@ -311,12 +311,20 @@ def action(mode, crypto_currency, fiat_currency, price):
     elif mode == 'trading':
         log = log_action('{} {} at {}.'.format(time_stamp(),condition, price))
         trades.append(log)
-        asset_vol = (fiat_balance - fiat_balance * kraken_fee) / price
-        tx = add_order(order_type, condition, asset_vol, price, crypto_currency, fiat_currency)
-        trades.append(tx)
-        log = log_action(tx)
-        if not tx['error'] and condition == 'sell':
-            reset_ptsl(crypto_currency+fiat_currency)
+        if condition == 'buy':
+            asset_vol = (fiat_balance - fiat_balance * kraken_fee) / price
+            tx = add_order(order_type, condition, asset_vol, price, crypto_currency, fiat_currency)
+            trades.append(tx)
+            log = log_action(tx)
+            if not tx['error'] and condition == 'sell':
+                reset_ptsl(crypto_currency+fiat_currency)
+        elif condition == 'sell':
+            asset_vol = crypto_balance
+            tx = add_order(order_type, condition, asset_vol, price, crypto_currency, fiat_currency)
+            trades.append(tx)
+            log = log_action(tx)
+            if not tx['error'] and condition == 'sell':
+                reset_ptsl(crypto_currency + fiat_currency)
 
 
 def reset_predictions():
