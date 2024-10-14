@@ -434,6 +434,20 @@ def multiPrelderbot(mode, assets):
                         condition, crypto_balance, fiat_balance = get_condition(crypto_currency, fiat_currency, closing_price)
                     log = log_action('Event is: {}. BB crossing is: {}. Condition is: {}'.format(event, bb_cross, condition))
                     if condition == 'sell':
+                        if limit is None and stop is None:
+                            log = log_action(
+                                '{} Limit and stop loss parameters are not set. This may be result of program restart.'
+                                .format(time_stamp()))
+                            limits = joblib.load('limits.pkl')
+                            limit, stop, timestamp = limits[pair]['limit'], limits[pair]['stop'], limits[pair][
+                                'timestamp']
+                            if limit is None and stop is None:  # Case of manual buy
+                                set_ptsl(pair, 'M', new_timestamp, 1, 1)
+                            limit, stop, timestamp = limits[pair]['limit'], limits[pair]['stop'], limits[pair][
+                                'timestamp']
+                            log = log_action('{} Limit recovered {}. Stop loss recovered {}.'
+                                             .format(time_stamp(), limit, stop))
+                            trades.append(log)
                         if closing_price < stop:
                             log = log_action('{} Closing price < stop.'.format(time_stamp()))
                             action(mode, crypto_currency, fiat_currency, closing_price)
