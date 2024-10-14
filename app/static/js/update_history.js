@@ -7,7 +7,6 @@ var intervalID = setInterval(update_values, 1000);
 
             $('#logs').html(data.logs);
             $('#trades').html(data.trades);
-
 //            console.log(data)
           });
         };

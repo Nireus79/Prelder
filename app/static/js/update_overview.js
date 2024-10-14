@@ -17,6 +17,7 @@ function update_values() {
                 $('#price').text('Closing price: '+data.price);
                 $('#limit').text('Buy limit: '+data.limit);
                 $('#stop').text('Stop loss: '+data.stop);
+                $('#roc10').text('roc10: '+data.roc10);
                 $('#log').text('Log: '+data.log);
         });
 };
