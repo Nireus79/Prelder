@@ -415,6 +415,7 @@ def low_data(frame):
     upper = []
     lower = []
     close = front_df.close.iloc[-1]
+    roc = front_df.roc10.iloc[-1]
     for i in data_list:
         candle_data.append({
             'x': i[0],
@@ -438,7 +439,7 @@ def low_data(frame):
                 'x': i[0],
                 'y': round(i[12], 4)
             })
-    return candle_data, ave, upper, lower, close
+    return candle_data, ave, upper, lower, close, roc
 
 
 class Api:
