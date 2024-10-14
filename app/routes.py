@@ -80,8 +80,6 @@ def history():
 def update():
     dt = data_feed()
     dt['current_time'] = time_stamp()
-    dt['crypto_currency'] = asset_a
-    dt['fiat_currency'] = asset_b
     dt['mode'] = mode
     return jsonify(dt)
 

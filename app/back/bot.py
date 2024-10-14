@@ -15,6 +15,8 @@ pd.set_option('future.no_silent_downcasting', True)
 logging.basicConfig(level=logging.INFO)
 
 condition = None
+crypto_currency = None
+fiat_currency = None
 crypto_balance = 0
 fiat_balance = 0
 
@@ -340,7 +342,7 @@ def raw_data(crypto, fiat):
 
 def multiPrelderbot(mode, assets):
     global condition, limits, ret, log, crypto_balance, fiat_balance, event, bb_cross, \
-        prime_prediction, meta_prediction, roc10, timestamp, first_candle_time
+        prime_prediction, meta_prediction, roc10, timestamp, first_candle_time, crypto_currency, fiat_currency
     licence = True  # check()['license_active']  # TODO activate licence check
     if licence:
         for crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr in assets:
@@ -529,7 +531,9 @@ def data_feed():
         'prime_prediction': 'True' if prime_prediction == 1 else ('False' if prime_prediction == 0 else None),
         'meta_prediction': 'True' if meta_prediction == 1 else ('False' if meta_prediction == 0 else None),
         'ret': round(ret, 4) if ret != 0 else None,
-        'roc10': round(roc10, 4)
+        'roc10': round(roc10, 4),
+        'crypto_currency': crypto_currency,
+        'fiat_currency': fiat_currency
     }
 
 # def Prelderbot(mode, crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr):
