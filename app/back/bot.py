@@ -260,7 +260,7 @@ def ret_evaluation(asset, high_frame_indicated, mid_frame_indicated, low_frame_i
     mom20 = low_frame_indicated.iloc[-1]['mom20']
     atr = low_frame_indicated.iloc[-1]['atr']
     if asset == 'ETH':
-        features = [[TrD20, TrD3, atr4, Vtr13, Vtr6, MAV_signal,vrsi, roc]]
+        features = [[TrD20, TrD3, atr4, Vtr13, Vtr6, MAV_signal, vrsi, roc]]
         features = normalize(features)
         ret_prediction = mr.predict(features)
         return ret_prediction[0], 1, 1
