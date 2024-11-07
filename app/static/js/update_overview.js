@@ -13,7 +13,7 @@ function update_values() {
                 $('#bb_cross').text('Bollinger crossing: '+data.bb_cross);
                 $('#prime_prediction').text('prime pred: '+data.prime_prediction);
                 $('#meta_prediction').text('meta pred: '+data.meta_prediction);
-                $('#ret').text('return pred: '+data.ret);
+                $('#ret').text('return pred %: '+data.ret);
                 $('#price').text('Closing price: '+data.price);
                 $('#limit').text('Buy limit: '+data.limit);
                 $('#stop').text('Stop loss: '+data.stop);
