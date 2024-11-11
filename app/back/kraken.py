@@ -316,6 +316,7 @@ def indicators(ldf, mdf, hdf):
     ldf['price'], ldf['ave'], ldf['upper'], ldf['lower'] = bbands(ldf['close'], window=20, numsd=2)
     ldf['bb_cross'] = simple_crossing(ldf, 'close', 'upper', 'lower')
     ldf['Volatility'] = getDailyVol(ldf['close'], span, delta)
+    ldf['Vol_Vol'] = getDailyVol(ldf['Volatility'], span, delta)
     t = getTEvents(ldf['close'], ldf['Volatility'])
     ldf['event'] = ldf['Volatility'].loc[t]
     ldf['event'] = ldf['Volatility'][ldf['Volatility'] > minRet]
@@ -337,6 +338,8 @@ def indicators(ldf, mdf, hdf):
     ldf['Vtr6'] = ldf.apply(lambda x: x['volume'] - x['vema6'], axis=1)
     ldf['EMA6'] = ldf['close'].rolling(6).mean()
     ldf['Tr6'] = ldf.apply(lambda x: x['close'] - x['EMA6'], axis=1)
+    ldf['EMA9'] = ldf['close'].rolling(9).mean()
+    ldf['Tr9'] = ldf.apply(lambda x: x['close'] - x['EMA9'], axis=1)
     ldf['EMA13'] = ldf['close'].rolling(13).mean()
     ldf['Tr13'] = ldf.apply(lambda x: x['close'] - x['EMA13'], axis=1)
     ldf['StD'] = ldf.apply(lambda x: x['%K'] - x['%D'], axis=1)

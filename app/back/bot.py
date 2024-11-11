@@ -134,25 +134,22 @@ def log_action(message):
 
 def sell_evaluation(asset, high_frame_indicated, mid_frame_indicated, low_frame_indicated, pms, mms):
     global prime_prediction, meta_prediction
+    TrD20 = high_frame_indicated.iloc[-1]['TrD20']
+    TrD13 = high_frame_indicated.iloc[-1]['TrD13']
     TrD9 = high_frame_indicated.iloc[-1]['TrD9']
     TrD6 = high_frame_indicated.iloc[-1]['TrD6']
     TrD3 = high_frame_indicated.iloc[-1]['TrD3']
     St4H = mid_frame_indicated.iloc[-1]['St4H']
     macd4 = mid_frame_indicated.iloc[-1]['4Hmacd']
-    atr4 = mid_frame_indicated.iloc[-1]['4H_atr']
-    rsi4 = mid_frame_indicated.iloc[-1]['4H_rsi']
-    K4 = mid_frame_indicated.iloc[-1]['4H_rsi']
+    K4 = mid_frame_indicated.iloc[-1]['%K4']
     D = low_frame_indicated.iloc[-1]['%D']
     MAV_signal = low_frame_indicated.iloc[-1]['MAV_signal']
     atr = low_frame_indicated.iloc[-1]['atr']
     roc = low_frame_indicated.iloc[-1]['roc10']
-    bbc = low_frame_indicated.iloc[-1]['bb_cross']
-    Vtr3 = low_frame_indicated.iloc[-1]['Vtr3']
-    Tr13 = low_frame_indicated.iloc[-1]['Tr13']
-    roc20 = low_frame_indicated.iloc[-1]['roc20']
-    Volatility = low_frame_indicated.iloc[-1]['Volatility']
-    momi = low_frame_indicated.iloc[-1]['momi']
-    vrsi = low_frame_indicated.iloc[-1]['vrsi']
+    Tr9 = low_frame_indicated.iloc[-1]['Tr9']
+    StD = low_frame_indicated.iloc[-1]['StD']
+    MAV = low_frame_indicated.iloc[-1]['MAV']
+    K = low_frame_indicated.iloc[-1]['%K']
     if asset == 'ETH':
         featuresS = [[TrD9, TrD6, TrD3, St4H, MAV_signal, D, atr, roc]]
         featuresS = normalize(featuresS)
@@ -163,20 +160,18 @@ def sell_evaluation(asset, high_frame_indicated, mid_frame_indicated, low_frame_
         prime_prediction, meta_prediction = prime_predictionS[0], meta_predictionS[0]
         return prime_predictionS[0], meta_predictionS[0]
     if asset == 'BTC':
-        featuresS = [[TrD9, TrD3, macd4, rsi4, K4, D, Vtr3, roc, vrsi]]
+        featuresS = [[TrD9, TrD6, TrD3, macd4, K4, K, MAV, roc]]
         featuresS = normalize(featuresS)
-        featuresS = np.insert(featuresS, len(featuresS[0]), bbc)
-        prime_predictionS = pms.predict([featuresS])
+        prime_predictionS = pms.predict(featuresS)
         featuresMS = featuresS
         featuresMS = np.insert(featuresMS, len(featuresS), prime_predictionS)
         meta_predictionS = mms.predict([featuresMS])
         prime_prediction, meta_prediction = prime_predictionS[0], meta_predictionS[0]
         return prime_predictionS[0], meta_predictionS[0]
     if asset == 'DOT':
-        featuresS = [[TrD9, TrD6, atr4, Tr13, roc20, roc, Volatility, momi]]
+        featuresS = [[TrD20, TrD13, TrD9, TrD6, TrD3, K4, Tr9, StD, atr]]
         featuresS = normalize(featuresS)
-        featuresS = np.insert(featuresS, len(featuresS[0]), bbc)
-        prime_predictionS = pms.predict([featuresS])
+        prime_predictionS = pms.predict(featuresS)
         featuresMS = featuresS
         featuresMS = np.insert(featuresMS, len(featuresS), prime_predictionS)
         meta_predictionS = mms.predict([featuresMS])
@@ -192,20 +187,17 @@ def buy_evaluation(asset, high_frame_indicated, mid_frame_indicated, low_frame_i
     TrD3 = high_frame_indicated.iloc[-1]['TrD3']
     atr4H = mid_frame_indicated.iloc[-1]['atr4H']
     macd4 = mid_frame_indicated.iloc[-1]['4Hmacd']
-    rsi4 = mid_frame_indicated.iloc[-1]['4H_rsi']
+    K4 = mid_frame_indicated.iloc[-1]['%K4']
+    D4 = mid_frame_indicated.iloc[-1]['%D4']
     Vtr13 = low_frame_indicated.iloc[-1]['Vtr13']
     Vtr6 = low_frame_indicated.iloc[-1]['Vtr6']
     roc = low_frame_indicated.iloc[-1]['roc10']
     MAV_signal = low_frame_indicated.iloc[-1]['MAV_signal']
-    StD = low_frame_indicated.iloc[-1]['StD']
-    D = low_frame_indicated.iloc[-1]['%D']
-    vmacd = low_frame_indicated.iloc[-1]['vmacd']
     rsi = low_frame_indicated.iloc[-1]['rsi']
     macd = low_frame_indicated.iloc[-1]['macd']
-    MAV = low_frame_indicated.iloc[-1]['MAV']
-    mom20 = low_frame_indicated.iloc[-1]['mom20']
-    atr = low_frame_indicated.iloc[-1]['atr']
     vrsi = low_frame_indicated.iloc[-1]['vrsi']
+    Volatility = low_frame_indicated.iloc[-1]['Volatility']
+    Vol_Vol = low_frame_indicated.iloc[-1]['Vol_Vol']
     global prime_prediction, meta_prediction
     if asset == 'ETH':
         featuresB = [[TrD20, TrD3, atr4H, Vtr13, Vtr6, MAV_signal, vrsi, roc]]
@@ -217,7 +209,7 @@ def buy_evaluation(asset, high_frame_indicated, mid_frame_indicated, low_frame_i
         prime_prediction, meta_prediction = prime_predictionB[0], meta_predictionB[0]
         return prime_predictionB[0], meta_predictionB[0]
     if asset == 'BTC':
-        featuresB = [[TrD20, TrD13, TrD6, TrD3, rsi4, StD, D, vmacd, rsi, vrsi]]
+        featuresB = [[TrD9, TrD6, TrD3, macd4, D4, rsi, macd, Volatility]]
         featuresB = normalize(featuresB)
         prime_predictionB = pmb.predict(featuresB)
         featuresMB = featuresB
@@ -226,7 +218,7 @@ def buy_evaluation(asset, high_frame_indicated, mid_frame_indicated, low_frame_i
         prime_prediction, meta_prediction = prime_predictionB[0], meta_predictionB[0]
         return prime_predictionB[0], meta_predictionB[0]
     if asset == 'DOT':
-        featuresB = [[TrD20, TrD13, TrD9, TrD6, TrD3, macd4, macd, MAV, mom20, atr]]
+        featuresB = [[TrD20, TrD13, TrD9, TrD6, TrD3, K4, rsi, Vol_Vol, roc]]
         featuresB = normalize(featuresB)
         prime_predictionB = pmb.predict(featuresB)
         featuresMB = featuresB
@@ -243,12 +235,8 @@ def ret_evaluation(asset, high_frame_indicated, mid_frame_indicated, low_frame_i
     TrD6 = high_frame_indicated.iloc[-1]['TrD6']
     TrD3 = high_frame_indicated.iloc[-1]['TrD3']
     macd4 = mid_frame_indicated.iloc[-1]['4Hmacd']
-    rsi4 = mid_frame_indicated.iloc[-1]['4H_rsi']
-    K4 = mid_frame_indicated.iloc[-1]['4H_rsi']
-    Tr6 = low_frame_indicated.iloc[-1]['Tr6']
-    D = low_frame_indicated.iloc[-1]['%D']
-    Vtr3 = low_frame_indicated.iloc[-1]['Vtr3']
-    vmacd = low_frame_indicated.iloc[-1]['vmacd']
+    K4 = mid_frame_indicated.iloc[-1]['%K4']
+    D4 = mid_frame_indicated.iloc[-1]['%D4']
     atr4 = mid_frame_indicated.iloc[-1]['4H_atr']
     Vtr13 = low_frame_indicated.iloc[-1]['Vtr13']
     Vtr6 = low_frame_indicated.iloc[-1]['Vtr6']
@@ -256,21 +244,21 @@ def ret_evaluation(asset, high_frame_indicated, mid_frame_indicated, low_frame_i
     roc = low_frame_indicated.iloc[-1]['roc10']
     vrsi = low_frame_indicated.iloc[-1]['vrsi']
     macd = low_frame_indicated.iloc[-1]['macd']
-    MAV = low_frame_indicated.iloc[-1]['MAV']
-    mom20 = low_frame_indicated.iloc[-1]['mom20']
-    atr = low_frame_indicated.iloc[-1]['atr']
+    Volatility = low_frame_indicated.iloc[-1]['Volatility']
+    Vol_Vol = low_frame_indicated.iloc[-1]['Vol_Vol']
+    rsi = low_frame_indicated.iloc[-1]['rsi']
     if asset == 'ETH':
         features = [[TrD20, TrD3, atr4, Vtr13, Vtr6, MAV_signal, vrsi, roc]]
         features = normalize(features)
         ret_prediction = mr.predict(features)
         return ret_prediction[0], 1, 1
     elif asset == 'BTC':
-        features = [[TrD9, TrD3, macd4, rsi4, K4, Tr6, D, Vtr3, vmacd, roc, vrsi]]
+        features = [[TrD9, TrD6, TrD3, macd4, D4, rsi, macd, Volatility]]
         features = normalize(features)
         ret_prediction = mr.predict(features)
         return ret_prediction[0], 1, 1
     elif asset == 'DOT':
-        features = [[TrD20, TrD13, TrD9, TrD6, TrD3, macd4, macd, MAV, mom20, atr]]
+        features = [[TrD20, TrD13, TrD9, TrD6, TrD3, K4, rsi, Vol_Vol, roc]]
         features = normalize(features)
         ret_prediction = mr.predict(features)
         return ret_prediction[0], 1, 1
