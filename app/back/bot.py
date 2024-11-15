@@ -14,6 +14,15 @@ import joblib
 pd.set_option('future.no_silent_downcasting', True)
 logging.basicConfig(level=logging.INFO)
 
+condition_dict = {
+    'ETHEUR':{'condition': None, 'crypto_balance': 0, 'fiat_balance': 0},
+    'DOTEUR':{'condition': None, 'crypto_balance': 0, 'fiat_balance': 0},
+    'BTCEUR':{'condition': None, 'crypto_balance': 0, 'fiat_balance': 0}
+          }
+ETH_order_size = 0.002
+BTC_order_size = 0.00005
+DOT_order_size = 0.6
+
 condition = None
 crypto_currency = None
 fiat_currency = None
@@ -300,13 +309,24 @@ def action(mode, crypto, fiat, price):
         log = log_action('{} {} at {}.'.format(time_stamp(),condition, price))
         trades.append(log)
         if condition == 'buy':
-            asset_vol = (fiat_balance - fiat_balance * kraken_fee) / price
-            tx = add_order(order_type, condition, asset_vol, price, crypto, fiat)
-            trades.append(tx)
-            log = log_action(tx)
+            order_size = (fiat_balance - fiat_balance * kraken_fee) / price
+            if crypto == 'BTC' and order_size > BTC_order_size:
+                tx = add_order(order_type, condition, order_size, price, crypto, fiat)
+                trades.append(tx)
+                log = log_action(tx)
+            elif crypto == 'ETH' and order_size > ETH_order_size:
+                tx = add_order(order_type, condition, order_size, price, crypto, fiat)
+                trades.append(tx)
+                log = log_action(tx)
+            elif crypto == 'DOT' and order_size > DOT_order_size:
+                tx = add_order(order_type, condition, order_size, price, crypto, fiat)
+                trades.append(tx)
+                log = log_action(tx)
+            else:
+                log = log_action('Minimum asset {} order size required is low {}'.format(crypto, order_size))
         elif condition == 'sell':
-            asset_vol = crypto_balance
-            tx = add_order(order_type, condition, asset_vol, price, crypto, fiat)
+            order_size = crypto_balance
+            tx = add_order(order_type, condition, order_size, price, crypto, fiat)
             trades.append(tx)
             log = log_action(tx)
             if not tx['error']:
