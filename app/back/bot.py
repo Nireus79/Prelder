@@ -4,7 +4,7 @@ import threading
 import winsound
 from app.back.kraken import (Api, time_stamp, add_order, cancel_order, get_condition, high_data, mid_data, low_data,
                              indicators, minRet)
-from app.back.spring import activation # , check
+from app.back.spring import activation # , check TODO activate licence check
 from sklearn.preprocessing import Normalizer, normalize
 import pandas as pd
 import numpy as np
