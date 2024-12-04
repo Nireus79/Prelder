@@ -278,12 +278,12 @@ def set_ptsl(pair, price, s, t, pt, sl):
         limits[pair]['limit'] = price
         limits[pair]['stop'] = price * (1 - (abs(low_roc10) / 100) * sl)
         limits[pair]['timestamp'] = t
-        pickle.dump(limits, open('limits.pkl', 'wb'))
+        pickle.dump(limits, open('app/back/limits.pkl', 'wb'))
     else:
         limits[pair]['limit'] = price * (1 + (ret * pt))
         limits[pair]['stop'] = price * (1 - (ret * sl))
         limits[pair]['timestamp'] = t
-        pickle.dump(limits, open('limits.pkl', 'wb'))
+        pickle.dump(limits, open('app/back/limits.pkl', 'wb'))
 
 
 def reset_ptsl(pair):
@@ -291,7 +291,7 @@ def reset_ptsl(pair):
     limits[pair]['limit'] = None
     limits[pair]['stop'] = None
     limits[pair]['timestamp'] = 0
-    pickle.dump(limits, open('limits.pkl', 'wb'))
+    pickle.dump(limits, open('app/back/limits.pkl', 'wb'))
 
 def action(mode, crypto, fiat, price):
     global log, condition
@@ -370,7 +370,7 @@ def multiPrelderbot(mode, assets):
                 if limit is None and stop is None:
                     log = log_action('{} Limit and stop loss parameters are not set. This may be result of program restart.'
                                      .format(time_stamp()))
-                    limits = joblib.load('limits.pkl')
+                    limits = joblib.load('app/back/limits.pkl')
                     limit, stop = limits[pair]['limit'], limits[pair]['stop']
                     if limit is None and stop is None:  # Case of manual buy
                         set_ptsl(pair, closing_price, 'M', new_timestamp, 1, 1)
@@ -447,7 +447,7 @@ def multiPrelderbot(mode, assets):
                             log = log_action(
                                 '{} Limit and stop loss parameters are not set. This may be result of program restart.'
                                 .format(time_stamp()))
-                            limits = joblib.load('limits.pkl')
+                            limits = joblib.load('app/back/limits.pkl')
                             limit, stop = limits[pair]['limit'], limits[pair]['stop']
                             if limit is None and stop is None:  # Case of manual buy
                                 set_ptsl(pair, closing_price, 'M', new_timestamp, 1, 1)
