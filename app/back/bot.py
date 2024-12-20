@@ -298,6 +298,7 @@ def action(mode, crypto, fiat, price):
     if mode == 'simulator':
         log = log_action('{} Simulating {} at {}'.format(time_stamp(), condition, price))
         trades.append(log)
+        trades.append('<br>')
         if condition == 'buy':
             condition = 'sell'
         elif condition == 'sell':
@@ -305,22 +306,27 @@ def action(mode, crypto, fiat, price):
     elif mode == 'consulting':
         log = log_action('{} Consulting {} at {}.'.format(time_stamp(), condition, price))
         trades.append(log)
+        trades.append('<br>')
     elif mode == 'trading':
         log = log_action('{} {} at {}.'.format(time_stamp(),condition, price))
         trades.append(log)
+        trades.append('<br>')
         if condition == 'buy':
             order_size = (fiat_balance - fiat_balance * kraken_fee) / price
             if crypto == 'BTC' and order_size > BTC_order_size:
                 tx = add_order(order_type, condition, order_size, price, crypto, fiat)
                 trades.append(tx)
+                trades.append('<br>')
                 log = log_action(tx)
             elif crypto == 'ETH' and order_size > ETH_order_size:
                 tx = add_order(order_type, condition, order_size, price, crypto, fiat)
                 trades.append(tx)
+                trades.append('<br>')
                 log = log_action(tx)
             elif crypto == 'DOT' and order_size > DOT_order_size:
                 tx = add_order(order_type, condition, order_size, price, crypto, fiat)
                 trades.append(tx)
+                trades.append('<br>')
                 log = log_action(tx)
             else:
                 log = log_action('Minimum asset {} order size required is low {}'.format(crypto, order_size))
@@ -328,6 +334,7 @@ def action(mode, crypto, fiat, price):
             order_size = crypto_balance
             tx = add_order(order_type, condition, order_size, price, crypto, fiat)
             trades.append(tx)
+            trades.append('<br>')
             log = log_action(tx)
             if not tx['error']:
                 reset_ptsl(crypto + fiat)
@@ -340,7 +347,7 @@ def reset_predictions():
     ret = 0
 
 def raw_data(crypto, fiat):
-    i30m = Api(crypto, fiat, 30, 700)
+    i30m = Api(crypto, fiat, 5, 700)
     i4H = Api(crypto, fiat, 240, 100)
     i24H = Api(crypto, fiat, 1440, 100)
     return i30m.get_frame(), i4H.get_frame(), i24H.get_frame()
@@ -497,7 +504,7 @@ def multiPrelderbot(mode, assets):
                             reset_predictions()
                     time.sleep(10)
                 log = log_action('{} Waiting next candle close.'.format(time_stamp()))
-                time.sleep(1800 - (11*len(assets)))
+                time.sleep(300 - (10*len(assets))) # 300 sec = 5 min
             else:
                 log = log_action('{} Waiting candle close.'.format(time_stamp()))
                 time.sleep(59)  # wait one 1min - 1 second for first candle to close
