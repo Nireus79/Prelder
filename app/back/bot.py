@@ -148,19 +148,19 @@ def sell_evaluation(asset, high_frame_indicated, mid_frame_indicated, low_frame_
     TrD9 = high_frame_indicated.iloc[-1]['TrD9']
     TrD6 = high_frame_indicated.iloc[-1]['TrD6']
     TrD3 = high_frame_indicated.iloc[-1]['TrD3']
-    St4H = mid_frame_indicated.iloc[-1]['St4H']
     macd4 = mid_frame_indicated.iloc[-1]['4Hmacd']
     K4 = mid_frame_indicated.iloc[-1]['%K4']
-    D = low_frame_indicated.iloc[-1]['%D']
-    MAV_signal = low_frame_indicated.iloc[-1]['MAV_signal']
+    MF_MAV_sig = mid_frame_indicated.iloc[-1]['MF_MAV_sig']
     atr = low_frame_indicated.iloc[-1]['atr']
     roc = low_frame_indicated.iloc[-1]['roc10']
     Tr9 = low_frame_indicated.iloc[-1]['Tr9']
     StD = low_frame_indicated.iloc[-1]['StD']
     MAV = low_frame_indicated.iloc[-1]['MAV']
     K = low_frame_indicated.iloc[-1]['%K']
+    LF_Volatility = low_frame_indicated.iloc[-1]['Volatility']
+    roc10 = low_frame_indicated.iloc[-1]['roc10']
     if asset == 'ETH':
-        featuresS = [[TrD9, TrD6, TrD3, St4H, MAV_signal, D, atr, roc]]
+        featuresS = [[TrD13, TrD6, TrD3, MF_MAV_sig, LF_Volatility, atr, roc10]]
         featuresS = normalize(featuresS)
         prime_predictionS = pms.predict(featuresS)
         featuresMS = featuresS
@@ -194,22 +194,18 @@ def buy_evaluation(asset, high_frame_indicated, mid_frame_indicated, low_frame_i
     TrD9 = high_frame_indicated.iloc[-1]['TrD9']
     TrD6 = high_frame_indicated.iloc[-1]['TrD6']
     TrD3 = high_frame_indicated.iloc[-1]['TrD3']
-    atr4H = mid_frame_indicated.iloc[-1]['atr4H']
     macd4 = mid_frame_indicated.iloc[-1]['4Hmacd']
     K4 = mid_frame_indicated.iloc[-1]['%K4']
     D4 = mid_frame_indicated.iloc[-1]['%D4']
-    Vtr13 = low_frame_indicated.iloc[-1]['Vtr13']
-    Vtr6 = low_frame_indicated.iloc[-1]['Vtr6']
+    Tr3 = low_frame_indicated.iloc[-1]['Tr3']
     roc = low_frame_indicated.iloc[-1]['roc10']
-    MAV_signal = low_frame_indicated.iloc[-1]['MAV_signal']
     rsi = low_frame_indicated.iloc[-1]['rsi']
     macd = low_frame_indicated.iloc[-1]['macd']
-    vrsi = low_frame_indicated.iloc[-1]['vrsi']
     Volatility = low_frame_indicated.iloc[-1]['Volatility']
     Vol_Vol = low_frame_indicated.iloc[-1]['Vol_Vol']
     global prime_prediction, meta_prediction
     if asset == 'ETH':
-        featuresB = [[TrD20, TrD3, atr4H, Vtr13, Vtr6, MAV_signal, vrsi, roc]]
+        featuresB = [[TrD13, TrD9, TrD6, TrD3, Tr3, macd, Vol_Vol]]
         featuresB = normalize(featuresB)
         prime_predictionB = pmb.predict(featuresB)
         featuresMB = featuresB
@@ -347,7 +343,7 @@ def reset_predictions():
     ret = 0
 
 def raw_data(crypto, fiat):
-    i5m = Api(crypto, fiat,15, 1)
+    i5m = Api(crypto, fiat,5, 1)
     i30m = Api(crypto, fiat, 30, 700)
     i4H = Api(crypto, fiat, 240, 100)
     i24H = Api(crypto, fiat, 1440, 100)
@@ -369,7 +365,6 @@ def multiPrelderbot(mode, assets):
             bb_cross = low_frame_indicated.iloc[-1]['bb_cross']
             roc10 = low_frame_indicated.iloc[-1]['roc10']
             new_timestamp = first_candle_time = sync_frame.iloc[-1]['time']
-            print(new_timestamp)
             condition, crypto_balance, fiat_balance = get_condition(crypto_currency, fiat_currency, closing_price)
             limit, stop = limits[pair]['limit'], limits[pair]['stop']
             if mode == 'simulator':
@@ -439,7 +434,6 @@ def multiPrelderbot(mode, assets):
                 break
             sync_frame, low_frame, mid_frame, high_frame = raw_data(assets[0][0], assets[0][1])
             new_candle_time = sync_frame.iloc[-1]['time']
-            print(first_candle_time, new_candle_time)
             if new_candle_time > first_candle_time:
                 for crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr in assets:
                     pair = crypto_currency+fiat_currency
@@ -513,11 +507,11 @@ def multiPrelderbot(mode, assets):
                         else:
                             reset_predictions()
                     time.sleep(1)
-                log = log_action('{} Waiting next candle close.'.format(time_stamp()))
-                time.sleep(900 - (1*len(assets))) # 900 sec = 15 min
+                log = log_action('{} Waiting candle close.'.format(time_stamp()))
+                time.sleep(300 - (1*len(assets))) # 300 sec = 5 min
             else:
                 log = log_action('{} Synchronizing candle time.'.format(time_stamp()))
-                time.sleep(30)  # wait one min
+                time.sleep(30)
     else:
         activation()
         log = log_action('Your product licence is not active. Please restart, activate or contact technical support. '
