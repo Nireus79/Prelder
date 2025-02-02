@@ -508,7 +508,7 @@ def multiPrelderbot(mode, assets):
                             reset_predictions()
                     time.sleep(1)
                 log = log_action('{} Waiting candle close.'.format(time_stamp()))
-                time.sleep(300 - (1*len(assets))) # 300 sec = 5 min
+                time.sleep(300 - (3*len(assets))) # 300 sec = 5 min
             else:
                 log = log_action('{} Synchronizing candle time.'.format(time_stamp()))
                 time.sleep(30)
