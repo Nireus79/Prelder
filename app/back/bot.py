@@ -387,8 +387,8 @@ def multiPrelderbot(mode, assets):
                     log = log_action('{} Closing price {} < stop {}.'.format(time_stamp(), closing_price, stop))
                     action(mode, crypto_currency, fiat_currency, closing_price)
                 if closing_price > limit or new_timestamp >= limits[pair]['timestamp'] + 86400: # 86400 one day in seconds
-                    log = log_action('{} Closing price {} > limit {} or prediction outdated.'
-                                     .format(time_stamp(), closing_price, limit))
+                    log = log_action('{} Sell evaluation. Closing price {}. limit {}. Stop {}.'
+                                     .format(time_stamp(), closing_price, limit, stop))
                     if event > minRet and bb_cross != 0 and roc10 > 0:
                         prime_predictionS, meta_predictionS = sell_evaluation(crypto_currency, high_frame_indicated,
                                                                                   mid_frame_indicated,
@@ -468,8 +468,8 @@ def multiPrelderbot(mode, assets):
                             log = log_action('{} Closing price {} < stop {}.'.format(time_stamp(), closing_price, stop))
                             action(mode, crypto_currency, fiat_currency, closing_price)
                         elif closing_price > limit or new_timestamp >= limits[pair]['timestamp'] + 86400: # 86400 one day in seconds
-                            log = log_action('{} Prediction outdated or Closing price {} > limit {}.'
-                                             .format(time_stamp(), closing_price, limit))
+                            log = log_action('{} Sell evaluation. Closing price {}. limit {}. Stop {}.'
+                                             .format(time_stamp(), closing_price, limit, stop))
                             if event > minRet and bb_cross != 0 and roc10 > 0:
                                 prime_predictionS, meta_predictionS = sell_evaluation(crypto_currency, high_frame_indicated,
                                                                                           mid_frame_indicated,
@@ -508,7 +508,7 @@ def multiPrelderbot(mode, assets):
                             reset_predictions()
                     time.sleep(1)
                 log = log_action('{} Waiting candle close.'.format(time_stamp()))
-                time.sleep(300 - (3*len(assets))) # 300 sec = 5 min
+                time.sleep(300 - (4*len(assets))) # 300 sec = 5 min
             else:
                 log = log_action('{} Synchronizing candle time.'.format(time_stamp()))
                 time.sleep(30)
