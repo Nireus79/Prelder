@@ -292,24 +292,24 @@ def time_stamp():
 
 
 def indicators(ldf, mdf, hdf):
-    hdf['EMA20'] = hdf['close'].rolling(20).mean()
-    hdf['EMA13'] = hdf['close'].rolling(13).mean()
-    hdf['EMA9'] = hdf['close'].rolling(9).mean()
-    hdf['EMA6'] = hdf['close'].rolling(6).mean()
-    hdf['EMA3'] = hdf['close'].rolling(3).mean()
-    hdf['TrD20'] = hdf.apply(lambda x: x['close'] - x['EMA20'], axis=1)
-    hdf['TrD13'] = hdf.apply(lambda x: x['close'] - x['EMA13'], axis=1)
-    hdf['TrD9'] = hdf.apply(lambda x: x['close'] - x['EMA9'], axis=1)
-    hdf['TrD6'] = hdf.apply(lambda x: x['close'] - x['EMA6'], axis=1)
-    hdf['TrD3'] = hdf.apply(lambda x: x['close'] - x['EMA3'], axis=1)
+    hdf['HF_EMA20'] = hdf['close'].rolling(20).mean()
+    hdf['HF_EMA13'] = hdf['close'].rolling(13).mean()
+    hdf['HF_EMA9'] = hdf['close'].rolling(9).mean()
+    hdf['HF_EMA6'] = hdf['close'].rolling(6).mean()
+    hdf['HF_EMA3'] = hdf['close'].rolling(3).mean()
+    hdf['HF_Tr20'] = hdf.apply(lambda x: x['close'] - x['HF_EMA20'], axis=1)
+    hdf['HF_Tr13'] = hdf.apply(lambda x: x['close'] - x['HF_EMA13'], axis=1)
+    hdf['HF_Tr9'] = hdf.apply(lambda x: x['close'] - x['HF_EMA9'], axis=1)
+    hdf['HF_Tr6'] = hdf.apply(lambda x: x['close'] - x['HF_EMA6'], axis=1)
+    hdf['HF_Tr3'] = hdf.apply(lambda x: x['close'] - x['HF_EMA3'], axis=1)
     hdf.fillna(0, inplace=True)
-    mdf['%K4'] = stoch(mdf['high'], mdf['low'], mdf['close'], window=14, smooth_window=3, fillna=False)
-    mdf['%D4'] = mdf['%K4'].rolling(3).mean()
-    mdf['St4H'] = mdf.apply(lambda x: x['%K4'] - x['%D4'], axis=1)
-    mdf['atr4H'] = average_true_range(mdf['high'], mdf['low'], mdf['close'], window=14, fillna=False)
-    mdf['4H_rsi'] = rsi(mdf['close'], window=14, fillna=False)
-    mdf['4H_atr'] = average_true_range(mdf['high'], mdf['low'], mdf['close'], window=14, fillna=False)
-    mdf['4Hmacd'] = macd_diff(mdf['close'], window_slow=26, window_fast=12, window_sign=9, fillna=False)
+    mdf['MF_%K'] = stoch(mdf['high'], mdf['low'], mdf['close'], window=14, smooth_window=3, fillna=False)
+    mdf['MF_%D'] = mdf['MF_%K'].rolling(3).mean()
+    mdf['MF_St'] = mdf.apply(lambda x: x['MF_%K'] - x['MF_%D'], axis=1)
+    mdf['MF_atr'] = average_true_range(mdf['high'], mdf['low'], mdf['close'], window=14, fillna=False)
+    mdf['MF_rsi'] = rsi(mdf['close'], window=14, fillna=False)
+    mdf['MF_atr'] = average_true_range(mdf['high'], mdf['low'], mdf['close'], window=14, fillna=False)
+    mdf['MF_macd'] = macd_diff(mdf['close'], window_slow=26, window_fast=12, window_sign=9, fillna=False)
     mdf['MF_Volatility'] = getDailyVol(mdf['close'], span, delta)
     mdf['MF_MAV'] = mdf['MF_Volatility'].rolling(20).mean()
     mdf['MF_MAV_sig'] = mdf.apply(lambda x: x.MF_Volatility - x.MF_MAV, axis=1)
@@ -317,42 +317,42 @@ def indicators(ldf, mdf, hdf):
     ldf['datetime'] = pd.to_datetime(ldf['time'], unit='s')
     ldf['price'], ldf['ave'], ldf['upper'], ldf['lower'] = bbands(ldf['close'], window=20, numsd=2)
     ldf['bb_cross'] = simple_crossing(ldf, 'close', 'upper', 'lower')
-    ldf['Volatility'] = getDailyVol(ldf['close'], span, delta)
-    ldf['Vol_Vol'] = getDailyVol(ldf['Volatility'], span, delta)
-    t = getTEvents(ldf['close'], ldf['Volatility'])
-    ldf['event'] = ldf['Volatility'].loc[t]
-    ldf['event'] = ldf['Volatility'][ldf['Volatility'] > minRet]
-    ldf['MAV'] = ldf['Volatility'].rolling(20).mean()
-    ldf['MAV_signal'] = ldf.apply(lambda x: x.MAV - x.Volatility, axis=1)
-    ldf['%K'] = stoch(ldf['high'], ldf['low'], ldf['close'], window=14, smooth_window=3, fillna=False)
-    ldf['%D'] = ldf['%K'].rolling(3).mean()
-    ldf['roc10'] = ROC(ldf['close'], 10)
-    ldf['roc20'] = ROC(ldf['close'], 20)
-    ldf['mom10'] = MOM(ldf['close'], 10)
-    ldf['mom20'] = MOM(ldf['close'], 20)
-    ldf['mom30'] = MOM(ldf['close'], 30)
-    ldf['momi'] = ldf.apply(lambda x: x.mom30 - x.mom10, axis=1)
-    ldf['atr'] = average_true_range(ldf['high'], ldf['low'], ldf['close'], window=14, fillna=False)
-    ldf['vrsi'] = rsi(ldf['volume'], window=14, fillna=False)
-    ldf['vema13'] = ldf['volume'].rolling(13).mean()
-    ldf['vema6'] = ldf['volume'].rolling(6).mean()
-    ldf['Vtr13'] = ldf.apply(lambda x: x['volume'] - x['vema13'], axis=1)
-    ldf['Vtr6'] = ldf.apply(lambda x: x['volume'] - x['vema6'], axis=1)
-    ldf['EMA3'] = ldf['close'].rolling(3).mean()
-    ldf['Tr3'] = ldf.apply(lambda x: x['close'] - x['EMA3'], axis=1)
-    ldf['EMA6'] = ldf['close'].rolling(6).mean()
-    ldf['Tr6'] = ldf.apply(lambda x: x['close'] - x['EMA6'], axis=1)
-    ldf['EMA9'] = ldf['close'].rolling(9).mean()
-    ldf['Tr9'] = ldf.apply(lambda x: x['close'] - x['EMA9'], axis=1)
-    ldf['EMA13'] = ldf['close'].rolling(13).mean()
-    ldf['Tr13'] = ldf.apply(lambda x: x['close'] - x['EMA13'], axis=1)
-    ldf['StD'] = ldf.apply(lambda x: x['%K'] - x['%D'], axis=1)
-    ldf['vema3'] = ldf['volume'].rolling(3).mean()
-    ldf['Vtr3'] = ldf.apply(lambda x: x['volume'] - x['vema3'], axis=1)
-    ldf['vmacd'] = macd_diff(ldf['volume'], window_slow=26, window_fast=12, window_sign=9, fillna=False)
-    ldf['rsi'] = rsi(ldf['close'], window=14, fillna=False)
-    ldf['macd'] = macd_diff(ldf['close'], window_slow=26, window_fast=12, window_sign=9, fillna=False)
-    ldf['atr'] = average_true_range(ldf['high'], ldf['low'], ldf['close'], window=14, fillna=False)
+    ldf['LF_Volatility'] = getDailyVol(ldf['close'], span, delta)
+    ldf['LF_Vol_Vol'] = getDailyVol(ldf['LF_Volatility'], span, delta)
+    t = getTEvents(ldf['close'], ldf['LF_Volatility'])
+    ldf['event'] = ldf['LF_Volatility'].loc[t]
+    ldf['event'] = ldf['LF_Volatility'][ldf['LF_Volatility'] > minRet]
+    ldf['LF_MAV'] = ldf['LF_Volatility'].rolling(20).mean()
+    ldf['LF_MAV_signal'] = ldf.apply(lambda x: x.LF_MAV - x.LF_Volatility, axis=1)
+    ldf['LF_%K'] = stoch(ldf['high'], ldf['low'], ldf['close'], window=14, smooth_window=3, fillna=False)
+    ldf['LF_%D'] = ldf['LF_%K'].rolling(3).mean()
+    ldf['LF_roc10'] = ROC(ldf['close'], 10)
+    ldf['LF_roc20'] = ROC(ldf['close'], 20)
+    ldf['LF_mom10'] = MOM(ldf['close'], 10)
+    ldf['LF_mom20'] = MOM(ldf['close'], 20)
+    ldf['LF_mom30'] = MOM(ldf['close'], 30)
+    ldf['LF_momi'] = ldf.apply(lambda x: x.LF_mom30 - x.LF_mom10, axis=1)
+    ldf['LF_atr'] = average_true_range(ldf['high'], ldf['low'], ldf['close'], window=14, fillna=False)
+    ldf['LF_vrsi'] = rsi(ldf['volume'], window=14, fillna=False)
+    ldf['LF_vema13'] = ldf['volume'].rolling(13).mean()
+    ldf['LF_vema6'] = ldf['volume'].rolling(6).mean()
+    ldf['LF_Vtr13'] = ldf.apply(lambda x: x['volume'] - x['LF_vema13'], axis=1)
+    ldf['LF_Vtr6'] = ldf.apply(lambda x: x['volume'] - x['LF_vema6'], axis=1)
+    ldf['LF_EMA3'] = ldf['close'].rolling(3).mean()
+    ldf['LF_Tr3'] = ldf.apply(lambda x: x['close'] - x['LF_EMA3'], axis=1)
+    ldf['LF_EMA6'] = ldf['close'].rolling(6).mean()
+    ldf['LF_Tr6'] = ldf.apply(lambda x: x['close'] - x['LF_EMA6'], axis=1)
+    ldf['LF_EMA9'] = ldf['close'].rolling(9).mean()
+    ldf['LF_Tr9'] = ldf.apply(lambda x: x['close'] - x['LF_EMA9'], axis=1)
+    ldf['LF_EMA13'] = ldf['close'].rolling(13).mean()
+    ldf['LF_Tr13'] = ldf.apply(lambda x: x['close'] - x['LF_EMA13'], axis=1)
+    ldf['LF_St'] = ldf.apply(lambda x: x['LF_%K'] - x['LF_%D'], axis=1)
+    ldf['LF_vema3'] = ldf['volume'].rolling(3).mean()
+    ldf['LF_Vtr3'] = ldf.apply(lambda x: x['volume'] - x['LF_vema3'], axis=1)
+    ldf['LF_vmacd'] = macd_diff(ldf['volume'], window_slow=26, window_fast=12, window_sign=9, fillna=False)
+    ldf['LF_rsi'] = rsi(ldf['close'], window=14, fillna=False)
+    ldf['LF_macd'] = macd_diff(ldf['close'], window_slow=26, window_fast=12, window_sign=9, fillna=False)
+    ldf['LF_atr'] = average_true_range(ldf['high'], ldf['low'], ldf['close'], window=14, fillna=False)
     ldf.fillna(0, inplace=True)
     return ldf, mdf, hdf
 
@@ -371,27 +371,27 @@ def high_data(frame):
     front_df = frame.fillna(0)
     front_df['time'] = front_df['time'].apply(lambda x: (x * 1000) + 10800000)  # *1000 javascript time + 3hours
     data_list = front_df.values.tolist()
-    candle_data = []
-    ema20_data = []
-    ema3_data = []
+    HF_candle_data = []
+    HF_ema20_data = []
+    HF_ema3_data = []
     for i in data_list:
-        candle_data.append({
+        HF_candle_data.append({
             'x': i[0],
             'y': [i[1], i[2], i[3], i[4]]
         })
     for i in data_list:
         if i[8] != 0:
-            ema20_data.append({
+            HF_ema20_data.append({
                 'x': i[0],
                 'y': round(i[8], 4)
             })
     for i in data_list:
         if i[11] != 0:
-            ema3_data.append({
+            HF_ema3_data.append({
                 'x': i[0],
                 'y': round(i[9], 4)
             })
-    return candle_data, ema20_data, ema3_data
+    return HF_candle_data, HF_ema20_data, HF_ema3_data
 
 
 def mid_data(frame):
@@ -401,13 +401,13 @@ def mid_data(frame):
     front_df = frame.fillna(0)
     front_df['time'] = front_df['time'].apply(lambda x: (x * 1000) + 10800000)
     data_list = front_df.values.tolist()
-    candle_data = []
+    MF_candle_data = []
     for i in data_list:
-        candle_data.append({
+        MF_candle_data.append({
             'x': i[0],
             'y': [i[1], i[2], i[3], i[4]]
         })
-    return candle_data
+    return MF_candle_data
 
 
 def low_data(frame):
@@ -417,36 +417,36 @@ def low_data(frame):
     front_df = frame.fillna(0)
     front_df['time'] = front_df['time'].apply(lambda x: (x * 1000) + 10800000)
     data_list = front_df.values.tolist()
-    candle_data = []
-    ave = []
-    upper = []
-    lower = []
+    LF_candle_data = []
+    LF_ave = []
+    LF_upper = []
+    LF_lower = []
     close = front_df.close.iloc[-1]
-    roc = front_df.roc10.iloc[-1]
+    LF_roc10 = front_df.LF_roc10.iloc[-1]
     for i in data_list:
-        candle_data.append({
+        LF_candle_data.append({
             'x': i[0],
             'y': [i[1], i[2], i[3], i[4]]
         })
     for i in data_list:
         if i[10] != 0:
-            ave.append({
+            LF_ave.append({
                 'x': i[0],
                 'y': round(i[10], 4)
             })
     for i in data_list:
         if i[11] != 0:
-            upper.append({
+            LF_upper.append({
                 'x': i[0],
                 'y': round(i[11], 4)
             })
     for i in data_list:
         if i[12] != 0:
-            lower.append({
+            LF_lower.append({
                 'x': i[0],
                 'y': round(i[12], 4)
             })
-    return candle_data, ave, upper, lower, close, roc
+    return LF_candle_data, LF_ave, LF_upper, LF_lower, close, LF_roc10
 
 
 class Api:
