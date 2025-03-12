@@ -4,7 +4,7 @@ import threading
 import winsound
 from app.back.kraken import (Api, time_stamp, add_order, cancel_order, get_condition, high_data, mid_data, low_data,
                              indicators, minRet)
-from app.back.spring import activation # , check TODO activate licence check
+from app.back.spring import activation  # , check TODO activate licence check
 from sklearn.preprocessing import Normalizer, normalize
 import pandas as pd
 import numpy as np
@@ -15,10 +15,10 @@ pd.set_option('future.no_silent_downcasting', True)
 logging.basicConfig(level=logging.INFO)
 
 condition_dict = {
-    'ETHEUR':{'condition': None, 'crypto_balance': 0, 'fiat_balance': 0},
-    'DOTEUR':{'condition': None, 'crypto_balance': 0, 'fiat_balance': 0},
-    'BTCEUR':{'condition': None, 'crypto_balance': 0, 'fiat_balance': 0}
-          }
+    'ETHEUR': {'condition': None, 'crypto_balance': 0, 'fiat_balance': 0},
+    'DOTEUR': {'condition': None, 'crypto_balance': 0, 'fiat_balance': 0},
+    'BTCEUR': {'condition': None, 'crypto_balance': 0, 'fiat_balance': 0}
+}
 ETH_order_size = 0.002
 BTC_order_size = 0.00005
 DOT_order_size = 0.6
@@ -30,10 +30,10 @@ crypto_balance = 0
 fiat_balance = 0
 
 limits = {
-    'ETHEUR':{'limit': None, 'stop': None, 'timestamp': 0},
-    'DOTEUR':{'limit': None, 'stop': None, 'timestamp': 0},
-    'BTCEUR':{'limit': None, 'stop': None, 'timestamp': 0}
-          }
+    'ETHEUR': {'limit': None, 'stop': None, 'timestamp': 0},
+    'DOTEUR': {'limit': None, 'stop': None, 'timestamp': 0},
+    'BTCEUR': {'limit': None, 'stop': None, 'timestamp': 0}
+}
 
 ret = 0
 
@@ -65,6 +65,7 @@ log = 'Please set control parameters to start.'
 logs = []
 trades = []
 break_event = threading.Event()
+
 
 def normalizer(data):
     """
@@ -107,7 +108,7 @@ def beeper(cond):
 
 
 def chart_data(p, high_frame, mid_frame, low_frame):
-    global high_chart_data, high_ema20, high_ema3,\
+    global high_chart_data, high_ema20, high_ema3, \
         mid_chart_data, low_chart_data, low_ave, low_upper, low_lower, low_limit, low_stop, low_closing_price, low_roc10
     limit_data = []
     stop_data = []
@@ -140,6 +141,7 @@ def log_action(message):
     logs.append(message)
     logs.append('<br>')
     return message
+
 
 def sell_evaluation(asset, high_frame_indicated, mid_frame_indicated, low_frame_indicated, pms, mms):
     global prime_prediction, meta_prediction
@@ -237,7 +239,7 @@ def ret_evaluation(asset, high_frame_indicated, mid_frame_indicated, low_frame_i
     HF_Tr13 = high_frame_indicated.iloc[-1]['HF_Tr13']
     HF_Tr9 = high_frame_indicated.iloc[-1]['HF_Tr9']
     HF_Tr6 = high_frame_indicated.iloc[-1]['HF_Tr6']
-    HF_3 = high_frame_indicated.iloc[-1]['HF_Tr3']
+    HF_Tr3 = high_frame_indicated.iloc[-1]['HF_Tr3']
     MF_macd = mid_frame_indicated.iloc[-1]['MF_macd']
     MF_K = mid_frame_indicated.iloc[-1]['MF_%K']
     MF_D = mid_frame_indicated.iloc[-1]['MF_%D']
@@ -252,20 +254,21 @@ def ret_evaluation(asset, high_frame_indicated, mid_frame_indicated, low_frame_i
     LF_Vol_Vol = low_frame_indicated.iloc[-1]['LF_Vol_Vol']
     LF_rsi = low_frame_indicated.iloc[-1]['LF_rsi']
     if asset == 'ETH':
-        features = [[HF_Tr20, HF_3, MF_atr, LF_Vtr13, LF_Vtr6, LF_MAV_signal, LF_vrsi, LF_roc10]]
+        features = [[HF_Tr20, HF_Tr3, MF_atr, LF_Vtr13, LF_Vtr6, LF_MAV_signal, LF_vrsi, LF_roc10]]
         features = normalize(features)
         ret_prediction = mr.predict(features)
         return ret_prediction[0], 1, 1
     elif asset == 'BTC':
-        features = [[HF_Tr9, HF_Tr6, HF_3, MF_macd, MF_D, LF_rsi, LF_macd, LF_Volatility]]
+        features = [[HF_Tr9, HF_Tr6, HF_Tr3, MF_macd, MF_D, LF_rsi, LF_macd, LF_Volatility]]
         features = normalize(features)
         ret_prediction = mr.predict(features)
         return ret_prediction[0], 1, 1
     elif asset == 'DOT':
-        features = [[HF_Tr20, HF_Tr13, HF_Tr9, HF_Tr6, HF_3, MF_K, LF_rsi, LF_Vol_Vol, LF_roc10]]
+        features = [[HF_Tr20, HF_Tr13, HF_Tr9, HF_Tr6, HF_Tr3, MF_K, LF_rsi, LF_Vol_Vol, LF_roc10]]
         features = normalize(features)
         ret_prediction = mr.predict(features)
         return ret_prediction[0], 1, 1
+
 
 def set_ptsl(pair, price, s, t, pt, sl):
     global limits
@@ -288,6 +291,7 @@ def reset_ptsl(pair):
     limits[pair]['timestamp'] = 0
     pickle.dump(limits, open('app/back/limits.pkl', 'wb'))
 
+
 def action(mode, crypto, fiat, price):
     global log, condition
     if mode == 'simulator':
@@ -303,7 +307,7 @@ def action(mode, crypto, fiat, price):
         trades.append(log)
         trades.append('<br>')
     elif mode == 'trading':
-        log = log_action('{} {} at {}.'.format(time_stamp(),condition, price))
+        log = log_action('{} {} at {}.'.format(time_stamp(), condition, price))
         trades.append(log)
         trades.append('<br>')
         if condition == 'buy':
@@ -341,12 +345,14 @@ def reset_predictions():
     meta_prediction = None
     ret = 0
 
+
 def raw_data(crypto, fiat):
-    i5m = Api(crypto, fiat,5, 1)
+    i5m = Api(crypto, fiat, 5, 1)
     i30m = Api(crypto, fiat, 30, 700)
     i4H = Api(crypto, fiat, 240, 100)
     i24H = Api(crypto, fiat, 1440, 100)
     return i5m.get_frame(), i30m.get_frame(), i4H.get_frame(), i24H.get_frame()
+
 
 def multiPrelderbot(mode, assets):
     global condition, limits, ret, log, crypto_balance, fiat_balance, event, bb_cross, \
@@ -354,10 +360,11 @@ def multiPrelderbot(mode, assets):
     licence = True  # check()['license_active']  # TODO activate licence check
     if licence:
         for crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr in assets:
-            pair = crypto_currency+fiat_currency
+            pair = crypto_currency + fiat_currency
             log = log_action('Evaluating {}-{}.'.format(crypto_currency, fiat_currency))
             sync_frame, low_frame, mid_frame, high_frame = raw_data(crypto_currency, fiat_currency)
-            low_frame_indicated, mid_frame_indicated, high_frame_indicated = indicators(low_frame, mid_frame, high_frame)
+            low_frame_indicated, mid_frame_indicated, high_frame_indicated = indicators(low_frame, mid_frame,
+                                                                                        high_frame)
             chart_data(pair, high_frame_indicated, mid_frame_indicated, low_frame_indicated)
             closing_price = low_frame_indicated.iloc[-1]['close']
             event = low_frame_indicated.iloc[-1]['event']
@@ -371,8 +378,9 @@ def multiPrelderbot(mode, assets):
             log = log_action('Event is: {}. BB crossing is: {}. Condition is: {}'.format(event, bb_cross, condition))
             if condition == 'sell':
                 if limit is None and stop is None:
-                    log = log_action('{} Limit and stop loss parameters are not set. This may be result of program restart.'
-                                     .format(time_stamp()))
+                    log = log_action(
+                        '{} Limit and stop loss parameters are not set. This may be result of program restart.'
+                        .format(time_stamp()))
                     limits = joblib.load('app/back/limits.pkl')
                     limit, stop = limits[pair]['limit'], limits[pair]['stop']
                     if limit is None and stop is None:  # Case of manual buy
@@ -385,16 +393,17 @@ def multiPrelderbot(mode, assets):
                 if closing_price < stop:
                     log = log_action('{} Closing price {} < stop {}.'.format(time_stamp(), closing_price, stop))
                     action(mode, crypto_currency, fiat_currency, closing_price)
-                if closing_price > limit or new_timestamp >= limits[pair]['timestamp'] + 86400: # 86400 one day in seconds
+                if closing_price > limit or new_timestamp >= limits[pair]['timestamp'] + 86400:  # 86400 one day in
+                    # seconds
                     log = log_action('{} Sell evaluation. Closing price {}. limit {}. Stop {}.'
                                      .format(time_stamp(), closing_price, limit, stop))
                     if event > minRet and bb_cross != 0 and roc10 > 0:
                         prime_predictionS, meta_predictionS = sell_evaluation(crypto_currency, high_frame_indicated,
-                                                                                  mid_frame_indicated,
-                                                                                  low_frame_indicated,
-                                                                                  pms, mms)
+                                                                              mid_frame_indicated,
+                                                                              low_frame_indicated,
+                                                                              pms, mms)
                         log = log_action('Prime Prediction: {} Meta Prediction {}.'
-                                             .format(prime_predictionS, meta_predictionS))
+                                         .format(prime_predictionS, meta_predictionS))
                         if prime_predictionS != meta_predictionS:
                             action(mode, crypto_currency, fiat_currency, closing_price)
                         else:
@@ -403,7 +412,7 @@ def multiPrelderbot(mode, assets):
                             if ret > market_reset and roc10 > 0:
                                 set_ptsl(pair, closing_price, 'R', new_timestamp, pt, sl)
                                 log = log_action('{} Ret {}. ROC {}. Limit reset to {}. Stop reset to {}.'
-                                                     .format(time_stamp(), ret, roc10, limit, stop))
+                                                 .format(time_stamp(), ret, roc10, limit, stop))
                                 trades.append(log)
                                 trades.append('<br>')
                     else:
@@ -414,7 +423,8 @@ def multiPrelderbot(mode, assets):
                                                                          mid_frame_indicated,
                                                                          low_frame_indicated,
                                                                          pmb, mmb)
-                    ret, pt, sl = ret_evaluation(crypto_currency, high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
+                    ret, pt, sl = ret_evaluation(crypto_currency, high_frame_indicated, mid_frame_indicated,
+                                                 low_frame_indicated, mr)
                     log = log_action('{} Prime prediction {}. Meta prediction {}. Ret {}. ROC10 {}.'
                                      .format(time_stamp(), prime_predictionB, meta_predictionB, ret, roc10))
                     if prime_predictionB == meta_predictionB and ret > market_return and roc10 > 0:
@@ -435,10 +445,11 @@ def multiPrelderbot(mode, assets):
             new_candle_time = sync_frame.iloc[-1]['time']
             if new_candle_time > first_candle_time:
                 for crypto_currency, fiat_currency, pmb, mmb, pms, mms, mr in assets:
-                    pair = crypto_currency+fiat_currency
+                    pair = crypto_currency + fiat_currency
                     log = log_action('Evaluating {}-{}.'.format(crypto_currency, fiat_currency))
                     sync_frame, low_frame, mid_frame, high_frame = raw_data(crypto_currency, fiat_currency)
-                    low_frame_indicated, mid_frame_indicated, high_frame_indicated = indicators(low_frame, mid_frame, high_frame)
+                    low_frame_indicated, mid_frame_indicated, high_frame_indicated = indicators(low_frame, mid_frame,
+                                                                                                high_frame)
                     chart_data(pair, high_frame_indicated, mid_frame_indicated, low_frame_indicated)
                     closing_price = low_frame_indicated.iloc[-1]['close']
                     event = low_frame_indicated.iloc[-1]['event']
@@ -447,8 +458,10 @@ def multiPrelderbot(mode, assets):
                     new_timestamp = low_frame.iloc[-1]['time']
                     limit, stop = limits[pair]['limit'], limits[pair]['stop']
                     if mode != 'simulator':
-                        condition, crypto_balance, fiat_balance = get_condition(crypto_currency, fiat_currency, closing_price)
-                    log = log_action('Event is: {}. BB crossing is: {}. Condition is: {}'.format(event, bb_cross, condition))
+                        condition, crypto_balance, fiat_balance = get_condition(crypto_currency, fiat_currency,
+                                                                                closing_price)
+                    log = log_action(
+                        'Event is: {}. BB crossing is: {}. Condition is: {}'.format(event, bb_cross, condition))
                     if condition == 'sell':
                         if limit is None and stop is None:
                             log = log_action(
@@ -466,24 +479,27 @@ def multiPrelderbot(mode, assets):
                         if closing_price < stop:
                             log = log_action('{} Closing price {} < stop {}.'.format(time_stamp(), closing_price, stop))
                             action(mode, crypto_currency, fiat_currency, closing_price)
-                        elif closing_price > limit or new_timestamp >= limits[pair]['timestamp'] + 86400: # 86400 one day in seconds
+                        elif closing_price > limit or new_timestamp >= limits[pair][
+                            'timestamp'] + 86400:  # 86400 one day in seconds
                             log = log_action('{} Sell evaluation. Closing price {}. limit {}. Stop {}.'
                                              .format(time_stamp(), closing_price, limit, stop))
                             if event > minRet and bb_cross != 0 and roc10 > 0:
-                                prime_predictionS, meta_predictionS = sell_evaluation(crypto_currency, high_frame_indicated,
-                                                                                          mid_frame_indicated,
-                                                                                          low_frame_indicated,
-                                                                                          pms, mms)
+                                prime_predictionS, meta_predictionS = sell_evaluation(crypto_currency,
+                                                                                      high_frame_indicated,
+                                                                                      mid_frame_indicated,
+                                                                                      low_frame_indicated,
+                                                                                      pms, mms)
                                 log = log_action('Prime Prediction: {} Meta Prediction {}.'
-                                                     .format(prime_predictionS, meta_predictionS))
+                                                 .format(prime_predictionS, meta_predictionS))
                                 if prime_predictionS != meta_predictionS:
                                     action(mode, crypto_currency, fiat_currency, closing_price)
                                 else:
-                                    ret, pt, sl = ret_evaluation(crypto_currency, high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
+                                    ret, pt, sl = ret_evaluation(crypto_currency, high_frame_indicated,
+                                                                 mid_frame_indicated, low_frame_indicated, mr)
                                     if ret > market_reset and roc10 > 0:
                                         set_ptsl(pair, closing_price, 'R', new_timestamp, pt, sl)
                                         log = log_action('{} Ret {}. ROC {}. Limit reset to {}. Stop reset to {}.'
-                                                             .format(time_stamp(), ret, roc10, limit, stop))
+                                                         .format(time_stamp(), ret, roc10, limit, stop))
                                         trades.append(log)
                                         trades.append('<br>')
                             else:
@@ -491,12 +507,13 @@ def multiPrelderbot(mode, assets):
                     elif condition == 'buy':
                         if event > minRet and bb_cross != 0 and roc10 > 0:
                             prime_predictionB, meta_predictionB = buy_evaluation(crypto_currency, high_frame_indicated,
-                                                                                     mid_frame_indicated,
-                                                                                     low_frame_indicated,
-                                                                                     pmb, mmb)
-                            ret, pt, sl = ret_evaluation(crypto_currency, high_frame_indicated, mid_frame_indicated, low_frame_indicated, mr)
+                                                                                 mid_frame_indicated,
+                                                                                 low_frame_indicated,
+                                                                                 pmb, mmb)
+                            ret, pt, sl = ret_evaluation(crypto_currency, high_frame_indicated, mid_frame_indicated,
+                                                         low_frame_indicated, mr)
                             log = log_action('{} Prime prediction {}. Meta prediction {}. Ret {}. ROC10 {}.'
-                                                 .format(time_stamp(), prime_predictionB, meta_predictionB, ret, roc10))
+                                             .format(time_stamp(), prime_predictionB, meta_predictionB, ret, roc10))
                             if prime_predictionB == meta_predictionB and ret > market_return and roc10 > 0:
                                 set_ptsl(pair, closing_price, 'S', new_timestamp, pt, sl)
                                 log = log_action('{} Limit set {}. Stop loss set {}.'.format(time_stamp(), limit, stop))
@@ -507,7 +524,7 @@ def multiPrelderbot(mode, assets):
                             reset_predictions()
                     time.sleep(1)
                 log = log_action('{} Waiting candle close.'.format(time_stamp()))
-                time.sleep(300 - (4*len(assets))) # 300 sec = 5 min
+                time.sleep(300 - (4 * len(assets)))  # 300 sec = 5 min
             else:
                 log = log_action('{} Synchronizing candle time.'.format(time_stamp()))
                 time.sleep(30)
