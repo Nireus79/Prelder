@@ -17,11 +17,11 @@ log.setLevel(logging.ERROR)
 
 
 def initialize_models():
-    init_pmb_eth = joblib.load('app/models/PrimeModelBuyETHEUR1.pkl')
-    init_mmb_eth = joblib.load('app/models/MetaModelBuyETHEUR1.pkl')
-    init_pms_eth = joblib.load('app/models/PrimeModelSellETHEUR1.pkl')
-    init_mms_eth = joblib.load('app/models/MetaModelSellETHEUR1.pkl')
-    init_mr_eth = joblib.load('app/models/ModelRiskETHEUR1.pkl')
+    init_pmb_eth = joblib.load('app/models/PrimeModelBuyETHEUR2.pkl')
+    init_mmb_eth = joblib.load('app/models/MetaModelBuyETHEUR2.pkl')
+    init_pms_eth = joblib.load('app/models/PrimeModelSellETHEUR2.pkl')
+    init_mms_eth = joblib.load('app/models/MetaModelSellETHEUR2.pkl')
+    init_mr_eth = joblib.load('app/models/ModelRiskETHEUR2.pkl')
     init_pmb_btc = joblib.load('app/models/PrimeModelBuyBTCEUR1.pkl')
     init_mmb_btc = joblib.load('app/models/MetaModelBuyBTCEUR1.pkl')
     init_pms_btc = joblib.load('app/models/PrimeModelSellBTCEUR1.pkl')
