@@ -42,8 +42,8 @@ low_closing_price = 0
 low_limit = None
 low_stop = None
 
-market_return = 0.04
-market_reset = 0.03
+market_return = 0.01
+market_reset = 0
 kraken_fee = 0.004001
 
 high_chart_data = None
