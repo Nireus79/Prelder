@@ -42,7 +42,7 @@ low_closing_price = 0
 low_limit = None
 low_stop = None
 
-market_return = 0.008
+market_return = 0.01
 market_reset = 0
 kraken_fee = 0.004001
 
@@ -155,7 +155,6 @@ def sell_evaluation(asset, high_frame_indicated, mid_frame_indicated, low_frame_
     MF_macd = mid_frame_indicated.iloc[-1]['MF_macd']
     MF_K = mid_frame_indicated.iloc[-1]['MF_%K']
     MF_atr = mid_frame_indicated.iloc[-1]['MF_atr']
-    MF_MAV_sig = mid_frame_indicated.iloc[-1]['MF_MAV_sig']
     LF_atr = low_frame_indicated.iloc[-1]['LF_atr']
     LF_Tr20 = low_frame_indicated.iloc[-1]['LF_Tr20']
     LF_Tr9 = low_frame_indicated.iloc[-1]['LF_Tr9']
@@ -163,7 +162,6 @@ def sell_evaluation(asset, high_frame_indicated, mid_frame_indicated, low_frame_
     LF_St = low_frame_indicated.iloc[-1]['LF_St']
     LF_MAV = low_frame_indicated.iloc[-1]['LF_MAV']
     LF_K = low_frame_indicated.iloc[-1]['LF_%K']
-    LF_Volatility = low_frame_indicated.iloc[-1]['LF_Volatility']
     LF_roc10 = low_frame_indicated.iloc[-1]['LF_roc10']
     if asset == 'ETH':
         featuresS = [[HF_Tr3, HF_Vtr3, HF_MAV_sig, MF_atr, LF_Tr20, LF_Tr3, LF_roc10]]
@@ -251,18 +249,15 @@ def ret_evaluation(asset, high_frame_indicated, mid_frame_indicated, low_frame_i
     MF_macd = mid_frame_indicated.iloc[-1]['MF_macd']
     MF_K = mid_frame_indicated.iloc[-1]['MF_%K']
     MF_D = mid_frame_indicated.iloc[-1]['MF_%D']
-    MF_atr = mid_frame_indicated.iloc[-1]['MF_atr']
-    LF_Vtr13 = low_frame_indicated.iloc[-1]['LF_Vtr13']
-    LF_Vtr6 = low_frame_indicated.iloc[-1]['LF_Vtr6']
-    LF_MAV_sig = low_frame_indicated.iloc[-1]['LF_MAV_sig']
+    MF_Vol_Vol = mid_frame_indicated.iloc[-1]['MF_Vol_Vol']
     LF_roc10 = low_frame_indicated.iloc[-1]['LF_roc10']
-    LF_vrsi = low_frame_indicated.iloc[-1]['LF_vrsi']
+    LF_atr = low_frame_indicated.iloc[-1]['LF_atr']
     LF_macd = low_frame_indicated.iloc[-1]['LF_macd']
     LF_Volatility = low_frame_indicated.iloc[-1]['LF_Volatility']
     LF_Vol_Vol = low_frame_indicated.iloc[-1]['LF_Vol_Vol']
     LF_rsi = low_frame_indicated.iloc[-1]['LF_rsi']
     if asset == 'ETH':
-        features = [[HF_Tr20, HF_Tr3, MF_atr, LF_Vtr13, LF_Vtr6, LF_MAV_sig, LF_vrsi, LF_roc10]]
+        features = [[HF_Tr6, HF_Tr3, MF_Vol_Vol, MF_macd, LF_Volatility, LF_macd, LF_atr]]
         features = normalize(features)
         ret_prediction = mr.predict(features)
         return ret_prediction[0], 1, 1
@@ -468,8 +463,8 @@ def multiPrelderbot(mode, assets):
                     if mode != 'simulator':
                         condition, crypto_balance, fiat_balance = get_condition(crypto_currency, fiat_currency,
                                                                                 closing_price)
-                    log = log_action(
-                        'Event is: {}. BB crossing is: {}. Condition is: {}'.format(event, bb_cross, condition))
+                    log = log_action('Event is: {}. BB crossing is: {}. Condition is: {}'
+                                     .format(event, bb_cross, condition))
                     if condition == 'sell':
                         if limit is None and stop is None:
                             log = log_action(
@@ -487,8 +482,8 @@ def multiPrelderbot(mode, assets):
                         if closing_price < stop:
                             log = log_action('{} Closing price {} < stop {}.'.format(time_stamp(), closing_price, stop))
                             action(mode, crypto_currency, fiat_currency, closing_price)
-                        elif closing_price > limit or new_timestamp >= limits[pair][
-                            'timestamp'] + 86400:  # 86400 one day in seconds
+                        elif closing_price > limit or new_timestamp >= limits[pair]['timestamp'] + 86400:
+                            # 86400 one day in seconds
                             log = log_action('{} Sell evaluation. Closing price {}. limit {}. Stop {}.'
                                              .format(time_stamp(), closing_price, limit, stop))
                             if event > minRet and bb_cross != 0 and roc10 > 0:
