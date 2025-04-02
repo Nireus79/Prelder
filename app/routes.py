@@ -19,19 +19,19 @@ log.setLevel(logging.ERROR)
 def initialize_models():
     init_pmb_eth = joblib.load('app/models/PrimeModelBuyETHEUR2.pkl')
     init_mmb_eth = joblib.load('app/models/MetaModelBuyETHEUR2.pkl')
-    init_pms_eth = joblib.load('app/models/PrimeModelSellETHEUR2.pkl')
-    init_mms_eth = joblib.load('app/models/MetaModelSellETHEUR2.pkl')
+    init_pms_eth = joblib.load('app/models/PrimeModelBuyETHEUR2.pkl')
+    init_mms_eth = joblib.load('app/models/MetaModelBuyETHEUR2.pkl')
     init_mr_eth = joblib.load('app/models/ModelRiskETHEUR2.pkl')
     init_pmb_btc = joblib.load('app/models/PrimeModelBuyETHEUR2.pkl')
     init_mmb_btc = joblib.load('app/models/PrimeModelBuyETHEUR2.pkl')
     init_pms_btc = joblib.load('app/models/PrimeModelBuyETHEUR2.pkl')
     init_mms_btc = joblib.load('app/models/PrimeModelBuyETHEUR2.pkl')
-    init_mr_btc = joblib.load('app/models/PrimeModelBuyETHEUR2.pkl')
+    init_mr_btc = joblib.load('app/models/ModelRiskETHEUR2.pkl')
     init_pmb_dot = joblib.load('app/models/PrimeModelBuyETHEUR2.pkl')
     init_mmb_dot = joblib.load('app/models/PrimeModelBuyETHEUR2.pkl')
     init_pms_dot = joblib.load('app/models/PrimeModelBuyETHEUR2.pkl')
     init_mms_dot = joblib.load('app/models/PrimeModelBuyETHEUR2.pkl')
-    init_mr_dot = joblib.load('app/models/PrimeModelBuyETHEUR2.pkl')
+    init_mr_dot = joblib.load('app/models/ModelRiskETHEUR2.pkl')
     return (init_pmb_eth, init_mmb_eth, init_pms_eth, init_mms_eth, init_mr_eth,
             init_pmb_btc, init_mmb_btc, init_pms_btc, init_mms_btc, init_mr_btc,
             init_pmb_dot, init_mmb_dot, init_pms_dot, init_mms_dot, init_mr_dot)
@@ -42,10 +42,11 @@ def initialize_models():
  pmb_dot, mmb_dot, pms_dot, mms_dot, mr_dot) = initialize_models()
 
 asset_pairs = [
-               ('BTC', 'EUR', pmb_btc, mmb_btc, pms_btc, mms_btc, mr_btc),
-               ('DOT', 'EUR', pmb_dot, mmb_dot, pms_dot, mms_dot, mr_dot),
-               ('ETH', 'EUR', pmb_eth, mmb_eth, pms_eth, mms_eth, mr_eth)
+    ('BTC', 'EUR', pmb_btc, mmb_btc, pms_btc, mms_btc, mr_btc),
+    ('DOT', 'EUR', pmb_dot, mmb_dot, pms_dot, mms_dot, mr_dot),
+    ('ETH', 'EUR', pmb_eth, mmb_eth, pms_eth, mms_eth, mr_eth)
 ]
+
 
 @app.route('/')
 @app.route('/home')
@@ -122,7 +123,6 @@ def starter():
                                    args=(mode, [asset_pairs[2]]))
         trading.daemon = True
         trading.start()
-
 
 
 @app.route('/stop')

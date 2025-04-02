@@ -150,22 +150,22 @@ def sell_evaluation(asset, high_frame_indicated, mid_frame_indicated, low_frame_
     HF_Tr9 = high_frame_indicated.iloc[-1]['HF_Tr9']
     HF_Tr6 = high_frame_indicated.iloc[-1]['HF_Tr6']
     HF_Tr3 = high_frame_indicated.iloc[-1]['HF_Tr3']
-    HF_MAV_sig = high_frame_indicated.iloc[-1]['HF_MAV_sig']
-    HF_Vtr3 = high_frame_indicated.iloc[-1]['HF_Vtr3']
+    # HF_MAV_sig = high_frame_indicated.iloc[-1]['HF_MAV_sig']
+    # HF_Vtr3 = high_frame_indicated.iloc[-1]['HF_Vtr3']
     MF_macd = mid_frame_indicated.iloc[-1]['MF_macd']
     MF_K = mid_frame_indicated.iloc[-1]['MF_%K']
-    MF_atr = mid_frame_indicated.iloc[-1]['MF_atr']
+    MF_Vol_Vol = mid_frame_indicated.iloc[-1]['MF_Vol_Vol']
     LF_atr = low_frame_indicated.iloc[-1]['LF_atr']
-    LF_Tr20 = low_frame_indicated.iloc[-1]['LF_Tr20']
+    LF_Volatility = low_frame_indicated.iloc[-1]['LF_Volatility']
     LF_Tr9 = low_frame_indicated.iloc[-1]['LF_Tr9']
-    LF_Tr3 = low_frame_indicated.iloc[-1]['LF_Tr3']
+    LF_macd = low_frame_indicated.iloc[-1]['LF_macd']
     LF_St = low_frame_indicated.iloc[-1]['LF_St']
     LF_MAV = low_frame_indicated.iloc[-1]['LF_MAV']
     LF_K = low_frame_indicated.iloc[-1]['LF_%K']
     LF_roc10 = low_frame_indicated.iloc[-1]['LF_roc10']
     if asset == 'ETH':
-        featuresS = [[HF_Tr3, HF_Vtr3, HF_MAV_sig, MF_atr, LF_Tr20, LF_Tr3, LF_roc10]]
-        # [[HF_Tr13, HF_Tr6, HF_Tr3, MF_MAV_sig, LF_Volatility, LF_atr, LF_roc10]] # ETH1
+        featuresS = [[HF_Tr6, HF_Tr3, MF_Vol_Vol, MF_macd, LF_Volatility, LF_macd, LF_atr]]
+        # HF_Tr3, HF_Vtr3, HF_MAV_sig, MF_atr, LF_Tr20, LF_Tr3, LF_roc10
         featuresS = normalize(featuresS)
         prime_predictionS = pms.predict(featuresS)
         featuresMS = featuresS
@@ -212,7 +212,6 @@ def buy_evaluation(asset, high_frame_indicated, mid_frame_indicated, low_frame_i
     global prime_prediction, meta_prediction
     if asset == 'ETH':
         featuresB = [[HF_Tr6, HF_Tr3, MF_Vol_Vol, MF_macd, LF_Volatility, LF_macd, LF_atr]]
-        # [[HF_Tr13, HF_Tr9, HF_Tr6, HF_Tr3, LF_Tr3, LF_macd, LF_Vol_Vol]] # ETH1
         featuresB = normalize(featuresB)
         prime_predictionB = pmb.predict(featuresB)
         featuresMB = featuresB
