@@ -130,7 +130,7 @@ and if a negative cumulative sum becomes positive, it's set to zero as well. Eve
 Check if sNeg goes below a threshold -h.loc[i]. The threshold is relative to h, which is a pandas Series containing
 some form of volatility measurement. If sNeg crosses below the threshold, it indicates a downward shift in the mean
 value, so sNeg is reset to zero, and the current index i is added to the tEvents list. Similarly, if sPos goes above
-the threshold, it indicates an upward shift in the mean value, and sPos is reset to zero, and i is added to the
+the threshold, it indicates an upward shift in the mean value, and sPos is reset to zero, and 'i' is added to the
 tEvents list. Return T Events: The function returns a pd.DatetimeIndex object containing the timestamps of the
 identified T events.
 
@@ -218,7 +218,7 @@ def get_condition(crypto_currency, fiat_currency, closing_price):
         crypto_currency = 'X' + crypto_currency
     elif crypto_currency == 'BTC':
         crypto_currency = 'XXBT'
-    fiat_currency = 'Z' + fiat_currency
+    fiat_currency = fiat_currency + '.F'
     balance = get_private_balance()
     crypto_balance = float(balance['result'][crypto_currency])
     crypto_value = crypto_balance * closing_price
