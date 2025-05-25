@@ -215,9 +215,12 @@ def get_condition(crypto_currency, fiat_currency, closing_price):
     :return: Conditions to buy/sell crypto.
     """
     if crypto_currency == 'ETH':
-        crypto_currency = 'X' + crypto_currency
+        crypto_currency = crypto_currency + '.F'
     elif crypto_currency == 'BTC':
         crypto_currency = 'XXBT'
+    elif crypto_currency == 'DOGE':
+        crypto_currency = 'XXDG'
+    # DOT = DOT
     fiat_currency = fiat_currency + '.F'
     balance = get_private_balance()
     crypto_balance = float(balance['result'][crypto_currency])

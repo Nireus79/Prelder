@@ -395,7 +395,7 @@ def multiPrelderbot(mode, assets):
                 if closing_price < stop:
                     log = log_action('{} Closing price {} < stop {}.'.format(time_stamp(), closing_price, stop))
                     action(mode, crypto_currency, fiat_currency, closing_price)
-                if closing_price > limit or new_timestamp >= limits[pair]['timestamp'] + 43200:  # 86400 one day in sec
+                if closing_price > limit or new_timestamp >= limits[pair]['timestamp'] + 86400:  # 86400 one day in sec
                     log = log_action('{} Sell evaluation. Closing price {}. limit {}. Stop {}.'
                                      .format(time_stamp(), closing_price, limit, stop))
                     if event > minRet and bb_cross != 0 and roc10 > 0:
